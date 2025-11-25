@@ -30,14 +30,12 @@ export default function SignInPage() {
         toast.error(result.error)
       } else {
         toast.success('Signed in successfully')
-        // Redirect to root page which will handle role-based redirect
-        const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl')
-        if (callbackUrl) {
-          router.push(callbackUrl)
-        } else {
-          router.push('/')
-        }
+        // Force a page refresh to establish session properly
         router.refresh()
+        // Redirect to debug page first to check session
+        setTimeout(() => {
+          window.location.href = '/debug'
+        }, 1000)
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.')
