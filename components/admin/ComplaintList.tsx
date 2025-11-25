@@ -47,6 +47,7 @@ export default function ComplaintList({ complaints: initialComplaints, showActio
     try {
       const res = await fetch(`/api/complaints/${id}`, {
         method: 'DELETE',
+        credentials: 'include'
       })
 
       const data = await res.json()
@@ -195,9 +196,17 @@ export default function ComplaintList({ complaints: initialComplaints, showActio
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
+                          <Link
+                            href={`/admin/complaints/${complaint._id}/edit`}
+                            className="text-blue-600 hover:text-blue-900"
+                            title="Edit Complaint"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Link>
                           <button
                             onClick={() => handleDelete(complaint._id)}
                             className="text-red-600 hover:text-red-900"
+                            title="Delete Complaint"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

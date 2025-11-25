@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { authOptions } from './api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth-options'
 import { UserRole } from '@/types/enums'
 import Link from 'next/link'
 import { ArrowRight, Shield, Users, MessageSquare, Zap, CheckCircle2, BarChart3, Lock, Settings, TrendingUp, Clock, FileText, Bell, Award } from 'lucide-react'

@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { IUser, UserDocument } from '@/types'
 import { UserRole } from '@/types/enums'
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<UserDocument>(
   {
     name: {
       type: String,

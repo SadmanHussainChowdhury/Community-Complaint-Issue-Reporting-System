@@ -1,41 +1,75 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+'use client'
+
+import { useState, useEffect } from 'react'
 import StatsCard from '@/components/StatsCard'
 import Link from 'next/link'
 import { ClipboardList, Clock, CheckCircle, Users } from 'lucide-react'
 import { DashboardStats } from '@/types'
 
-async function getDashboardStats(): Promise<DashboardStats | null> {
-  const session = await getServerSession(authOptions)
-  if (!session) return null
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/dashboard`, {
-      headers: {
-        Cookie: `next-auth.session-token=${session.user?.id}`,
-      },
-      cache: 'no-store',
-    })
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true)
+        const res = await fetch('/api/dashboard', {
+          credentials: 'include'
+        })
 
-    if (!res.ok) return null
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError('Authentication required. Please sign in again.')
+            return
+          }
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+        }
 
-    // Check if response is JSON
-    const contentType = res.headers.get('content-type')
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('Dashboard API returned non-JSON response')
-      return null
+        const contentType = res.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned invalid response format')
+        }
+
+        const data = await res.json()
+
+        if (data.success) {
+          setStats(data.data.stats || null)
+        } else {
+          setError(data.error || 'Failed to load dashboard data')
+        }
+      } catch (err) {
+        setError('Failed to load dashboard data')
+        console.error('Error fetching dashboard stats:', err)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    const data = await res.json()
-    return data.data?.stats || null
-  } catch (error) {
-    console.error('Error fetching dashboard stats:', error)
-    return null
-  }
-}
+    fetchStats()
+  }, [])
 
-export default async function AdminDashboard() {
-  const stats = await getDashboardStats()
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <p className="text-red-600">Error: {error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

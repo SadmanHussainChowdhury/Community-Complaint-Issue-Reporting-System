@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-options'
-import ComplaintDetail from '@/components/admin/ComplaintDetail'
+import AdminEditComplaintClient from './client'
 
 async function getComplaint(id: string) {
   const session = await getServerSession(authOptions)
@@ -19,7 +19,7 @@ async function getComplaint(id: string) {
   return data.data?.complaint || null
 }
 
-export default async function AdminComplaintDetailPage({ params }: { params: { id: string } }) {
+export default async function AdminEditComplaintPage({ params }: { params: { id: string } }) {
   const complaint = await getComplaint(params.id)
 
   if (!complaint) {
@@ -32,10 +32,5 @@ export default async function AdminComplaintDetailPage({ params }: { params: { i
     )
   }
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <ComplaintDetail complaint={complaint} />
-    </div>
-  )
+  return <AdminEditComplaintClient complaint={complaint} />
 }
-

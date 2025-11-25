@@ -30,6 +30,7 @@ export default function FeedbackForm({ complaintId, onSubmitted }: FeedbackFormP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating, comment }),
+        credentials: 'include'
       })
 
       const data = await res.json()

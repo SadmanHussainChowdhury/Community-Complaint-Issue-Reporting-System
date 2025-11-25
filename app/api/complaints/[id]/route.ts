@@ -4,7 +4,7 @@ import connectDB from '@/lib/mongodb'
 import Complaint from '@/models/Complaint'
 import User from '@/models/User'
 import ActivityLog from '@/models/ActivityLog'
-import { authOptions } from '../../auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth-options'
 import { ComplaintStatus, UserRole } from '@/types/enums'
 import { ApiResponse, IComplaint } from '@/types'
 import { triggerPusherEvent, CHANNELS, EVENTS } from '@/lib/pusher'
@@ -39,16 +39,26 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const userRole = session.user.role
     const userId = session.user.id
 
+    const submittedById = typeof complaint.submittedBy === 'string'
+      ? complaint.submittedBy
+      : complaint.submittedBy._id.toString()
+
     if (
       userRole === UserRole.RESIDENT &&
-      complaint.submittedBy._id.toString() !== userId
+      submittedById !== userId
     ) {
       return jsonResponse({ success: false, error: 'Access denied' }, 403)
     }
 
+    const assignedToId = complaint.assignedTo
+      ? (typeof complaint.assignedTo === 'string'
+          ? complaint.assignedTo
+          : complaint.assignedTo._id.toString())
+      : null
+
     if (
       userRole === UserRole.STAFF &&
-      complaint.assignedTo?._id.toString() !== userId
+      assignedToId !== userId
     ) {
       return jsonResponse({ success: false, error: 'Access denied' }, 403)
     }
@@ -141,7 +151,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
           updates.resolvedAt = new Date()
         }
       }
-      if (body.assignedTo) updates.assignedTo = body.assignedTo
+      if (body.assignedTo !== undefined) updates.assignedTo = body.assignedTo
       if (body.notes) {
         updates.$push = {
           notes: {

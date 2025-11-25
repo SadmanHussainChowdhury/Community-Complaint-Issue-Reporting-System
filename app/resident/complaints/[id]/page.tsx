@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import StatusTracker from '@/components/StatusTracker'
 import FeedbackForm from '@/components/FeedbackForm'
@@ -19,15 +20,11 @@ export default function ComplaintDetailPage() {
   const [loading, setLoading] = useState(true)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  useEffect(() => {
-    if (params.id) {
-      loadComplaint()
-    }
-  }, [params.id])
-
-  const loadComplaint = async () => {
+  const loadComplaint = useCallback(async () => {
     try {
-      const res = await fetch(`/api/complaints/${params.id}`)
+      const res = await fetch(`/api/complaints/${params.id}`, {
+        credentials: 'include'
+      })
       const data = await res.json()
 
       if (data.success) {
@@ -49,7 +46,13 @@ export default function ComplaintDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, router])
+
+  useEffect(() => {
+    if (params.id) {
+      loadComplaint()
+    }
+  }, [params.id, loadComplaint])
 
   if (loading) {
     return (
@@ -163,12 +166,14 @@ export default function ComplaintDetailPage() {
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {complaint.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Complaint image ${index + 1}`}
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
+                      <div key={index} className="relative w-full h-48 rounded-lg overflow-hidden">
+                        <Image
+                          src={image}
+                          alt={`Complaint image ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>

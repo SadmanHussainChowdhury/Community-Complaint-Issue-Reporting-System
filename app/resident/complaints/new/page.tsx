@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import toast from 'react-hot-toast'
 import Navbar from '@/components/Navbar'
 import { ComplaintCategory, ComplaintPriority } from '@/types/enums'
@@ -55,6 +56,7 @@ export default function NewComplaintPage() {
       const res = await fetch('/api/complaints', {
         method: 'POST',
         body: formDataToSend,
+        credentials: 'include'
       })
 
       const data = await res.json()
@@ -226,6 +228,7 @@ export default function NewComplaintPage() {
               <div className="mt-4 grid grid-cols-4 gap-4">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={URL.createObjectURL(image)}
                       alt={`Preview ${index + 1}`}

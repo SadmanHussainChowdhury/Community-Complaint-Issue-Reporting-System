@@ -1,27 +1,73 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import { UserRole } from '@/types/enums'
+'use client'
+
+import { useState, useEffect } from 'react'
 import ComplaintList from '@/components/admin/ComplaintList'
+import { IComplaint } from '@/types'
 
-async function getComplaints() {
-  const session = await getServerSession(authOptions)
-  if (!session) return { complaints: [] }
+export default function AdminComplaintsPage() {
+  const [complaints, setComplaints] = useState<IComplaint[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/complaints`, {
-    headers: {
-      Cookie: `next-auth.session-token=${session.user?.id}`,
-    },
-    cache: 'no-store',
-  })
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      try {
+        setLoading(true)
+        const res = await fetch('/api/complaints', {
+          credentials: 'include'
+        })
 
-  if (!res.ok) return { complaints: [] }
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError('Authentication required. Please sign in again.')
+            return
+          }
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+        }
 
-  const data = await res.json()
-  return { complaints: data.data?.complaints || [] }
-}
+        const contentType = res.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned invalid response format')
+        }
 
-export default async function AdminComplaintsPage() {
-  const { complaints } = await getComplaints()
+        const data = await res.json()
+
+        if (data.success) {
+          setComplaints(data.data.complaints || [])
+        } else {
+          setError(data.error || 'Failed to load complaints')
+        }
+      } catch (err) {
+        setError('Failed to load complaints')
+        console.error('Error fetching complaints:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchComplaints()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading complaints...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <p className="text-red-600">Error: {error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

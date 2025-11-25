@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongodb'
 import User from '@/models/User'
 import ActivityLog from '@/models/ActivityLog'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth-options'
 import { UserRole } from '@/types/enums'
 import { ApiResponse, IUser } from '@/types'
 

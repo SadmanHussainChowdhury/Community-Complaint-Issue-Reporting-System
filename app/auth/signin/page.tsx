@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, User, Shield, Users } from 'lucide-react'
+import { Mail, Lock, Loader2 } from 'lucide-react'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -46,46 +46,6 @@ export default function SignInPage() {
     }
   }
 
-  const quickSignIn = async (role: 'admin' | 'staff' | 'resident') => {
-    const credentials = {
-      admin: { email: 'admin@example.com', password: 'admin123' },
-      staff: { email: 'staff@example.com', password: 'staff123' },
-      resident: { email: 'resident@example.com', password: 'resident123' },
-    }
-
-    const creds = credentials[role]
-    setFormData(creds)
-    setLoading(true)
-
-    try {
-      const result = await signIn('credentials', {
-        email: creds.email,
-        password: creds.password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        toast.error(result.error || 'Failed to sign in. Make sure test users are created.')
-      } else {
-        toast.success(`Signed in as ${role} successfully`)
-        // Redirect based on role
-        if (role === 'admin') {
-          router.push('/admin/dashboard')
-        } else if (role === 'staff') {
-          router.push('/staff/dashboard')
-        } else if (role === 'resident') {
-          router.push('/resident/dashboard')
-        } else {
-          router.push('/')
-        }
-        router.refresh()
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-mesh py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -180,52 +140,13 @@ export default function SignInPage() {
             </div>
           </form>
 
-          {/* Quick Sign In Options */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center mb-4">Quick Sign In (Test Accounts)</p>
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                onClick={() => quickSignIn('admin')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                title="Sign in as Admin"
-              >
-                <Shield className="h-5 w-5 text-purple-600 mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-medium text-purple-700">Admin</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => quickSignIn('staff')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                title="Sign in as Staff"
-              >
-                <Users className="h-5 w-5 text-blue-600 mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-medium text-blue-700">Staff</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => quickSignIn('resident')}
-                disabled={loading}
-                className="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                title="Sign in as Resident"
-              >
-                <User className="h-5 w-5 text-green-600 mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-medium text-green-700">Resident</span>
-              </button>
-            </div>
-            <p className="text-xs text-gray-400 text-center mt-3">
-              Click any button above to sign in with test credentials
-            </p>
-          </div>
         </div>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Don&apos;t have an account?{' '}
             <Link href="/auth/register" className="font-semibold text-primary-600 hover:text-primary-700">
-              Create one now
+              Create a resident account
             </Link>
           </p>
         </div>
