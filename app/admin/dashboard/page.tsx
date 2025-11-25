@@ -27,12 +27,12 @@ export default function AdminDashboard() {
           throw new Error(`HTTP ${res.status}: ${res.statusText}`)
         }
 
-        const contentType = res.headers.get('content-type')
-        if (!contentType || !contentType.includes('application/json')) {
+    const contentType = res.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Server returned invalid response format')
-        }
+    }
 
-        const data = await res.json()
+    const data = await res.json()
 
         if (data.success) {
           setStats(data.data.stats || null)
@@ -44,8 +44,8 @@ export default function AdminDashboard() {
         console.error('Error fetching dashboard stats:', err)
       } finally {
         setLoading(false)
-      }
-    }
+  }
+}
 
     fetchStats()
   }, [])
