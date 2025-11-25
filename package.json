@@ -47,7 +47,7 @@
     "dotenv": "^16.4.5"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "packageManager": "npm@10.0.0"
 }
