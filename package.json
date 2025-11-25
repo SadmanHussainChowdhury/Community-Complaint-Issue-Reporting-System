@@ -1,0 +1,54 @@
+{
+  "name": "community-complaint-issue-reporting-system",
+  "version": "1.0.0",
+  "description": "A modern web-based platform for community complaint and issue reporting",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "create-users": "ts-node scripts/create-test-users.ts"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "next-auth": "^4.24.5",
+    "mongoose": "^8.3.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.41.0",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
+    "zod": "^3.22.4",
+    "date-fns": "^3.3.1",
+    "recharts": "^2.12.0",
+    "react-hook-form": "^7.51.0",
+    "@hookform/resolvers": "^3.3.4",
+    "react-hot-toast": "^2.4.1",
+    "lucide-react": "^0.344.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0",
+    "nodemailer": "^6.9.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/nodemailer": "^6.4.14",
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.35",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.2.0",
+    "ts-node": "^10.9.2",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
