@@ -32,10 +32,10 @@ export default function SignInPage() {
         toast.success('Signed in successfully')
         // Force a page refresh to establish session properly
         router.refresh()
-        // Redirect to debug page first to check session
+        // Redirect to homepage which will handle role-based dashboard redirect
         setTimeout(() => {
-          window.location.href = '/debug'
-        }, 1000)
+          window.location.href = '/'
+        }, 500)
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.')
