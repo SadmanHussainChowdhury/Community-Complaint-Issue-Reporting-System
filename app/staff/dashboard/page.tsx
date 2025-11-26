@@ -4,14 +4,13 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
-import StatsCard from '@/components/StatsCard'
 import { IComplaint, IAnnouncement } from '@/types'
 import { ComplaintStatus } from '@/types/enums'
 import {
   ClipboardList,
   Clock,
   CheckCircle,
-  AlertCircle,
+  AlertTriangle,
   Bell,
   Pin,
   PlayCircle,
@@ -28,7 +27,19 @@ import {
   Target,
   Award,
   Timer,
-  Briefcase
+  Briefcase,
+  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight,
+  Star,
+  MessageSquare,
+  Settings,
+  BarChart3,
+  MoreHorizontal,
+  Eye,
+  Edit3,
+  CheckCircle as CompletedIcon,
+  AlertCircle
 } from 'lucide-react'
 
 export default function StaffDashboard() {
@@ -37,16 +48,19 @@ export default function StaffDashboard() {
   const [complaints, setComplaints] = useState<IComplaint[]>([])
   const [announcements, setAnnouncements] = useState<IAnnouncement[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null)
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'tasks' | 'announcements'>('overview')
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (showRefresh = false) => {
     if (!session?.user) return
 
     try {
-      setLoading(true)
+      if (showRefresh) setRefreshing(true)
+      else setLoading(true)
 
       // Fetch assigned complaints
-      const complaintsRes = await fetch('/api/complaints?assignedTo=' + session.user.id, {
+      const complaintsRes = await fetch(`/api/complaints?assignedTo=${session.user.id}`, {
         credentials: 'include'
       })
 
@@ -56,7 +70,7 @@ export default function StaffDashboard() {
       }
 
       // Fetch announcements
-      const announcementsRes = await fetch('/api/announcements?limit=3', {
+      const announcementsRes = await fetch('/api/announcements?limit=5', {
         credentials: 'include'
       })
 
@@ -68,8 +82,13 @@ export default function StaffDashboard() {
       console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
+      setRefreshing(false)
     }
   }, [session])
+
+  const handleRefresh = () => {
+    fetchData(true)
+  }
 
   useEffect(() => {
     if (status === 'loading') return
