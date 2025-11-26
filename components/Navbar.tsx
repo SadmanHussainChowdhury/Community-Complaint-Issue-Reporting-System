@@ -72,13 +72,22 @@ export default function Navbar() {
             </Link>
             
             {session.user.role === UserRole.RESIDENT && (
-              <Link
-                href="/resident/complaints/new"
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
-              >
-                <FileText className="w-4 h-4" />
-                <span>New Complaint</span>
-              </Link>
+              <>
+                <Link
+                  href="/resident/announcements"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span>Announcements</span>
+                </Link>
+                <Link
+                  href="/resident/complaints/new"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>New Complaint</span>
+                </Link>
+              </>
             )}
             
             {session.user.role === UserRole.ADMIN && (
@@ -157,6 +166,9 @@ export default function Navbar() {
             >
               Dashboard
             </Link>
+            {session.user.role === UserRole.RESIDENT && (
+              <Link href="/resident/announcements" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Announcements</Link>
+            )}
             {session.user.role === UserRole.ADMIN && (
               <>
                 <Link href="/admin/complaints" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Complaints</Link>
