@@ -20,14 +20,14 @@ async function getComplaints() {
       : 'http://localhost:3002')
 
     const res = await fetch(`${baseUrl}/api/complaints`, {
-      headers: {
+    headers: {
         'Content-Type': 'application/json',
         // Pass session info for server-side API calls
         'x-user-id': session.user.id,
         'x-user-role': session.user.role,
-      },
-      cache: 'no-store',
-    })
+    },
+    cache: 'no-store',
+  })
 
     if (!res.ok) {
       console.error('Complaints API failed:', res.status, res.statusText)
@@ -41,8 +41,8 @@ async function getComplaints() {
       return { complaints: [], stats: null }
     }
 
-    const data = await res.json()
-    return { complaints: data.data?.complaints || [], stats: data.data?.stats || null }
+  const data = await res.json()
+  return { complaints: data.data?.complaints || [], stats: data.data?.stats || null }
   } catch (error) {
     console.error('Error fetching complaints:', error)
     return { complaints: [], stats: null }

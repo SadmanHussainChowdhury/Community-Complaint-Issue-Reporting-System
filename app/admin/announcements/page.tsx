@@ -31,7 +31,7 @@ export default function AdminAnnouncementsPage() {
           throw new Error('Server returned invalid response format')
         }
 
-        const data = await res.json()
+  const data = await res.json()
 
         if (data.success) {
           setAnnouncements(data.data.announcements || [])

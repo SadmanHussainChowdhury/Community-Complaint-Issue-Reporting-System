@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Filter by target roles if specified
-    if (session.user.role) {
+    if (session?.user?.role) {
       query.$or = [
         { targetRoles: { $in: [session.user.role] } },
         { targetRoles: { $size: 0 } }, // No target roles means visible to all
