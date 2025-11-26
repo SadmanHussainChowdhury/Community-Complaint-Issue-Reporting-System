@@ -45,6 +45,19 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Ensure session exists with user at this point
+    if (!session?.user) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: 'Authentication failed' },
+        {
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+    }
+
     await connectDB()
 
     const { searchParams } = new URL(req.url)
