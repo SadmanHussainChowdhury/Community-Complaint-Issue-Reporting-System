@@ -49,7 +49,10 @@ export async function GET(req: NextRequest) {
     const isPinned = searchParams.get('isPinned')
     const limit = parseInt(searchParams.get('limit') || '20')
 
-    let query: Record<string, unknown> = {
+    let query: Record<string, unknown> = {}
+
+    // Base query for non-expired announcements
+    const expirationQuery = {
       $or: [
         { expiresAt: { $exists: false } },
         { expiresAt: { $gt: new Date() } },
@@ -62,10 +65,18 @@ export async function GET(req: NextRequest) {
 
     // Filter by target roles if specified
     if (session?.user?.role) {
-      query.$or = [
-        { targetRoles: { $in: [session.user.role] } },
-        { targetRoles: { $size: 0 } }, // No target roles means visible to all
+      query.$and = [
+        expirationQuery, // Keep expiration filtering
+        {
+          $or: [
+            { targetRoles: { $in: [session.user.role] } },
+            { targetRoles: { $size: 0 } }, // No target roles means visible to all
+          ]
+        }
       ]
+    } else {
+      // If no session/role, just use expiration filtering
+      query = { ...query, ...expirationQuery }
     }
 
     const announcements = await Announcement.find(query)
