@@ -18,17 +18,31 @@ export const runtime = 'nodejs'
 // GET /api/complaints - Get all complaints (filtered by role)
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    let session = await getServerSession(authOptions)
+
+    // Handle server-side API calls with custom headers
     if (!session?.user) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Unauthorized' },
-        {
-          status: 401,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const userId = req.headers.get('x-user-id')
+      const userRole = req.headers.get('x-user-role')
+
+      if (userId && userRole) {
+        session = {
+          user: {
+            id: userId,
+            role: userRole as UserRole,
+          }
+        } as any
+      } else {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: 'Unauthorized' },
+          {
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+      }
     }
 
     await connectDB()

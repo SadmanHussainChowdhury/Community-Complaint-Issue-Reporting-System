@@ -14,24 +14,35 @@ async function getComplaints() {
   if (!session) return { complaints: [], stats: null }
 
   try {
-  const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/complaints`, {
-    headers: {
-      Cookie: `next-auth.session-token=${session.user?.id}`,
-    },
-    cache: 'no-store',
-  })
+    // For server-side rendering, we need to construct the full URL
+    const baseUrl = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production'
+      ? 'https://community-complaint-issue-reporting.vercel.app'
+      : 'http://localhost:3002')
 
-  if (!res.ok) return { complaints: [], stats: null }
+    const res = await fetch(`${baseUrl}/api/complaints`, {
+      headers: {
+        'Content-Type': 'application/json',
+        // Pass session info for server-side API calls
+        'x-user-id': session.user.id,
+        'x-user-role': session.user.role,
+      },
+      cache: 'no-store',
+    })
+
+    if (!res.ok) {
+      console.error('Complaints API failed:', res.status, res.statusText)
+      return { complaints: [], stats: null }
+    }
 
     // Check if response is JSON
     const contentType = res.headers.get('content-type')
     if (!contentType || !contentType.includes('application/json')) {
-      console.error('Complaints API returned non-JSON response')
+      console.error('Complaints API returned non-JSON response:', contentType)
       return { complaints: [], stats: null }
     }
 
-  const data = await res.json()
-  return { complaints: data.data?.complaints || [], stats: data.data?.stats || null }
+    const data = await res.json()
+    return { complaints: data.data?.complaints || [], stats: data.data?.stats || null }
   } catch (error) {
     console.error('Error fetching complaints:', error)
     return { complaints: [], stats: null }
@@ -43,19 +54,30 @@ async function getAnnouncements() {
   if (!session) return { announcements: [] }
 
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/announcements?limit=5`, {
+    // For server-side rendering, we need to construct the full URL
+    const baseUrl = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production'
+      ? 'https://community-complaint-issue-reporting.vercel.app'
+      : 'http://localhost:3002')
+
+    const res = await fetch(`${baseUrl}/api/announcements?limit=5`, {
       headers: {
-        Cookie: `next-auth.session-token=${session.user?.id}`,
+        'Content-Type': 'application/json',
+        // Pass session info for server-side API calls
+        'x-user-id': session.user.id,
+        'x-user-role': session.user.role,
       },
       cache: 'no-store',
     })
 
-    if (!res.ok) return { announcements: [] }
+    if (!res.ok) {
+      console.error('Announcements API failed:', res.status, res.statusText)
+      return { announcements: [] }
+    }
 
     // Check if response is JSON
     const contentType = res.headers.get('content-type')
     if (!contentType || !contentType.includes('application/json')) {
-      console.error('Announcements API returned non-JSON response')
+      console.error('Announcements API returned non-JSON response:', contentType)
       return { announcements: [] }
     }
 
