@@ -51,13 +51,20 @@ async function getComplaints() {
 
 async function getAnnouncements() {
   const session = await getServerSession(authOptions)
-  if (!session) return { announcements: [] }
+  if (!session) {
+    console.log('❌ No session found for announcements')
+    return { announcements: [] }
+  }
+
+  console.log('🔍 Resident dashboard fetching announcements for user:', session.user.id, 'role:', session.user.role)
 
   try {
     // For server-side rendering, we need to construct the full URL
     const baseUrl = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production'
       ? 'https://community-complaint-issue-reporting.vercel.app'
       : 'http://localhost:3002')
+
+    console.log('🌐 Making API call to:', `${baseUrl}/api/announcements?limit=5`)
 
     const res = await fetch(`${baseUrl}/api/announcements?limit=5`, {
       headers: {
@@ -70,21 +77,23 @@ async function getAnnouncements() {
     })
 
     if (!res.ok) {
-      console.error('Announcements API failed:', res.status, res.statusText)
+      console.error('❌ Announcements API failed:', res.status, res.statusText)
       return { announcements: [] }
     }
 
     // Check if response is JSON
     const contentType = res.headers.get('content-type')
     if (!contentType || !contentType.includes('application/json')) {
-      console.error('Announcements API returned non-JSON response:', contentType)
+      console.error('❌ Announcements API returned non-JSON response:', contentType)
       return { announcements: [] }
     }
 
     const data = await res.json()
-    return { announcements: data.data?.announcements || [] }
+    const announcements = data.data?.announcements || []
+    console.log(`✅ Resident received ${announcements.length} announcements`)
+    return { announcements }
   } catch (error) {
-    console.error('Error fetching announcements:', error)
+    console.error('❌ Error fetching announcements:', error)
     return { announcements: [] }
   }
 }

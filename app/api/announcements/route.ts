@@ -65,6 +65,7 @@ export async function GET(req: NextRequest) {
 
     // Filter by target roles if specified
     if (session?.user?.role) {
+      console.log('🔍 Filtering announcements for role:', session.user.role)
       query.$and = [
         expirationQuery, // Keep expiration filtering
         {
@@ -74,9 +75,11 @@ export async function GET(req: NextRequest) {
           ]
         }
       ]
+      console.log('📋 Final query:', JSON.stringify(query, null, 2))
     } else {
       // If no session/role, just use expiration filtering
       query = { ...query, ...expirationQuery }
+      console.log('⚠️ No user role found, using expiration filtering only')
     }
 
     const announcements = await Announcement.find(query)
@@ -84,6 +87,15 @@ export async function GET(req: NextRequest) {
       .sort({ isPinned: -1, createdAt: -1 })
       .limit(limit)
       .lean()
+
+    console.log(`📊 Found ${announcements.length} announcements for role: ${session?.user?.role}`)
+    if (announcements.length > 0) {
+      console.log('📋 Sample announcement:', {
+        title: announcements[0].title,
+        targetRoles: announcements[0].targetRoles,
+        createdAt: announcements[0].createdAt
+      })
+    }
 
     return jsonResponse<{ announcements: IAnnouncement[] }>({
       success: true,
@@ -134,6 +146,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const parsedTargetRoles = targetRoles ? JSON.parse(targetRoles) : []
+    console.log('📝 Creating announcement with target roles:', parsedTargetRoles)
+
     const announcement = await Announcement.create({
       title,
       content,
@@ -141,7 +156,7 @@ export async function POST(req: NextRequest) {
       communityId: session.user.communityId,
       attachments: uploadedAttachments,
       isPinned,
-      targetRoles: targetRoles ? JSON.parse(targetRoles) : [],
+      targetRoles: parsedTargetRoles,
       expiresAt: expiresAt ? new Date(expiresAt) : undefined,
     })
 
