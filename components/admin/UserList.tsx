@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { IUser } from '@/types'
 import { UserRole } from '@/types/enums'
-import { Search, User, Mail, Phone, Building, Shield, Users, UserCheck } from 'lucide-react'
+import { Search, User, Mail, Phone, Building, Shield, Users, UserCheck, Edit, Trash2 } from 'lucide-react'
 
 interface UserListProps {
   users: IUser[]
@@ -25,6 +25,9 @@ export default function UserList({ users: initialUsers }: UserListProps) {
   const [users, setUsers] = useState(initialUsers)
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('')
+  const [editingUser, setEditingUser] = useState<IUser | null>(null)
+  const [deletingUser, setDeletingUser] = useState<IUser | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -33,6 +36,67 @@ export default function UserList({ users: initialUsers }: UserListProps) {
     const matchesRole = !roleFilter || user.role === roleFilter
     return matchesSearch && matchesRole
   })
+
+  const handleEdit = (user: IUser) => {
+    setEditingUser(user)
+  }
+
+  const handleDelete = (user: IUser) => {
+    setDeletingUser(user)
+  }
+
+  const confirmDelete = async () => {
+    if (!deletingUser) return
+
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/users/${deletingUser._id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+
+      if (res.ok) {
+        setUsers(users.filter(u => u._id !== deletingUser._id))
+        setDeletingUser(null)
+        // You could add a toast notification here
+      } else {
+        console.error('Failed to delete user')
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleUpdateUser = async (userData: Partial<IUser>) => {
+    if (!editingUser) return
+
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/users/${editingUser._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+        credentials: 'include',
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setUsers(users.map(u => u._id === editingUser._id ? data.data.user : u))
+        setEditingUser(null)
+        // You could add a toast notification here
+      } else {
+        console.error('Failed to update user')
+      }
+    } catch (error) {
+      console.error('Error updating user:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md">
@@ -151,8 +215,20 @@ export default function UserList({ users: initialUsers }: UserListProps) {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
-                      <button className="text-red-600 hover:text-red-900">Delete</button>
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="text-primary-600 hover:text-primary-900 mr-4 inline-flex items-center"
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user)}
+                        className="text-red-600 hover:text-red-900 inline-flex items-center"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 )
@@ -167,6 +243,186 @@ export default function UserList({ users: initialUsers }: UserListProps) {
           Showing {filteredUsers.length} of {users.length} users
         </div>
       )}
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          onSave={handleUpdateUser}
+          onCancel={() => setEditingUser(null)}
+          loading={loading}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingUser && (
+        <DeleteUserModal
+          user={deletingUser}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeletingUser(null)}
+          loading={loading}
+        />
+      )}
+    </div>
+  )
+}
+
+// Edit User Modal Component
+function EditUserModal({ user, onSave, onCancel, loading }: {
+  user: IUser
+  onSave: (data: Partial<IUser>) => void
+  onCancel: () => void
+  loading: boolean
+}) {
+  const [formData, setFormData] = useState({
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    phone: user.phone || '',
+    apartment: user.apartment || '',
+    building: user.building || '',
+    isActive: user.isActive,
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSave(formData)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-semibold mb-4">Edit User</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              {Object.values(UserRole).map((role) => (
+                <option key={role} value={role}>
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Building</label>
+              <input
+                type="text"
+                value={formData.building}
+                onChange={(e) => setFormData({ ...formData, building: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Apartment</label>
+              <input
+                type="text"
+                value={formData.apartment}
+                onChange={(e) => setFormData({ ...formData, apartment: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            />
+            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
+              Active User
+            </label>
+          </div>
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// Delete User Modal Component
+function DeleteUserModal({ user, onConfirm, onCancel, loading }: {
+  user: IUser
+  onConfirm: () => void
+  onCancel: () => void
+  loading: boolean
+}) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-semibold mb-4">Delete User</h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete <strong>{user.name}</strong>? This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? 'Deleting...' : 'Delete User'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
