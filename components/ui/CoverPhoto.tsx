@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
-interface CoverPhotoProps {
+export interface CoverPhotoProps {
   src: string
   alt: string
   title?: string
@@ -86,15 +87,17 @@ export function CoverPhoto({
             : undefined
         }
       >
-        <img
+        <Image
           src={src}
           alt={alt}
+          fill
           className={cn(
-            'w-full h-full object-cover transition-all duration-1000',
+            'object-cover transition-all duration-1000',
             isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105',
             animationClasses[animation]
           )}
           onLoad={() => setIsLoaded(true)}
+          priority
         />
 
         {/* Premium Overlay */}
@@ -148,7 +151,7 @@ export function CoverPhoto({
 }
 
 // Premium Hero Section Component
-interface HeroSectionProps {
+export interface HeroSectionProps {
   coverPhoto: string
   title: string
   subtitle: string
