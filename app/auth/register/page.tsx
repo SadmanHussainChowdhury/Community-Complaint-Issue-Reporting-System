@@ -98,31 +98,33 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-mesh py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background decorative elements */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Premium Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="max-w-md w-full space-y-8 relative z-10">
+      <div className="max-w-md w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
         <div className="text-center animate-fade-in">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-2xl gradient-primary flex items-center justify-center shadow-glow animate-glow">
-              <Shield className="h-10 w-10 text-white" />
+          <div className="flex justify-center mb-8">
+            <div className="relative">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-glow animate-glow-pulse">
+                <Shield className="h-10 w-10 text-white" />
+              </div>
+              <div className="absolute -inset-1 bg-gradient-to-br from-accent/20 to-primary/20 rounded-3xl blur opacity-50 animate-pulse"></div>
             </div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4">
-            <span className="gradient-text">Create Account</span>
+          <h2 className="text-4xl md:text-5xl font-black mb-6 text-premium animate-slide-up">
+            Create Account
           </h2>
           <p className="text-lg text-gray-600">
             Join your community and start reporting issues
           </p>
         </div>
 
-        <div className="premium-card animate-slide-up">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        <div className="card-premium animate-slide-up" style={{ animationDelay: '0.6s' }}>
+          <form className="p-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -250,7 +252,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="premium-button w-full text-lg py-5 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full flex items-center justify-center space-x-2 py-3 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">

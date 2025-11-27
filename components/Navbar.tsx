@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { UserRole } from '@/types/enums'
 import { Menu, LogOut, User, Shield, LayoutDashboard, FileText, Users, Bell } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { ThemeToggle } from '@/components/ui'
 
 export default function Navbar() {
   const { data: session, status } = useSession()
@@ -128,7 +129,8 @@ export default function Navbar() {
           </div>
 
           {/* User Menu */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
+            <ThemeToggle />
             <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/50 backdrop-blur-sm">
               <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${roleColors[session.user.role as keyof typeof roleColors] || 'from-gray-400 to-gray-500'} flex items-center justify-center text-white font-bold shadow-lg`}>
                 {session.user.name?.charAt(0).toUpperCase() || <User className="w-5 h-5" />}

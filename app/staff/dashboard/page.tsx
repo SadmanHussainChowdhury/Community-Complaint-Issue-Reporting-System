@@ -150,7 +150,7 @@ export default function StaffDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
@@ -168,48 +168,55 @@ export default function StaffDashboard() {
   const resolvedCount = complaints.filter(c => c.status === 'resolved').length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 w-80 h-80 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       <Navbar />
 
-      {/* Hero Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center animate-fade-in">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-glow animate-glow">
-                <Briefcase className="w-8 h-8 text-white" />
+      {/* Ultra-Premium Hero Header */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center animate-fade-in">
+          <div className="flex justify-center mb-8">
+            <div className="relative">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-glow animate-glow-pulse">
+                <Briefcase className="w-10 h-10 text-white" />
               </div>
+              <div className="absolute -inset-1 bg-gradient-to-br from-accent/20 to-primary/20 rounded-3xl blur opacity-50 animate-pulse"></div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
-              <span className="gradient-text">Staff Portal</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Manage your assigned tasks with precision and efficiency
-            </p>
           </div>
+          <h1 className="text-5xl md:text-6xl font-black mb-6 text-premium animate-slide-up">
+            Staff Portal
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            Manage your assigned tasks with precision and efficiency
+          </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Announcements Section */}
+        {/* Premium Announcements Section */}
         {announcements.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-white" />
+          <div className="mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
+                  <Bell className="w-6 h-6 text-white" />
                 </div>
-                Important Announcements
+                <span className="text-premium">Important Announcements</span>
               </h2>
             </div>
             <div className="grid gap-6">
-              {announcements.map((announcement) => (
+              {announcements.map((announcement, index) => (
                 <div
                   key={announcement._id}
-                  className={`premium-card group hover:scale-[1.02] transition-all duration-300 ${
-                    announcement.isPinned ? 'ring-2 ring-primary-500 shadow-xl' : ''
+                  className={`card-premium group hover:scale-105 hover:shadow-2xl animate-fade-in ${
+                    announcement.isPinned ? 'ring-2 ring-primary shadow-premium' : ''
                   }`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex items-start gap-4">
                     {announcement.isPinned && (
@@ -257,7 +264,7 @@ export default function StaffDashboard() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="premium-card group cursor-pointer">
+            <div className="card group cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">Total Tasks</p>
@@ -273,7 +280,7 @@ export default function StaffDashboard() {
               <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
-            <div className="premium-card group cursor-pointer">
+            <div className="card group cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">Pending</p>
@@ -289,7 +296,7 @@ export default function StaffDashboard() {
               <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
-            <div className="premium-card group cursor-pointer">
+            <div className="card group cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">In Progress</p>
@@ -298,14 +305,14 @@ export default function StaffDashboard() {
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Currently working</p>
                 </div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all">
+                <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
                   <Activity className="h-7 w-7 text-white" />
                 </div>
               </div>
               <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
-            <div className="premium-card group cursor-pointer">
+            <div className="card group cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">Completed</p>
@@ -347,7 +354,7 @@ export default function StaffDashboard() {
               {complaints.map((complaint) => (
                 <div
                   key={complaint._id}
-                  className="premium-card group hover:scale-[1.01] transition-all duration-300"
+                  className="card group hover:scale-[1.01] transition-all duration-300"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

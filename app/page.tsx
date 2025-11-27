@@ -46,41 +46,41 @@ export default async function Home() {
     }
   }
 
-  // Professional landing page for CodeCanyon standards
+  // Ultra-Premium Landing Page
   return (
-    <div className="min-h-screen bg-gradient-mesh">
-      {/* Professional Navbar */}
-      <nav className="glass border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl">
-        <div className="container-fluid">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center shadow-glow animate-pulse-glow">
-                <Building className="w-7 h-7 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Premium Navbar */}
+      <nav className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow animate-float">
+                <Building className="w-6 h-6 text-white" />
               </div>
               <div>
-                <span className="text-2xl font-bold gradient-text">CommunityHub</span>
-                <div className="text-xs text-gray-500 -mt-1">Professional Edition</div>
+                <span className="text-xl font-bold text-premium">CommunityHub</span>
+                <div className="text-xs text-gray-500 font-medium">Professional Edition</div>
               </div>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-700 hover:text-blue-600 transition-colors font-medium relative group">
+              <Link href="#features" className="text-gray-700 hover:text-primary transition-all duration-200 font-medium relative group">
                 Features
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <Link href="#solutions" className="text-gray-700 hover:text-blue-600 transition-colors font-medium relative group">
+              <Link href="#solutions" className="text-gray-700 hover:text-primary transition-all duration-200 font-medium relative group">
                 Solutions
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <Link href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors font-medium relative group">
+              <Link href="#pricing" className="text-gray-700 hover:text-primary transition-all duration-200 font-medium relative group">
                 Pricing
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <Link href="/auth/signin" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              <Link href="/auth/signin" className="text-gray-700 hover:text-primary transition-all duration-200 font-medium">
                 Sign In
               </Link>
-              <Link href="/auth/register" className="btn-primary">
+              <Link href="/auth/register" className="btn-primary animate-bounce-in">
                 Get Started Free
-                <ArrowRight className="w-4 h-4 ml-2 inline" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>
             {/* Mobile Menu Button */}
@@ -95,63 +95,44 @@ export default async function Home() {
         </div>
       </nav>
 
-      {/* Enhanced Hero Section */}
-      <section className="relative overflow-hidden pt-24 pb-32">
-        {/* Advanced Background Elements */}
-        <div className="absolute inset-0">
-          {/* Primary blob */}
-          <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-morph"></div>
-
-          {/* Secondary blob */}
-          <div className="absolute top-40 right-10 w-80 h-80 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-morph" style={{ animationDelay: '2s' }}></div>
-
-          {/* Tertiary blob */}
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-r from-pink-400 to-red-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-morph" style={{ animationDelay: '4s' }}></div>
-
-          {/* Floating particles */}
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-60 animate-float"></div>
-          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-blue-300 rounded-full opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-purple-300 rounded-full opacity-50 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-pink-300 rounded-full opacity-45 animate-float" style={{ animationDelay: '3s' }}></div>
-
-          {/* Grid pattern overlay */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
-              backgroundSize: '40px 40px'
-            }}></div>
-          </div>
+      {/* Ultra-Premium Hero Section */}
+      <section className="relative pt-24 pb-32 overflow-hidden">
+        {/* Premium Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/50 to-white">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
 
-        <div className="container-fluid relative">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
-            {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 mb-8">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-sm font-semibold text-green-700">Trusted by 10,000+ Communities Worldwide</span>
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
+            {/* Premium Trust Badge */}
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-success/10 to-success/5 border border-success/20 mb-12 shadow-sm">
+              <div className="w-3 h-3 rounded-full bg-success animate-pulse"></div>
+              <span className="text-sm font-semibold text-success">Trusted by 10,000+ Communities Worldwide</span>
+              <Star className="w-5 h-5 text-yellow-500 fill-current" />
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
-              <span className="gradient-text animate-text-glow">Professional</span>
-              <br />
-              <span className="text-gray-900 animate-slide-up" style={{ animationDelay: '0.2s' }}>Community</span>
-              <br />
-              <span className="gradient-text-accent animate-text-glow" style={{ animationDelay: '0.4s' }}>Management</span>
+            {/* Ultra-Premium Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 leading-tight animate-slide-up text-center">
+              <span className="text-premium animate-text-glow">Professional</span>
+              <br className="hidden sm:block" />
+              <span className="text-gray-900"> Community</span>
+              <br className="hidden sm:block" />
+              <span className="text-premium animate-text-glow" style={{ animationDelay: '0.4s' }}> Management</span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+            {/* Enhanced Subheadline */}
+            <p className="text-xl md:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
               Transform your community with our enterprise-grade complaint management platform.
               Streamline operations, boost resident satisfaction, and resolve issues faster than ever.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-              <Link href="/auth/register" className="btn-primary text-lg px-12 py-6 group">
+            {/* Premium CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+              <Link href="/auth/register" className="btn-primary btn-lg group">
                 Start Free Trial
-                <ArrowRight className="w-5 h-5 ml-3 inline group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href="#demo" className="btn-secondary text-lg px-12 py-6">
                 Watch Demo
@@ -176,29 +157,25 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Enhanced Hero Stats */}
-          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {/* Premium Stats Cards */}
+          <div className="mt-20 sm:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {[
-              { value: '10K+', label: 'Communities', icon: Building, color: 'from-blue-500 to-cyan-500', glow: 'shadow-blue-500/20' },
-              { value: '500K+', label: 'Complaints Resolved', icon: CheckCircle2, color: 'from-green-500 to-emerald-500', glow: 'shadow-green-500/20' },
-              { value: '99.9%', label: 'Uptime', icon: Activity, color: 'from-purple-500 to-pink-500', glow: 'shadow-purple-500/20' },
-              { value: '24/7', label: 'Support', icon: Shield, color: 'from-orange-500 to-red-500', glow: 'shadow-orange-500/20' },
+              { value: '10K+', label: 'Communities', icon: Building, color: 'from-primary to-accent' },
+              { value: '500K+', label: 'Complaints Resolved', icon: CheckCircle2, color: 'from-success to-emerald-500' },
+              { value: '99.9%', label: 'Uptime', icon: Activity, color: 'from-accent to-purple-500' },
+              { value: '24/7', label: 'Support', icon: Shield, color: 'from-primary to-blue-600' },
             ].map((stat, i) => (
               <div
                 key={i}
-                className="premium-card group cursor-pointer animate-scale-in hover:scale-105 transition-all duration-500"
+                className="card-premium p-4 sm:p-6 lg:p-8 text-center group hover:scale-105 animate-fade-in"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${stat.color} flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg ${stat.glow}`}>
-                      <stat.icon className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="text-4xl font-black gradient-text mb-1 group-hover:scale-110 transition-transform">{stat.value}</div>
-                    <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
-                  </div>
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-glow group-hover:scale-110 transition-transform duration-300`}>
+                  <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
                 </div>
-                <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1 sm:mb-2 group-hover:text-premium transition-colors">{stat.value}</div>
+                <div className="text-xs sm:text-sm font-medium text-gray-600">{stat.label}</div>
+                <div className="mt-3 sm:mt-4 h-1 rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             ))}
           </div>
@@ -212,91 +189,77 @@ export default async function Home() {
             <div className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 mb-6">
               <span className="text-sm font-semibold gradient-text">🚀 Powerful Features</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-black mb-6 gradient-text">Everything You Need</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-black mb-8 text-premium animate-slide-up">Everything You Need</h2>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Our comprehensive platform provides all the tools necessary for modern community management
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             {[
               {
                 icon: MessageSquare,
                 title: 'Smart Complaint Submission',
                 desc: 'Intuitive mobile-first interface for quick complaint reporting with photo uploads and location tagging',
                 color: 'from-blue-500 to-cyan-500',
-                bgPattern: 'bg-blue-50',
-                textColor: 'text-blue-600'
+                delay: '0.1s'
               },
               {
                 icon: Users,
                 title: 'Advanced Role Management',
                 desc: 'Granular permissions for Admins, Staff, and Residents with customizable access controls',
                 color: 'from-purple-500 to-pink-500',
-                bgPattern: 'bg-purple-50',
-                textColor: 'text-purple-600'
+                delay: '0.2s'
               },
               {
                 icon: Activity,
                 title: 'Real-time Tracking',
                 desc: 'Live status updates, progress tracking, and instant notifications across all devices',
                 color: 'from-green-500 to-emerald-500',
-                bgPattern: 'bg-green-50',
-                textColor: 'text-green-600'
+                delay: '0.3s'
               },
               {
                 icon: BarChart3,
                 title: 'Analytics & Insights',
                 desc: 'Comprehensive dashboards with performance metrics, trends, and actionable insights',
                 color: 'from-orange-500 to-red-500',
-                bgPattern: 'bg-orange-50',
-                textColor: 'text-orange-600'
+                delay: '0.4s'
               },
               {
                 icon: Shield,
                 title: 'Enterprise Security',
                 desc: 'Bank-grade encryption, GDPR compliance, and advanced security features',
                 color: 'from-indigo-500 to-purple-500',
-                bgPattern: 'bg-indigo-50',
-                textColor: 'text-indigo-600'
+                delay: '0.5s'
               },
               {
                 icon: Zap,
                 title: 'Automation Engine',
                 desc: 'Smart assignment, escalation rules, and automated workflows for maximum efficiency',
                 color: 'from-teal-500 to-cyan-500',
-                bgPattern: 'bg-teal-50',
-                textColor: 'text-teal-600'
+                delay: '0.6s'
               },
             ].map((feature, i) => (
               <div
                 key={i}
-                className={`premium-card group animate-fade-in hover:scale-105 transition-all duration-500 ${feature.bgPattern}`}
-                style={{ animationDelay: `${i * 0.1}s` }}
+                className="card-premium p-6 sm:p-8 text-center group hover:scale-105 hover:shadow-2xl animate-fade-in"
+                style={{ animationDelay: feature.delay }}
               >
-                <div className="relative">
-                  {/* Icon with enhanced effects */}
-                  <div className={`w-20 h-20 rounded-3xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl animate-glow-pulse`}>
-                    <feature.icon className="w-10 h-10 text-white" />
-                  </div>
-
-                  {/* Decorative elements */}
-                  <div className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 animate-bounce-gentle"></div>
-                  <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 animate-pulse"></div>
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-glow group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                  <feature.icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </div>
 
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-gray-800 transition-colors">
+                <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 group-hover:text-premium transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">{feature.desc}</p>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 sm:mb-8 group-hover:text-gray-700 transition-colors">{feature.desc}</p>
 
-                <div className={`inline-flex items-center text-sm font-semibold ${feature.textColor} group-hover:translate-x-2 transition-transform duration-300 cursor-pointer`}>
+                <div className="inline-flex items-center text-sm font-semibold text-primary hover:text-primary-hover cursor-pointer group-hover:translate-x-2 transition-all duration-300">
                   Learn more
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
 
-                {/* Bottom accent line */}
-                <div className={`mt-6 h-1 rounded-full bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                <div className="mt-6 sm:mt-8 h-1 rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             ))}
           </div>

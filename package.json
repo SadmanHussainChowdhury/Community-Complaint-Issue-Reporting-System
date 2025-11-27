@@ -12,45 +12,45 @@
     "create-users": "ts-node scripts/create-test-users.ts"
   },
   "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "next-auth": "^4.24.5",
-    "mongoose": "^8.3.0",
+    "@hookform/resolvers": "^3.3.4",
     "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.1",
     "cloudinary": "^1.41.0",
+    "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
+    "lucide-react": "^0.344.0",
+    "mongoose": "^8.3.0",
+    "next": "^14.2.0",
+    "next-auth": "^4.24.5",
+    "nodemailer": "^7.0.10",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0",
-    "zod": "^3.22.4",
-    "date-fns": "^3.3.1",
-    "recharts": "^2.12.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "react-hook-form": "^7.51.0",
-    "@hookform/resolvers": "^3.3.4",
     "react-hot-toast": "^2.4.1",
-    "lucide-react": "^0.344.0",
-    "clsx": "^2.1.0",
+    "recharts": "^2.12.0",
     "tailwind-merge": "^2.2.0",
-    "nodemailer": "^7.0.10"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.11.0",
+    "@types/nodemailer": "^6.4.16",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/nodemailer": "^6.4.16",
-    "typescript": "^5.3.3",
-    "tailwindcss": "^3.4.1",
-    "postcss": "^8.4.35",
     "autoprefixer": "^10.4.17",
+    "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
-    "ts-node": "^10.9.2",
     "glob": "^10.0.0",
-    "dotenv": "^16.4.5"
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": "24.x"
   },
   "packageManager": "npm@10.0.0"
 }
-
