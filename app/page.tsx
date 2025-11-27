@@ -30,6 +30,7 @@ import {
   Layers,
   Sparkles
 } from 'lucide-react'
+import { HeroSection } from '@/components/ui'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -95,53 +96,45 @@ export default async function Home() {
         </div>
       </nav>
 
-      {/* Ultra-Premium Hero Section */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
-        {/* Premium Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/50 to-white">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }}></div>
-        </div>
+      {/* Ultra-Premium Hero Section with Cover Photo */}
+      <HeroSection
+        coverPhoto="https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+        title="Professional Community Management"
+        subtitle="Transform your community with our enterprise-grade complaint management platform. Streamline operations, boost resident satisfaction, and resolve issues faster than ever."
+        ctaText="Start Free Trial"
+        ctaLink="/auth/register"
+        features={[
+          {
+            icon: <Shield className="w-5 h-5" />,
+            title: "Enterprise Security",
+            description: "Bank-grade encryption & GDPR compliance"
+          },
+          {
+            icon: <Activity className="w-5 h-5" />,
+            title: "Real-time Updates",
+            description: "Live status tracking & instant notifications"
+          },
+          {
+            icon: <Users className="w-5 h-5" />,
+            title: "Multi-Role Access",
+            description: "Admin, Staff & Resident dashboards"
+          }
+        ]}
+      />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center animate-fade-in">
-            {/* Premium Trust Badge */}
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-success/10 to-success/5 border border-success/20 mb-12 shadow-sm">
+      {/* Trust Indicators & Stats */}
+      <section className="relative -mt-16 z-10 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Premium Trust Badge */}
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-success/10 to-success/5 border border-success/20 mb-8 shadow-sm backdrop-blur-sm">
               <div className="w-3 h-3 rounded-full bg-success animate-pulse"></div>
               <span className="text-sm font-semibold text-success">Trusted by 10,000+ Communities Worldwide</span>
               <Star className="w-5 h-5 text-yellow-500 fill-current" />
             </div>
 
-            {/* Ultra-Premium Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 leading-tight animate-slide-up text-center">
-              <span className="text-premium animate-text-glow">Professional</span>
-              <br className="hidden sm:block" />
-              <span className="text-gray-900"> Community</span>
-              <br className="hidden sm:block" />
-              <span className="text-premium animate-text-glow" style={{ animationDelay: '0.4s' }}> Management</span>
-            </h1>
-
-            {/* Enhanced Subheadline */}
-            <p className="text-xl md:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              Transform your community with our enterprise-grade complaint management platform.
-              Streamline operations, boost resident satisfaction, and resolve issues faster than ever.
-            </p>
-
-            {/* Premium CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              <Link href="/auth/register" className="btn-primary btn-lg group">
-                Start Free Trial
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="#demo" className="btn-secondary text-lg px-12 py-6">
-                Watch Demo
-                <Target className="w-5 h-5 ml-3 inline" />
-              </Link>
-            </div>
-
             {/* Social Proof */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-600">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-sm text-gray-600 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
                 <span className="font-semibold">14-day free trial</span>
@@ -158,7 +151,7 @@ export default async function Home() {
           </div>
 
           {/* Premium Stats Cards */}
-          <div className="mt-20 sm:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             {[
               { value: '10K+', label: 'Communities', icon: Building, color: 'from-primary to-accent' },
               { value: '500K+', label: 'Complaints Resolved', icon: CheckCircle2, color: 'from-success to-emerald-500' },
@@ -168,7 +161,7 @@ export default async function Home() {
               <div
                 key={i}
                 className="card-premium p-4 sm:p-6 lg:p-8 text-center group hover:scale-105 animate-fade-in"
-                style={{ animationDelay: `${i * 0.1}s` }}
+                style={{ animationDelay: `${0.6 + i * 0.1}s` }}
               >
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-glow group-hover:scale-110 transition-transform duration-300`}>
                   <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
