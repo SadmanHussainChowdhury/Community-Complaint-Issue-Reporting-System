@@ -2,6 +2,9 @@ import { IComplaint, IUser } from '@/types'
 import { UserRole } from '@/types/enums'
 import StaffAssignment from '@/components/admin/StaffAssignment'
 import StatusUpdate from '@/components/admin/StatusUpdate'
+import connectDB from '@/lib/mongodb'
+import Complaint from '@/models/Complaint'
+import User from '@/models/User'
 import {
   Users,
   UserCheck,
@@ -12,22 +15,21 @@ import {
   Award
 } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getComplaints(): Promise<IComplaint[]> {
   try {
-    const res = await fetch(process.env.NEXTAUTH_URL + '/api/complaints', {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    await connectDB()
 
-    if (!res.ok) {
-      console.error('Failed to fetch complaints')
-      return []
-    }
+    const complaints = await Complaint.find({})
+      .populate('submittedBy', 'name email')
+      .populate('assignedTo', 'name email')
+      .sort({ createdAt: -1 })
+      .lean()
 
-    const data = await res.json()
-    return data.data?.complaints || []
+    console.log('Server-side: Found', complaints.length, 'complaints')
+    return complaints as IComplaint[]
   } catch (error) {
     console.error('Error fetching complaints:', error)
     return []
@@ -36,20 +38,13 @@ async function getComplaints(): Promise<IComplaint[]> {
 
 async function getStaffMembers(): Promise<IUser[]> {
   try {
-    const res = await fetch(process.env.NEXTAUTH_URL + '/api/users?role=staff', {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    await connectDB()
 
-    if (!res.ok) {
-      console.error('Failed to fetch staff members')
-      return []
-    }
+    const staffMembers = await User.find({ role: UserRole.STAFF })
+      .select('name email')
+      .lean()
 
-    const data = await res.json()
-    return data.data?.users || []
+    return staffMembers as IUser[]
   } catch (error) {
     console.error('Error fetching staff members:', error)
     return []
