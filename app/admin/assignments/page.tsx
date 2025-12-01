@@ -1,6 +1,8 @@
 import AssignmentsTable from '@/components/admin/AssignmentsTable'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getAssignments(page: number = 1, limit: number = 10) {
   try {
     const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/assignments?page=${page}&limit=${limit}`, {

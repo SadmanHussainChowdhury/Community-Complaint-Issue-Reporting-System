@@ -1,6 +1,8 @@
 import UsersTable from '@/components/admin/UsersTable'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getUsers(page: number = 1, limit: number = 10) {
   try {
     const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/users?page=${page}&limit=${limit}`, {

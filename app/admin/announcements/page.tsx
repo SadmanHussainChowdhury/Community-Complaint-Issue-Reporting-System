@@ -1,6 +1,8 @@
 import AnnouncementsTable from '@/components/admin/AnnouncementsTable'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function getAnnouncements(page: number = 1, limit: number = 10) {
   try {
     const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/announcements?page=${page}&limit=${limit}`, {
