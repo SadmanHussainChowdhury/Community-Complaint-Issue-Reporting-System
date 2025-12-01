@@ -55,7 +55,8 @@ export default function AnnouncementsTable({
         totalItems={initialTotal}
         itemsPerPage={initialLimit}
         onPageChange={handlePageChange}
-        className="bg-white rounded-lg shadow-md"
+        showPageJump={initialTotal > 100}
+        className="border-0 shadow-2xl bg-gradient-to-br from-white via-slate-50 to-white"
       />
     </div>
   )
