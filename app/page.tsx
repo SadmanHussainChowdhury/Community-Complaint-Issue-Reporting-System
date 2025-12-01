@@ -32,6 +32,9 @@ import {
 } from 'lucide-react'
 import { HeroSection } from '@/components/ui'
 
+// Prevent static generation since this page has authentication logic
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const session = await getServerSession(authOptions)
 

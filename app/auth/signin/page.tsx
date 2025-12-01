@@ -1,13 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+
+// Prevent static generation for this page
+export const dynamic = 'force-dynamic'
+
+function SignInPage() {
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { Mail, Lock, Loader2, Eye, EyeOff, Shield, Sparkles, Users, Building } from 'lucide-react'
 
-export default function SignInPage() {
+// export default function SignInPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -204,4 +209,6 @@ export default function SignInPage() {
     </div>
   )
 }
+
+export default SignInPage
 
