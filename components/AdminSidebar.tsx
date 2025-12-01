@@ -51,21 +51,6 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         </div>
       </div>
 
-      {/* User Info */}
-      <div className="px-6 py-4 border-b border-gray-800">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-            <span className="text-sm font-semibold">
-              {user.name?.charAt(0).toUpperCase() || 'A'}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user.name}</p>
-            <p className="text-xs text-gray-400 truncate">{user.email}</p>
-          </div>
-        </div>
-      </div>
-
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
