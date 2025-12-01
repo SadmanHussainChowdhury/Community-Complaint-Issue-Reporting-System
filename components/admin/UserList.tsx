@@ -288,11 +288,12 @@ function EditUserModal({ user, onSave, onCancel, loading }: {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Only include password if it's not empty
-    const dataToSave = { ...formData }
-    if (!formData.password.trim()) {
-      delete dataToSave.password
+    const { password, ...dataToSave } = formData
+    if (password.trim()) {
+      onSave({ ...dataToSave, password })
+    } else {
+      onSave(dataToSave)
     }
-    onSave(dataToSave)
   }
 
   return (
