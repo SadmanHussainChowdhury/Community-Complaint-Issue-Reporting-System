@@ -24,6 +24,9 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const status = searchParams.get('status')
     const assignedTo = searchParams.get('assignedTo')
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const skip = (page - 1) * limit
 
     let query: Record<string, unknown> = {}
 
@@ -36,16 +39,25 @@ export async function GET(req: NextRequest) {
 
     if (status) query.status = status
 
+    const total = await Assignment.countDocuments(query)
+
     const assignments = await Assignment.find(query)
       .populate('complaint')
       .populate('assignedTo', 'name email')
       .populate('assignedBy', 'name email')
       .sort({ assignedAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean()
 
-    return NextResponse.json<ApiResponse<{ assignments: IAssignment[] }>>({
+    return NextResponse.json<ApiResponse<{ assignments: IAssignment[]; total: number; page: number; limit: number }>>({
       success: true,
-      data: { assignments },
+      data: {
+        assignments,
+        total,
+        page,
+        limit
+      },
     })
   } catch (error) {
     console.error('Error fetching assignments:', error)

@@ -6,9 +6,10 @@ import { Pin, Calendar, User, Trash2, Edit } from 'lucide-react'
 
 interface AnnouncementListProps {
   announcements: IAnnouncement[]
+  onAnnouncementsChange?: (announcements: IAnnouncement[]) => void
 }
 
-export default function AnnouncementList({ announcements: initialAnnouncements }: AnnouncementListProps) {
+export default function AnnouncementList({ announcements: initialAnnouncements, onAnnouncementsChange }: AnnouncementListProps) {
   const [announcements, setAnnouncements] = useState(initialAnnouncements)
 
   return (

@@ -7,6 +7,7 @@ import { Search, User, Mail, Phone, Building, Shield, Users, UserCheck, Edit, Tr
 
 interface UserListProps {
   users: IUser[]
+  onUsersChange?: (users: IUser[]) => void
 }
 
 const roleIcons = {
@@ -21,7 +22,7 @@ const roleColors = {
   [UserRole.RESIDENT]: 'bg-green-100 text-green-800',
 }
 
-export default function UserList({ users: initialUsers }: UserListProps) {
+export default function UserList({ users: initialUsers, onUsersChange }: UserListProps) {
   const [users, setUsers] = useState(initialUsers)
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('')
@@ -56,7 +57,9 @@ export default function UserList({ users: initialUsers }: UserListProps) {
       })
 
       if (res.ok) {
-        setUsers(users.filter(u => u._id !== deletingUser._id))
+        const updatedUsers = users.filter(u => u._id !== deletingUser._id)
+        setUsers(updatedUsers)
+        onUsersChange?.(updatedUsers)
         setDeletingUser(null)
         // You could add a toast notification here
       } else {
@@ -85,7 +88,9 @@ export default function UserList({ users: initialUsers }: UserListProps) {
 
       if (res.ok) {
         const data = await res.json()
-        setUsers(users.map(u => u._id === editingUser._id ? data.data.user : u))
+        const updatedUsers = users.map(u => u._id === editingUser._id ? data.data.user : u)
+        setUsers(updatedUsers)
+        onUsersChange?.(updatedUsers)
         setEditingUser(null)
         // You could add a toast notification here
       } else {

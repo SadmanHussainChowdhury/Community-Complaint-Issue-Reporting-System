@@ -47,7 +47,9 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url)
     const isPinned = searchParams.get('isPinned')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const skip = (page - 1) * limit
 
     let query: Record<string, unknown> = {}
 
@@ -82,9 +84,12 @@ export async function GET(req: NextRequest) {
       console.log('⚠️ No user role found, using expiration filtering only')
     }
 
+    const total = await Announcement.countDocuments(query)
+
     const announcements = await Announcement.find(query)
       .populate('createdBy', 'name email')
       .sort({ isPinned: -1, createdAt: -1 })
+      .skip(skip)
       .limit(limit)
       .lean()
 
@@ -97,9 +102,14 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    return jsonResponse<{ announcements: IAnnouncement[] }>({
+    return jsonResponse<{ announcements: IAnnouncement[]; total: number; page: number; limit: number }>({
       success: true,
-      data: { announcements },
+      data: {
+        announcements,
+        total,
+        page,
+        limit
+      },
     })
   } catch (error) {
     console.error('Error fetching announcements:', error)

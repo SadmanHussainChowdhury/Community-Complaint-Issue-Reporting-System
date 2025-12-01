@@ -20,6 +20,9 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const role = searchParams.get('role')
     const isActive = searchParams.get('isActive')
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const skip = (page - 1) * limit
 
     let query: Record<string, unknown> = {}
 
@@ -29,11 +32,20 @@ export async function GET(req: NextRequest) {
     const users = await User.find(query)
       .select('-password')
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean()
 
-    return NextResponse.json<ApiResponse<{ users: IUser[] }>>({
+    const total = await User.countDocuments(query)
+
+    return NextResponse.json<ApiResponse<{ users: IUser[]; total: number; page: number; limit: number }>>({
       success: true,
-      data: { users },
+      data: {
+        users,
+        total,
+        page,
+        limit
+      },
     })
   } catch (error) {
     console.error('Error fetching users:', error)

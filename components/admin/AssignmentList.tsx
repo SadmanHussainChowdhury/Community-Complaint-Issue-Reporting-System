@@ -6,6 +6,7 @@ import { Calendar, User, Clock, CheckCircle, XCircle } from 'lucide-react'
 
 interface AssignmentListProps {
   assignments: IAssignment[]
+  onAssignmentsChange?: (assignments: IAssignment[]) => void
 }
 
 const statusColors = {
@@ -14,7 +15,7 @@ const statusColors = {
   cancelled: 'bg-red-100 text-red-800',
 }
 
-export default function AssignmentList({ assignments: initialAssignments }: AssignmentListProps) {
+export default function AssignmentList({ assignments: initialAssignments, onAssignmentsChange }: AssignmentListProps) {
   const [assignments] = useState(initialAssignments)
 
   return (
