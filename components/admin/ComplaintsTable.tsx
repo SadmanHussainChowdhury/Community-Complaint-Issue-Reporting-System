@@ -150,7 +150,7 @@ export default function ComplaintsTable({
                           </p>
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
-                              <User className="w-4 h-4" />
+                              <UserIcon className="w-4 h-4" />
                               <span>{submittedBy?.name || 'Unknown'}</span>
                             </div>
                             <span>{complaint.category.replace('_', ' ')}</span>
