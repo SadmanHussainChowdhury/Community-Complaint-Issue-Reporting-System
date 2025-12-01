@@ -9,7 +9,7 @@ import {
   Users,
   UserCheck,
   ClipboardList,
-  User,
+  User as UserIcon,
   Zap,
   Target,
   Award
@@ -152,7 +152,7 @@ export default async function AdminComplaintsPage() {
                               </p>
                               <div className="flex items-center gap-4 text-sm text-gray-500">
                                 <div className="flex items-center gap-1">
-                                  <User className="w-4 h-4" />
+                                  <UserIcon className="w-4 h-4" />
                                   <span>{submittedBy?.name || 'Unknown'}</span>
                                 </div>
                                 <span>{complaint.category.replace('_', ' ')}</span>
@@ -208,7 +208,7 @@ export default async function AdminComplaintsPage() {
                               className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
                               title="View Details"
                             >
-                              <User className="w-4 h-4" />
+                              <UserIcon className="w-4 h-4" />
                             </a>
                           </div>
                         </td>
