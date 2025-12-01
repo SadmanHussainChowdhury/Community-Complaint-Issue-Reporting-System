@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
-    const debugInfo = {
+    const debugInfo: any = {
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV,
       hasSession: !!session,
@@ -55,8 +55,7 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     return jsonResponse({
       success: false,
-      error: 'Debug failed',
-      details: error.message
+      error: `Debug failed: ${error.message}`
     }, 500)
   }
 }
