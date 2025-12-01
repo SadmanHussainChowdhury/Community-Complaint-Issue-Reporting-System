@@ -25,7 +25,7 @@ export default function Navbar() {
   const getDashboardLink = () => {
     switch (session.user.role) {
       case UserRole.ADMIN:
-        return '/admin/dashboard'
+        return '/admin/complaints'
       case UserRole.STAFF:
         return '/staff/dashboard'
       case UserRole.RESIDENT:

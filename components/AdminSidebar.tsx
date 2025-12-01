@@ -4,7 +4,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import {
-  LayoutDashboard,
   ClipboardList,
   Users,
   Bell,
@@ -21,7 +20,6 @@ interface AdminSidebarProps {
 }
 
 const menuItems = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/announcements', label: 'Announcements', icon: Bell },

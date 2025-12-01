@@ -39,7 +39,7 @@ export default async function Home() {
   if (session) {
     switch (session.user.role) {
       case UserRole.ADMIN:
-        redirect('/admin/dashboard')
+        redirect('/admin/complaints')
       case UserRole.STAFF:
         redirect('/staff/dashboard')
       case UserRole.RESIDENT:

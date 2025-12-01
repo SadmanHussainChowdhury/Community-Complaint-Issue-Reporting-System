@@ -239,7 +239,8 @@
 
   /* Premium Focus Styles */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(255, 255, 255, 1);
     --tw-ring-color: var(--color-primary);
   }
 

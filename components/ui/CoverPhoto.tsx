@@ -185,23 +185,6 @@ export function HeroSection({
         className="rounded-none"
       />
 
-      {/* CTA Button Overlay */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce-in" style={{ animationDelay: '1.2s' }}>
-        <a
-          href={ctaLink}
-          className="btn-primary btn-lg group shadow-2xl hover:shadow-premium transform hover:scale-105 transition-all duration-300"
-        >
-          {ctaText}
-          <svg
-            className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </a>
-      </div>
 
       {/* Features Preview */}
       {features && (
