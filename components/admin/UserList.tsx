@@ -277,6 +277,7 @@ function EditUserModal({ user, onSave, onCancel, loading }: {
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
+    password: '',
     role: user.role,
     phone: user.phone || '',
     apartment: user.apartment || '',
@@ -286,7 +287,12 @@ function EditUserModal({ user, onSave, onCancel, loading }: {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSave(formData)
+    // Only include password if it's not empty
+    const dataToSave = { ...formData }
+    if (!formData.password.trim()) {
+      delete dataToSave.password
+    }
+    onSave(dataToSave)
   }
 
   return (
@@ -312,6 +318,16 @@ function EditUserModal({ user, onSave, onCancel, loading }: {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">New Password (leave empty to keep current)</label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter new password"
             />
           </div>
           <div>
