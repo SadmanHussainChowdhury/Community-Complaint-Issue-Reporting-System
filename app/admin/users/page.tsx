@@ -1,32 +1,40 @@
 import UsersTable from '@/components/admin/UsersTable'
 import Link from 'next/link'
+import connectDB from '@/lib/mongodb'
+import User from '@/models/User'
+import { IUser } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
-async function getUsers(page: number = 1, limit: number = 10) {
+async function getUsers(page: number = 1, limit: number = 10): Promise<{ users: IUser[]; total: number; page: number; limit: number }> {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/users?page=${page}&limit=${limit}`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    await connectDB()
 
-    if (!res.ok) {
-      console.error('Failed to fetch users')
-      return { users: [], total: 0, page, limit }
-    }
+    const skip = (page - 1) * limit
+    const total = await User.countDocuments({})
 
-    const data = await res.json()
+    const users = await User.find({})
+      .select('-password') // Exclude password field
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+
+    console.log('Server-side: Found', users.length, 'users (page', page, 'of', Math.ceil(total / limit), ')')
     return {
-      users: data.data.users || [],
-      total: data.data.total || 0,
-      page: data.data.page || page,
-      limit: data.data.limit || limit
+      users: users as IUser[],
+      total,
+      page,
+      limit
     }
   } catch (error) {
     console.error('Error fetching users:', error)
-    return { users: [], total: 0, page, limit }
+    return {
+      users: [],
+      total: 0,
+      page,
+      limit
+    }
   }
 }
 

@@ -1,32 +1,42 @@
 import AssignmentsTable from '@/components/admin/AssignmentsTable'
 import Link from 'next/link'
+import connectDB from '@/lib/mongodb'
+import Assignment from '@/models/Assignment'
+import { IAssignment } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
-async function getAssignments(page: number = 1, limit: number = 10) {
+async function getAssignments(page: number = 1, limit: number = 10): Promise<{ assignments: IAssignment[]; total: number; page: number; limit: number }> {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/assignments?page=${page}&limit=${limit}`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    await connectDB()
 
-    if (!res.ok) {
-      console.error('Failed to fetch assignments')
-      return { assignments: [], total: 0, page, limit }
-    }
+    const skip = (page - 1) * limit
+    const total = await Assignment.countDocuments({})
 
-    const data = await res.json()
+    const assignments = await Assignment.find({})
+      .populate('complaint')
+      .populate('assignedTo', 'name email')
+      .populate('assignedBy', 'name email')
+      .sort({ assignedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+
+    console.log('Server-side: Found', assignments.length, 'assignments (page', page, 'of', Math.ceil(total / limit), ')')
     return {
-      assignments: data.data.assignments || [],
-      total: data.data.total || 0,
-      page: data.data.page || page,
-      limit: data.data.limit || limit
+      assignments: assignments as IAssignment[],
+      total,
+      page,
+      limit
     }
   } catch (error) {
     console.error('Error fetching assignments:', error)
-    return { assignments: [], total: 0, page, limit }
+    return {
+      assignments: [],
+      total: 0,
+      page,
+      limit
+    }
   }
 }
 

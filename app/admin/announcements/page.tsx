@@ -1,32 +1,40 @@
 import AnnouncementsTable from '@/components/admin/AnnouncementsTable'
 import Link from 'next/link'
+import connectDB from '@/lib/mongodb'
+import Announcement from '@/models/Announcement'
+import { IAnnouncement } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
-async function getAnnouncements(page: number = 1, limit: number = 10) {
+async function getAnnouncements(page: number = 1, limit: number = 10): Promise<{ announcements: IAnnouncement[]; total: number; page: number; limit: number }> {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/announcements?page=${page}&limit=${limit}`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    await connectDB()
 
-    if (!res.ok) {
-      console.error('Failed to fetch announcements')
-      return { announcements: [], total: 0, page, limit }
-    }
+    const skip = (page - 1) * limit
+    const total = await Announcement.countDocuments({})
 
-    const data = await res.json()
+    const announcements = await Announcement.find({})
+      .populate('createdBy', 'name email')
+      .sort({ isPinned: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+
+    console.log('Server-side: Found', announcements.length, 'announcements (page', page, 'of', Math.ceil(total / limit), ')')
     return {
-      announcements: data.data.announcements || [],
-      total: data.data.total || 0,
-      page: data.data.page || page,
-      limit: data.data.limit || limit
+      announcements: announcements as IAnnouncement[],
+      total,
+      page,
+      limit
     }
   } catch (error) {
     console.error('Error fetching announcements:', error)
-    return { announcements: [], total: 0, page, limit }
+    return {
+      announcements: [],
+      total: 0,
+      page,
+      limit
+    }
   }
 }
 
