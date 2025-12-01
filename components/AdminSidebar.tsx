@@ -20,11 +20,12 @@ interface AdminSidebarProps {
 }
 
 const menuItems = [
+  { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/announcements', label: 'Announcements', icon: Bell },
-  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/admin/assignments', label: 'Assignments', icon: UserCheck },
+  { href: '/admin/analytics', label: 'Analytics', icon: TrendingUp },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 

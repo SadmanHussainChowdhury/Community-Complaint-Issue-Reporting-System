@@ -25,7 +25,7 @@ export default function Navbar() {
   const getDashboardLink = () => {
     switch (session.user.role) {
       case UserRole.ADMIN:
-        return '/admin/complaints'
+        return '/admin/dashboard'
       case UserRole.STAFF:
         return '/staff/dashboard'
       case UserRole.RESIDENT:
@@ -93,13 +93,13 @@ export default function Navbar() {
             
             {session.user.role === UserRole.ADMIN && (
               <>
-                <Link
-                  href="/admin/complaints"
-                  className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>Complaints</span>
-                </Link>
+        <Link
+          href="/admin/dashboard"
+          className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
+        >
+          <LayoutDashboard className="w-4 h-4" />
+          <span>Dashboard</span>
+        </Link>
                 <Link
                   href="/admin/users"
                   className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all"
@@ -173,7 +173,7 @@ export default function Navbar() {
             )}
             {session.user.role === UserRole.ADMIN && (
               <>
-                <Link href="/admin/complaints" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Complaints</Link>
+                <Link href="/admin/dashboard" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
                 <Link href="/admin/users" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Users</Link>
                 <Link href="/admin/announcements" className="block px-4 py-3 rounded-xl text-gray-700 hover:bg-white/50 font-semibold" onClick={() => setMobileMenuOpen(false)}>Announcements</Link>
               </>
