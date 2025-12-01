@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 async function getComplaints(page: number = 1, limit: number = 10): Promise<{ complaints: IComplaint[]; total: number; page: number; limit: number }> {
-  try {
+    try {
     await connectDB()
 
     const skip = (page - 1) * limit
@@ -29,8 +29,8 @@ async function getComplaints(page: number = 1, limit: number = 10): Promise<{ co
       total,
       page,
       limit
-    }
-  } catch (error) {
+      }
+    } catch (error) {
     console.error('Error fetching complaints:', error)
     return {
       complaints: [],
@@ -50,19 +50,19 @@ async function getStaffMembers(): Promise<IUser[]> {
       .lean()
 
     return staffMembers as IUser[]
-  } catch (error) {
+    } catch (error) {
     console.error('Error fetching staff members:', error)
     return []
+    }
   }
-}
 
 export default async function AdminComplaintsPage() {
   const complaintsData = await getComplaints(1, 10)
   const staffMembers = await getStaffMembers()
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <ComplaintsTable
           initialComplaints={complaintsData.complaints}
           initialStaff={staffMembers}

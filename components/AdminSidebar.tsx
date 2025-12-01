@@ -12,6 +12,7 @@ import {
   Shield,
   BarChart3,
   UserCheck,
+  TrendingUp,
 } from 'lucide-react'
 import { SessionUser } from '@/types'
 
