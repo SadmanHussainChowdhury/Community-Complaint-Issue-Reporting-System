@@ -71,12 +71,8 @@ export default async function Home() {
                 Pricing
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <Link href="/auth/signin" className="text-gray-700 hover:text-primary transition-all duration-200 font-medium">
-                Sign In
-              </Link>
-              <Link href="/auth/register" className="btn-primary animate-bounce-in">
-                Get Started Free
-                <ArrowRight className="w-4 h-4 ml-2" />
+              <Link href="/auth/signin" className="btn-primary animate-bounce-in">
+                Login
               </Link>
             </div>
             {/* Mobile Menu Button */}
@@ -96,8 +92,8 @@ export default async function Home() {
         coverPhoto="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
         title="Professional Community Management"
         subtitle="Transform your community with our enterprise-grade complaint management platform. Streamline operations, boost resident satisfaction, and resolve issues faster than ever."
-        ctaText="Start Free Trial"
-        ctaLink="/auth/register"
+        ctaText="Login to Dashboard"
+        ctaLink="/auth/signin"
         features={[
           {
             icon: <Shield className="w-5 h-5" />,
