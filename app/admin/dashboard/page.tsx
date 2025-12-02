@@ -251,12 +251,12 @@ export default async function AdminDashboard() {
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600 mb-1">Total Users</p>
-                <p className="text-3xl font-bold text-blue-900">{data.stats.totalUsers.toLocaleString()}</p>
+                <p className="text-sm font-medium text-blue-600 mb-1">Total Residents</p>
+                <p className="text-3xl font-bold text-blue-900">{data.stats.residentCount.toLocaleString()}</p>
                 <div className="flex items-center mt-2">
                   <Users className="w-4 h-4 text-blue-600 mr-1" />
                   <span className="text-xs text-blue-600">
-                    {data.stats.staffCount} staff, {data.stats.residentCount} residents
+                    Community residents
                   </span>
                 </div>
               </div>
