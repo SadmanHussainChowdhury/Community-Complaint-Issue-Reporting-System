@@ -199,7 +199,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
   }
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white">
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white flex flex-col">
       {/* Logo */}
       <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
         <div className="flex items-center space-x-3">
@@ -239,8 +239,8 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         })}
       </nav>
 
-      {/* Compact Admin User Section */}
-      <div className="relative" ref={dropdownRef}>
+      {/* Admin User Section - Bottom of Sidebar */}
+      <div className="relative mt-auto" ref={dropdownRef}>
         <div
           className="px-4 py-3 border-t border-gray-800 cursor-pointer hover:bg-gray-800 transition-colors"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
