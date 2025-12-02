@@ -298,6 +298,13 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
                     <Edit className="w-4 h-4" />
                     <span>Edit Profile</span>
                   </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
                 </div>
               </div>
             ) : (
