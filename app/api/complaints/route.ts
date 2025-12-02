@@ -61,6 +61,7 @@ export async function GET(req: NextRequest) {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search')
     const status = searchParams.get('status')
     const priority = searchParams.get('priority')
     const category = searchParams.get('category')
@@ -81,10 +82,33 @@ export async function GET(req: NextRequest) {
       query.assignedTo = userId
     }
 
+    // Search functionality
+    if (search) {
+      const searchConditions: Record<string, unknown>[] = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ]
+
+      // Also search in submittedBy user data
+      const userQuery = await User.find({
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      }).select('_id')
+
+      const userIds = userQuery.map(user => user._id)
+      if (userIds.length > 0) {
+        searchConditions.push({ submittedBy: { $in: userIds } })
+      }
+
+      query.$or = searchConditions
+    }
+
     // Additional filters
-    if (status) query.status = status
-    if (priority) query.priority = priority
-    if (category) query.category = category
+    if (status && status !== 'all') query.status = status
+    if (priority && priority !== 'all') query.priority = priority
+    if (category && category !== 'all') query.category = category
     if (assignedTo) query.assignedTo = assignedTo
 
     const complaints = await Complaint.find(query)
