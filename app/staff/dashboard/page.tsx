@@ -43,7 +43,7 @@ import {
 } from 'lucide-react'
 
 export default function StaffDashboard() {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const router = useRouter()
   const [complaints, setComplaints] = useState<IComplaint[]>([])
   const [announcements, setAnnouncements] = useState<IAnnouncement[]>([])
@@ -60,23 +60,23 @@ export default function StaffDashboard() {
       else setLoading(true)
 
       // Fetch assigned complaints
-      const complaintsRes = await fetch(`/api/complaints?assignedTo=${session.user.id}`, {
-        credentials: 'include'
-      })
+      const complaintsRes = await fetch(`/api/complaints?assignedTo=${session.user.id}`)
 
       if (complaintsRes.ok) {
         const complaintsData = await complaintsRes.json()
         setComplaints(complaintsData.data?.complaints || [])
+      } else {
+        console.error('Failed to fetch complaints:', complaintsRes.status)
       }
 
       // Fetch announcements
-      const announcementsRes = await fetch('/api/announcements?limit=5', {
-        credentials: 'include'
-      })
+      const announcementsRes = await fetch('/api/announcements?limit=5')
 
       if (announcementsRes.ok) {
         const announcementsData = await announcementsRes.json()
         setAnnouncements(announcementsData.data?.announcements || [])
+      } else {
+        console.error('Failed to fetch announcements:', announcementsRes.status)
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -91,15 +91,8 @@ export default function StaffDashboard() {
   }
 
   useEffect(() => {
-    if (status === 'loading') return
-
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
-
     fetchData()
-  }, [session, status, router, fetchData])
+  }, [fetchData])
 
   const updateComplaintStatus = async (complaintId: string, newStatus: string) => {
     setUpdatingStatus(complaintId)

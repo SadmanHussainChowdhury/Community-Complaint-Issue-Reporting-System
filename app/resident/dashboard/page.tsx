@@ -1,124 +1,109 @@
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth-options'
-import { UserRole } from '@/types/enums'
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import ComplaintCard from '@/components/ComplaintCard'
 import StatsCard from '@/components/StatsCard'
-import { ClipboardList, Clock, CheckCircle, AlertCircle, Bell, Pin } from 'lucide-react'
+import { ClipboardList, Clock, CheckCircle, AlertCircle, Bell, Pin, Loader2 } from 'lucide-react'
 import { IComplaint, IAnnouncement } from '@/types'
 import Link from 'next/link'
 
-async function getComplaints() {
-  const session = await getServerSession(authOptions)
-  if (!session) return { complaints: [], stats: null }
+export default function ResidentDashboard() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const [complaints, setComplaints] = useState<IComplaint[]>([])
+  const [announcements, setAnnouncements] = useState<IAnnouncement[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  try {
-    // For server-side rendering, we need to construct the full URL
-    const baseUrl = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production'
-      ? 'https://community-complaint-issue-reporting.vercel.app'
-      : 'http://localhost:3002')
+  const fetchData = useCallback(async () => {
+    if (!session?.user) return
 
-    const res = await fetch(`${baseUrl}/api/complaints`, {
-    headers: {
-        'Content-Type': 'application/json',
-        // Pass session info for server-side API calls
-        'x-user-id': session.user.id,
-        'x-user-role': session.user.role,
-    },
-    cache: 'no-store',
-  })
+    try {
+      setLoading(true)
+      setError(null)
 
-    if (!res.ok) {
-      console.error('Complaints API failed:', res.status, res.statusText)
-      return { complaints: [], stats: null }
+      // Fetch complaints
+      const complaintsRes = await fetch('/api/complaints')
+      if (complaintsRes.ok) {
+        const complaintsData = await complaintsRes.json()
+        setComplaints(complaintsData.data?.complaints || [])
+      } else {
+        setError('Failed to load complaints')
+      }
+
+      // Fetch announcements
+      const announcementsRes = await fetch('/api/announcements?limit=5')
+      if (announcementsRes.ok) {
+        const announcementsData = await announcementsRes.json()
+        setAnnouncements(announcementsData.data?.announcements || [])
+      } else {
+        setError('Failed to load announcements')
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setError('Failed to load dashboard data')
+    } finally {
+      setLoading(false)
+    }
+  }, [session])
+
+  useEffect(() => {
+    if (status === 'loading') return
+
+    if (!session) {
+      router.push('/auth/signin')
+      return
     }
 
-    // Check if response is JSON
-    const contentType = res.headers.get('content-type')
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('Complaints API returned non-JSON response:', contentType)
-      return { complaints: [], stats: null }
-    }
-
-  const data = await res.json()
-  return { complaints: data.data?.complaints || [], stats: data.data?.stats || null }
-  } catch (error) {
-    console.error('Error fetching complaints:', error)
-    return { complaints: [], stats: null }
-  }
-}
-
-async function getAnnouncements() {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-    console.log('❌ No session found for announcements')
-    return { announcements: [] }
-  }
-
-  console.log('🔍 Resident dashboard fetching announcements for user:', session.user.id, 'role:', session.user.role)
-
-  try {
-    // For server-side rendering, we need to construct the full URL
-    const baseUrl = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production'
-      ? 'https://community-complaint-issue-reporting.vercel.app'
-      : 'http://localhost:3002')
-
-    console.log('🌐 Making API call to:', `${baseUrl}/api/announcements?limit=5`)
-
-    const res = await fetch(`${baseUrl}/api/announcements?limit=5`, {
-      headers: {
-        'Content-Type': 'application/json',
-        // Pass session info for server-side API calls
-        'x-user-id': session.user.id,
-        'x-user-role': session.user.role,
-      },
-      cache: 'no-store',
-    })
-
-    if (!res.ok) {
-      console.error('❌ Announcements API failed:', res.status, res.statusText)
-      return { announcements: [] }
-    }
-
-    // Check if response is JSON
-    const contentType = res.headers.get('content-type')
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('❌ Announcements API returned non-JSON response:', contentType)
-      return { announcements: [] }
-    }
-
-    const data = await res.json()
-    const announcements = data.data?.announcements || []
-    console.log(`✅ Resident received ${announcements.length} announcements`)
-    return { announcements }
-  } catch (error) {
-    console.error('❌ Error fetching announcements:', error)
-    return { announcements: [] }
-  }
-}
-
-export default async function ResidentDashboard() {
-  const session = await getServerSession(authOptions)
-
-  if (!session || session.user.role !== UserRole.RESIDENT) {
-    redirect('/auth/signin')
-  }
-
-  const { complaints, stats } = await getComplaints()
-  const { announcements } = await getAnnouncements()
+    fetchData()
+  }, [session, status, router, fetchData])
 
   const pendingCount = complaints.filter((c: IComplaint) => c.status === 'pending').length
   const inProgressCount = complaints.filter((c: IComplaint) => c.status === 'in_progress').length
   const resolvedCount = complaints.filter((c: IComplaint) => c.status === 'resolved').length
+
+  if (status === 'loading' || loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-600" />
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return null // Will redirect
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-          <p className="mt-2 text-gray-600">View announcements and manage your submitted complaints</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
+              <p className="mt-2 text-gray-600">View announcements and manage your submitted complaints</p>
+            </div>
+            <button
+              onClick={fetchData}
+              disabled={loading}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <Loader2 className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-800">{error}</p>
+            </div>
+          )}
         </div>
 
         {/* Announcements Section */}
