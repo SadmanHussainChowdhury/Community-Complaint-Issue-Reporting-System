@@ -64,10 +64,10 @@ export default async function AdminComplaintsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-8 flex justify-between items-center">
-        <div>
+              <div>
           <h1 className="text-3xl font-bold text-gray-900">Complaint Management</h1>
           <p className="mt-2 text-gray-600">Manage and track community complaints</p>
-        </div>
+                  </div>
         <Link
           href="/admin/complaints/new"
           className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-flex items-center space-x-2"
@@ -75,7 +75,7 @@ export default async function AdminComplaintsPage() {
           <span>+</span>
           <span>New Complaint</span>
         </Link>
-      </div>
+                            </div>
 
       <ComplaintsTable
         initialComplaints={complaintsData.complaints}
