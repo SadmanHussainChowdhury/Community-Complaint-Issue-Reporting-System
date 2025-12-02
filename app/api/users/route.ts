@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search')
     const role = searchParams.get('role')
     const isActive = searchParams.get('isActive')
     const page = parseInt(searchParams.get('page') || '1')
@@ -25,6 +26,14 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit
 
     let query: Record<string, unknown> = {}
+
+    // Search functionality
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    }
 
     if (role) query.role = role
     if (isActive !== null) query.isActive = isActive === 'true'

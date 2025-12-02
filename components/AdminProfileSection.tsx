@@ -103,7 +103,6 @@ export default function AdminProfileSection({ user, onProfileUpdate }: AdminProf
       // Only include password if user wants to change it
       if (formData.newPassword) {
         updateData.password = formData.newPassword
-        updateData.currentPassword = formData.currentPassword
       }
 
       const response = await fetch(`/api/users/${user.id}`, {

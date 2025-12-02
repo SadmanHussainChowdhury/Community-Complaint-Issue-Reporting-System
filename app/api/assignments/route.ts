@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search')
     const status = searchParams.get('status')
     const assignedTo = searchParams.get('assignedTo')
     const page = parseInt(searchParams.get('page') || '1')
@@ -33,11 +34,40 @@ export async function GET(req: NextRequest) {
     // Staff can only see their own assignments
     if (session.user.role === UserRole.STAFF) {
       query.assignedTo = session.user.id
-    } else if (assignedTo) {
+    } else if (assignedTo && assignedTo !== 'all') {
       query.assignedTo = assignedTo
     }
 
-    if (status) query.status = status
+    // Search functionality
+    if (search) {
+      const searchConditions: Record<string, unknown>[] = []
+
+      // Search in complaint title
+      searchConditions.push({
+        complaint: {
+          $in: await Complaint.find({
+            title: { $regex: search, $options: 'i' }
+          }).select('_id')
+        }
+      })
+
+      // Search in assigned user name
+      const userQuery = await User.find({
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      }).select('_id')
+
+      const userIds = userQuery.map(user => user._id)
+      if (userIds.length > 0) {
+        searchConditions.push({ assignedTo: { $in: userIds } })
+      }
+
+      query.$or = searchConditions
+    }
+
+    if (status && status !== 'all') query.status = status
 
     const total = await Assignment.countDocuments(query)
 

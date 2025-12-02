@@ -2,12 +2,16 @@
 
 import { useState } from 'react'
 import { IAssignment } from '@/types'
-import { Calendar, User, Clock, CheckCircle, XCircle, Search, Filter, AlertTriangle } from 'lucide-react'
+import { Calendar, User, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface AssignmentListProps {
   assignments: IAssignment[]
   onAssignmentsChange?: (assignments: IAssignment[]) => void
+  onAssignmentSelect?: (assignmentId: string, selected: boolean) => void
+  onSelectAllAssignments?: (selected: boolean) => void
+  selectedAssignments?: string[]
+  loading?: boolean
 }
 
 const statusColors = {
@@ -22,56 +26,22 @@ const statusIcons = {
   cancelled: XCircle,
 }
 
-export default function AssignmentList({ assignments: initialAssignments, onAssignmentsChange }: AssignmentListProps) {
+export default function AssignmentList({
+  assignments: initialAssignments,
+  onAssignmentsChange,
+  onAssignmentSelect,
+  onSelectAllAssignments,
+  selectedAssignments = [],
+  loading = false
+}: AssignmentListProps) {
   const [assignments, setAssignments] = useState(initialAssignments)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('')
-
-  const filteredAssignments = assignments.filter((assignment) => {
-    const complaint = typeof assignment.complaint === 'object' ? assignment.complaint : null
-    const assignedTo = typeof assignment.assignedTo === 'object' ? assignment.assignedTo : null
-
-    const matchesSearch =
-      (complaint?.title && complaint.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (assignedTo?.name && assignedTo.name.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    const matchesStatus = !statusFilter || assignment.status === statusFilter
-
-    return matchesSearch && matchesStatus
-  })
 
   return (
     <div className="bg-white rounded-lg shadow-md">
-      {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search assignments..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            <option value="">All Status</option>
-            <option value="active">🔄 Active</option>
-            <option value="completed">✅ Completed</option>
-            <option value="cancelled">❌ Cancelled</option>
-          </select>
-        </div>
-      </div>
-
       {/* Assignments List */}
       <div className="p-6">
         <div className="space-y-4">
-          {filteredAssignments.length === 0 ? (
+          {assignments.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-gray-400" />
@@ -80,7 +50,7 @@ export default function AssignmentList({ assignments: initialAssignments, onAssi
               <p className="text-gray-500">Try adjusting your search or filter criteria</p>
             </div>
           ) : (
-            filteredAssignments.map((assignment) => {
+            assignments.map((assignment) => {
               const complaint = typeof assignment.complaint === 'object' ? assignment.complaint : null
               const assignedTo = typeof assignment.assignedTo === 'object' ? assignment.assignedTo : null
               const assignedBy = typeof assignment.assignedBy === 'object' ? assignment.assignedBy : null
@@ -92,6 +62,18 @@ export default function AssignmentList({ assignments: initialAssignments, onAssi
                   key={assignment._id}
                   className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30"
                 >
+                  {/* Selection Checkbox */}
+                  {onAssignmentSelect && (
+                    <div className="flex items-center mb-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedAssignments.includes(assignment._id)}
+                        onChange={(e) => onAssignmentSelect(assignment._id, e.target.checked)}
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      />
+                    </div>
+                  )}
+
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       {/* Complaint Title */}
@@ -179,9 +161,9 @@ export default function AssignmentList({ assignments: initialAssignments, onAssi
         </div>
       </div>
 
-      {filteredAssignments.length > 0 && (
+      {assignments.length > 0 && (
         <div className="px-6 py-4 border-t border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-b-lg">
-          Showing {filteredAssignments.length} of {assignments.length} assignments
+          Showing {assignments.length} of {assignments.length} assignments
         </div>
       )}
     </div>

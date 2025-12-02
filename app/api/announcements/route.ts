@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongodb'
 import Announcement from '@/models/Announcement'
+import User from '@/models/User'
 import ActivityLog from '@/models/ActivityLog'
 import { authOptions } from '@/lib/auth-options'
 import { UserRole } from '@/types/enums'
@@ -46,7 +47,9 @@ export async function GET(req: NextRequest) {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search')
     const isPinned = searchParams.get('isPinned')
+    const targetRole = searchParams.get('targetRole')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const skip = (page - 1) * limit
@@ -61,26 +64,65 @@ export async function GET(req: NextRequest) {
       ],
     }
 
-    if (isPinned === 'true') {
-      query.isPinned = true
+    // Search functionality
+    if (search) {
+      const searchConditions: Record<string, unknown>[] = [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } }
+      ]
+
+      // Also search in createdBy user data
+      const userQuery = await User.find({
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      }).select('_id')
+
+      const userIds = userQuery.map((user: any) => user._id)
+      if (userIds.length > 0) {
+        searchConditions.push({ createdBy: { $in: userIds } })
+      }
+
+      query.$or = searchConditions
     }
 
-    // Filter by target roles if specified
+    // Additional filters
+    if (isPinned === 'true') {
+      query.isPinned = true
+    } else if (isPinned === 'false') {
+      query.isPinned = false
+    }
+
+    if (targetRole && targetRole !== 'all') {
+      query.targetRoles = { $in: [targetRole] }
+    }
+
+    // Filter by target roles if specified (for non-admin users)
     if (session?.user?.role) {
       console.log('🔍 Filtering announcements for role:', session.user.role)
-      query.$and = [
-        expirationQuery, // Keep expiration filtering
-        {
-          $or: [
-            { targetRoles: { $in: [session.user.role] } },
-            { targetRoles: { $size: 0 } }, // No target roles means visible to all
-          ]
-        }
-      ]
+
+      const roleFilter = {
+        $or: [
+          { targetRoles: { $in: [session.user.role] } },
+          { targetRoles: { $size: 0 } }, // No target roles means visible to all
+        ]
+      }
+
+      if (query.$and && Array.isArray(query.$and)) {
+        query.$and.push(expirationQuery, roleFilter)
+      } else {
+        query.$and = [expirationQuery, roleFilter]
+      }
+
       console.log('📋 Final query:', JSON.stringify(query, null, 2))
     } else {
       // If no session/role, just use expiration filtering
-      query = { ...query, ...expirationQuery }
+      if (query.$and && Array.isArray(query.$and)) {
+        query.$and.push(expirationQuery)
+      } else {
+        query.$and = [expirationQuery]
+      }
       console.log('⚠️ No user role found, using expiration filtering only')
     }
 

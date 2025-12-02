@@ -3,12 +3,16 @@
 import { useState } from 'react'
 import { IAnnouncement } from '@/types'
 import { UserRole } from '@/types/enums'
-import { Pin, Calendar, User, Trash2, Edit, Search, Filter } from 'lucide-react'
+import { Pin, Calendar, User, Trash2, Edit } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface AnnouncementListProps {
   announcements: IAnnouncement[]
   onAnnouncementsChange?: (announcements: IAnnouncement[]) => void
+  onAnnouncementSelect?: (announcementId: string, selected: boolean) => void
+  onSelectAllAnnouncements?: (selected: boolean) => void
+  selectedAnnouncements?: string[]
+  loading?: boolean
 }
 
 const roleColors = {
@@ -17,21 +21,15 @@ const roleColors = {
   [UserRole.RESIDENT]: 'bg-green-100 text-green-800 border-green-200',
 }
 
-export default function AnnouncementList({ announcements: initialAnnouncements, onAnnouncementsChange }: AnnouncementListProps) {
+export default function AnnouncementList({
+  announcements: initialAnnouncements,
+  onAnnouncementsChange,
+  onAnnouncementSelect,
+  onSelectAllAnnouncements,
+  selectedAnnouncements = [],
+  loading = false
+}: AnnouncementListProps) {
   const [announcements, setAnnouncements] = useState(initialAnnouncements)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [pinnedFilter, setPinnedFilter] = useState<string>('')
-  const [roleFilter, setRoleFilter] = useState<string>('')
-
-  const filteredAnnouncements = announcements.filter((announcement) => {
-    const matchesSearch =
-      announcement.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      announcement.content.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesPinned = !pinnedFilter || (pinnedFilter === 'pinned' ? announcement.isPinned : !announcement.isPinned)
-    const matchesRole = !roleFilter || (announcement.targetRoles && announcement.targetRoles.includes(roleFilter as UserRole))
-
-    return matchesSearch && matchesPinned && matchesRole
-  })
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this announcement?')) return
@@ -58,47 +56,10 @@ export default function AnnouncementList({ announcements: initialAnnouncements, 
 
   return (
     <div className="bg-white rounded-lg shadow-md">
-      {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search announcements..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <select
-            value={pinnedFilter}
-            onChange={(e) => setPinnedFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            <option value="">All Announcements</option>
-            <option value="pinned">📌 Pinned Only</option>
-            <option value="unpinned">📄 Regular Only</option>
-          </select>
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            <option value="">All Roles</option>
-            {Object.values(UserRole).map((role) => (
-              <option key={role} value={role}>
-                {role.charAt(0).toUpperCase() + role.slice(1)} Only
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
       {/* Announcements List */}
       <div className="p-6">
         <div className="space-y-4">
-          {filteredAnnouncements.length === 0 ? (
+          {announcements.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Pin className="w-8 h-8 text-gray-400" />
@@ -107,7 +68,7 @@ export default function AnnouncementList({ announcements: initialAnnouncements, 
               <p className="text-gray-500">Try adjusting your search or filter criteria</p>
             </div>
           ) : (
-            filteredAnnouncements.map((announcement) => {
+            announcements.map((announcement) => {
               const createdBy = typeof announcement.createdBy === 'object' ? announcement.createdBy : null
 
               return (
@@ -115,6 +76,18 @@ export default function AnnouncementList({ announcements: initialAnnouncements, 
                   key={announcement._id}
                   className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30"
                 >
+                  {/* Selection Checkbox */}
+                  {onAnnouncementSelect && (
+                    <div className="flex items-center mb-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedAnnouncements.includes(announcement._id)}
+                        onChange={(e) => onAnnouncementSelect(announcement._id, e.target.checked)}
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                      />
+                    </div>
+                  )}
+
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
@@ -146,7 +119,7 @@ export default function AnnouncementList({ announcements: initialAnnouncements, 
 
                         {announcement.targetRoles && announcement.targetRoles.length > 0 && (
                           <div className="flex items-center gap-2">
-                            <Filter className="w-4 h-4 text-green-600" />
+                            <User className="w-4 h-4 text-green-600" />
                             <div className="flex gap-1">
                               {announcement.targetRoles.map((role) => (
                                 <span
@@ -181,9 +154,9 @@ export default function AnnouncementList({ announcements: initialAnnouncements, 
         </div>
       </div>
 
-      {filteredAnnouncements.length > 0 && (
+      {announcements.length > 0 && (
         <div className="px-6 py-4 border-t border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-b-lg">
-          Showing {filteredAnnouncements.length} of {announcements.length} announcements
+          Showing {announcements.length} of {announcements.length} announcements
         </div>
       )}
     </div>
