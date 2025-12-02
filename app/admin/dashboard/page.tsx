@@ -308,17 +308,17 @@ export default async function AdminDashboard() {
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-600 mb-1">System Health</p>
-                <p className="text-3xl font-bold text-purple-900">Excellent</p>
+                <p className="text-sm font-medium text-purple-600 mb-1">Total Users</p>
+                <p className="text-3xl font-bold text-purple-900">{data.stats.totalUsers.toLocaleString()}</p>
                 <div className="flex items-center mt-2">
-                  <Zap className="w-4 h-4 text-purple-600 mr-1" />
+                  <Users className="w-4 h-4 text-purple-600 mr-1" />
                   <span className="text-xs text-purple-600">
-                    All systems operational
+                    {data.stats.staffCount} staff, {data.stats.residentCount} residents
                   </span>
                 </div>
               </div>
               <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
+                <Users className="w-6 h-6 text-white" />
               </div>
             </div>
           </div>
