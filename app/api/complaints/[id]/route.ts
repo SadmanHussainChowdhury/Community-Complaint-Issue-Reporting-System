@@ -92,7 +92,29 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const userRole = session.user.role
-    const body = await req.json()
+
+    // Handle FormData for resident updates (with images) or JSON for other updates
+    let body: any
+    let isFormData = false
+
+    const contentType = req.headers.get('content-type') || ''
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await req.formData()
+      body = Object.fromEntries(formData.entries())
+      isFormData = true
+
+      // Parse JSON strings back to objects
+      if (typeof body.existingImages === 'string') {
+        try {
+          body.existingImages = JSON.parse(body.existingImages)
+        } catch (e) {
+          body.existingImages = []
+        }
+      }
+    } else {
+      body = await req.json()
+    }
+
     const updates: Record<string, unknown> = {}
 
     // Residents can only update their own pending complaints
@@ -110,6 +132,34 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       if (body.description) updates.description = body.description
       if (body.category) updates.category = body.category
       if (body.priority) updates.priority = body.priority
+
+      // Handle image updates for residents
+      if (isFormData) {
+        const currentImages = complaint.images || []
+        const existingImages = Array.isArray(body.existingImages) ? body.existingImages : []
+        const newImages = body.images
+
+        // Start with existing images that weren't removed
+        let updatedImages = currentImages.filter(img => existingImages.includes(img))
+
+        // Add new uploaded images
+        if (newImages) {
+          const imageFiles = Array.isArray(newImages) ? newImages : [newImages]
+          for (const imageFile of imageFiles) {
+            if (imageFile && typeof imageFile === 'object' && 'size' in imageFile) {
+              try {
+                const imageResult = await uploadImage(imageFile, 'complaints')
+                updatedImages.push(imageResult.secure_url)
+              } catch (uploadError) {
+                console.error('Error uploading image:', uploadError)
+                // Continue with other images
+              }
+            }
+          }
+        }
+
+        updates.images = updatedImages
+      }
     }
 
     // Staff can update assigned complaints

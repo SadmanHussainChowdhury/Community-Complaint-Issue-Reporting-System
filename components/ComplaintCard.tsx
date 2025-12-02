@@ -78,7 +78,7 @@ export default function ComplaintCard({ complaint, showActions = false }: Compla
       {showActions && complaint.status !== ComplaintStatus.RESOLVED && (
         <div className="mt-4 flex gap-2">
           <Link
-            href={`/complaints/${complaint._id}/edit`}
+            href={`/resident/complaints/${complaint._id}/edit`}
             className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 text-sm"
           >
             Edit
