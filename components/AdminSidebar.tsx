@@ -15,6 +15,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { SessionUser } from '@/types'
+import AdminProfileSection from './AdminProfileSection'
 
 interface AdminSidebarProps {
   user: SessionUser
@@ -79,8 +80,17 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         })}
       </nav>
 
+      {/* Admin Profile Section */}
+      <AdminProfileSection
+        user={user}
+        onProfileUpdate={(updatedUser) => {
+          // Optional: Handle profile updates if needed for real-time UI updates
+          console.log('Profile updated:', updatedUser)
+        }}
+      />
+
       {/* Sign Out */}
-      <div className="px-4 py-4 border-t border-gray-800">
+      <div className="px-4 py-4">
         <button
           onClick={handleSignOut}
           className="flex items-center space-x-3 w-full px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
