@@ -176,16 +176,6 @@ export default function SignInPage() {
 
         {/* Premium Footer Links */}
         <div className="text-center space-y-6 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-          <div className="flex items-center justify-center space-x-1 text-gray-600">
-            <span className="text-sm">New to our community?</span>
-            <Link
-              href="/auth/register"
-              className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors relative group"
-            >
-              Create a resident account
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300"></span>
-            </Link>
-          </div>
 
           {/* Trust Indicators */}
           <div className="flex items-center justify-center space-x-6 text-xs text-gray-500">
