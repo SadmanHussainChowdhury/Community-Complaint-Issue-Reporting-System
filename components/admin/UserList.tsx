@@ -11,6 +11,8 @@ interface UserListProps {
   selectedUsers?: string[]
   onUserSelect?: (userId: string, selected: boolean) => void
   loading?: boolean
+  showRoleFilter?: boolean
+  defaultRoleFilter?: string
 }
 
 const roleIcons = {
@@ -30,11 +32,13 @@ export default function UserList({
   onUsersChange,
   selectedUsers = [],
   onUserSelect,
-  loading: externalLoading = false
+  loading: externalLoading = false,
+  showRoleFilter = true,
+  defaultRoleFilter = ''
 }: UserListProps) {
   const [users, setUsers] = useState(initialUsers)
   const [searchQuery, setSearchQuery] = useState('')
-  const [roleFilter, setRoleFilter] = useState<string>('')
+  const [roleFilter, setRoleFilter] = useState<string>(defaultRoleFilter)
   const [editingUser, setEditingUser] = useState<IUser | null>(null)
   const [deletingUser, setDeletingUser] = useState<IUser | null>(null)
   const [internalLoading, setInternalLoading] = useState(false)
@@ -130,18 +134,20 @@ export default function UserList({
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="">All Roles</option>
-            {Object.values(UserRole).map((role) => (
-              <option key={role} value={role}>
-                {role.charAt(0).toUpperCase() + role.slice(1)}
-              </option>
-            ))}
-          </select>
+          {showRoleFilter && (
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Roles</option>
+              {Object.values(UserRole).map((role) => (
+                <option key={role} value={role}>
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
