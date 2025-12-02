@@ -120,7 +120,7 @@ export default function Pagination({
       // Clear cache when search changes
       clearCache()
     }
-  }, [debouncedSearchQuery, searchQuery, onSearchChange, getCache])
+  }, [debouncedSearchQuery, searchQuery, onSearchChange, clearCache])
 
 
   // Keyboard navigation
@@ -153,17 +153,22 @@ export default function Pagination({
   }, [currentPage, totalPages, onPageChange])
 
   // Debounced page change to prevent rapid API calls
-  const debouncedPageChange = useCallback(
-    useDebounce((page: number) => {
-      onPageChange(page)
-    }, debounceDelay),
-    [onPageChange, debounceDelay]
-  )
+  const [debouncedPage, setDebouncedPage] = useState(currentPage)
 
-  const handlePageChange = (page: number) => {
-    if (page === currentPage) return
-    debouncedPageChange(page)
-  }
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (debouncedPage !== currentPage) {
+        onPageChange(debouncedPage)
+      }
+    }, debounceDelay)
+
+    return () => clearTimeout(handler)
+  }, [debouncedPage, currentPage, onPageChange, debounceDelay])
+
+  const handlePageChange = useCallback((page: number) => {
+    if (page === currentPage || page === debouncedPage) return
+    setDebouncedPage(page)
+  }, [currentPage, debouncedPage])
 
   // Cache page change to prevent duplicate API calls
   const handleCachedPageChange = useCallback((page: number) => {
