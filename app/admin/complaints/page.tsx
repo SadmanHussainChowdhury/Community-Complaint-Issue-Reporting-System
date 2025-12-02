@@ -1,6 +1,7 @@
 import { IComplaint, IUser } from '@/types'
 import { UserRole } from '@/types/enums'
 import ComplaintsTable from '@/components/admin/ComplaintsTable'
+import Link from 'next/link'
 import connectDB from '@/lib/mongodb'
 import Complaint from '@/models/Complaint'
 import User from '@/models/User'
@@ -60,17 +61,29 @@ export default async function AdminComplaintsPage() {
   const complaintsData = await getComplaints(1, 10)
   const staffMembers = await getStaffMembers()
 
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ComplaintsTable
-          initialComplaints={complaintsData.complaints}
-          initialStaff={staffMembers}
-          initialTotal={complaintsData.total}
-          initialPage={complaintsData.page}
-          initialLimit={complaintsData.limit}
-        />
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Complaint Management</h1>
+          <p className="mt-2 text-gray-600">Manage and track community complaints</p>
+        </div>
+        <Link
+          href="/admin/complaints/new"
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-flex items-center space-x-2"
+        >
+          <span>+</span>
+          <span>New Complaint</span>
+        </Link>
       </div>
+
+      <ComplaintsTable
+        initialComplaints={complaintsData.complaints}
+        initialStaff={staffMembers}
+        initialTotal={complaintsData.total}
+        initialPage={complaintsData.page}
+        initialLimit={complaintsData.limit}
+      />
     </div>
   )
 }
