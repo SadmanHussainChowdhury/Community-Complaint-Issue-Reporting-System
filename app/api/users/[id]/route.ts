@@ -64,6 +64,25 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json<ApiResponse>({ success: false, error: 'Access denied' }, { status: 403 })
     }
 
+    // Verify current password if changing password
+    if (body.password) {
+      if (!body.currentPassword) {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: 'Current password is required to change password' },
+          { status: 400 }
+        )
+      }
+
+      // Verify current password
+      const isCurrentPasswordValid = await user.comparePassword(body.currentPassword)
+      if (!isCurrentPasswordValid) {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: 'Current password is incorrect' },
+          { status: 400 }
+        )
+      }
+    }
+
     // Non-admins can only update certain fields
     if (session.user.role !== UserRole.ADMIN) {
       if (body.name) updates.name = body.name
