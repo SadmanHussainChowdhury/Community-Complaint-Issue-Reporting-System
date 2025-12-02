@@ -29,21 +29,24 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
+      console.log('🔐 Attempting sign in for:', formData.email)
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
         redirect: false,
       })
 
+      console.log('🔍 Sign in result:', result)
+
       if (result?.error) {
+        console.log('❌ Sign in error:', result.error)
         toast.error(result.error)
       } else {
+        console.log('✅ Sign in successful, redirecting to admin dashboard')
         toast.success('Signed in successfully')
-        // Force a page refresh to establish session properly
-        router.refresh()
-        // Redirect to homepage which will handle role-based dashboard redirect
+        // Redirect directly to admin dashboard for admin users
         setTimeout(() => {
-          window.location.href = '/'
+          window.location.href = '/admin/dashboard'
         }, 500)
       }
     } catch (error) {
