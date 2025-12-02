@@ -38,17 +38,9 @@ export const dynamic = 'force-dynamic'
 export default async function Home() {
   const session = await getServerSession(authOptions)
 
-  // Redirect authenticated users to their dashboards
-  if (session) {
-    switch (session.user.role) {
-      case UserRole.ADMIN:
-        redirect('/admin/complaints')
-      case UserRole.STAFF:
-        redirect('/staff/dashboard')
-      case UserRole.RESIDENT:
-        redirect('/resident/dashboard')
-    }
-  }
+  // Allow access to landing page for authenticated users
+  // They can manually navigate to their dashboards from the landing page
+  // This prevents the redirect loop when users try to visit the landing page
 
   // Ultra-Premium Landing Page
   return (
