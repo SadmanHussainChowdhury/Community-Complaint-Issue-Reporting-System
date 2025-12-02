@@ -8,6 +8,9 @@ import { Search, User, Mail, Phone, Building, Shield, Users, UserCheck, Edit, Tr
 interface UserListProps {
   users: IUser[]
   onUsersChange?: (users: IUser[]) => void
+  selectedUsers?: string[]
+  onUserSelect?: (userId: string, selected: boolean) => void
+  loading?: boolean
 }
 
 const roleIcons = {
@@ -22,13 +25,22 @@ const roleColors = {
   [UserRole.RESIDENT]: 'bg-green-100 text-green-800',
 }
 
-export default function UserList({ users: initialUsers, onUsersChange }: UserListProps) {
+export default function UserList({
+  users: initialUsers,
+  onUsersChange,
+  selectedUsers = [],
+  onUserSelect,
+  loading: externalLoading = false
+}: UserListProps) {
   const [users, setUsers] = useState(initialUsers)
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('')
   const [editingUser, setEditingUser] = useState<IUser | null>(null)
   const [deletingUser, setDeletingUser] = useState<IUser | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [internalLoading, setInternalLoading] = useState(false)
+
+  // Use external loading if provided, otherwise use internal loading
+  const loading = externalLoading || internalLoading
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -49,7 +61,7 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
   const confirmDelete = async () => {
     if (!deletingUser) return
 
-    setLoading(true)
+    setInternalLoading(true)
     try {
       const res = await fetch(`/api/users/${deletingUser._id}`, {
         method: 'DELETE',
@@ -68,14 +80,14 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
     } catch (error) {
       console.error('Error deleting user:', error)
     } finally {
-      setLoading(false)
+      setInternalLoading(false)
     }
   }
 
   const handleUpdateUser = async (userData: Partial<IUser>) => {
     if (!editingUser) return
 
-    setLoading(true)
+    setInternalLoading(true)
     try {
       const res = await fetch(`/api/users/${editingUser._id}`, {
         method: 'PATCH',
@@ -99,7 +111,7 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
     } catch (error) {
       console.error('Error updating user:', error)
     } finally {
-      setLoading(false)
+      setInternalLoading(false)
     }
   }
 
@@ -138,6 +150,21 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              {onUserSelect && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                    onChange={(e) => {
+                      const allSelected = selectedUsers.length === filteredUsers.length
+                      filteredUsers.forEach(user => {
+                        onUserSelect(user._id, !allSelected)
+                      })
+                    }}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                </th>
+              )}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 User
               </th>
@@ -161,8 +188,15 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                  No users found
+                <td colSpan={onUserSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                      <span className="ml-3">Loading users...</span>
+                    </div>
+                  ) : (
+                    'No users found'
+                  )}
                 </td>
               </tr>
             ) : (
@@ -171,6 +205,16 @@ export default function UserList({ users: initialUsers, onUsersChange }: UserLis
 
                 return (
                   <tr key={user._id} className="hover:bg-gray-50">
+                    {onUserSelect && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.includes(user._id)}
+                          onChange={(e) => onUserSelect(user._id, e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        />
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
