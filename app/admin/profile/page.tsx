@@ -356,7 +356,7 @@ export default function AdminProfilePage() {
               <h3 className="text-lg font-semibold text-gray-900">Change Password</h3>
             </div>
             <p className="text-sm text-gray-600 mb-4">
-              <span className="font-medium">Optional:</span> Leave password fields empty if you don't want to change your password.
+              <span className="font-medium">Optional:</span> Leave password fields empty if you don&apos;t want to change your password.
             </p>
             <div className="space-y-4 max-w-md">
               <div>
