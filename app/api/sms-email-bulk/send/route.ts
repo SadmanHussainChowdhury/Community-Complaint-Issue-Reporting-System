@@ -30,8 +30,8 @@ const initTwilio = async () => {
   // Use dynamic require to avoid webpack static analysis
   // This approach prevents webpack from trying to resolve the module at build time
   try {
-    // Use eval to create a require that webpack can't statically analyze
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    // Use Function constructor to create a require that webpack can't statically analyze
+    // eslint-disable-next-line no-new-func
     const requireTwilio = new Function('return typeof require !== "undefined" && require')
     const requireFunc = requireTwilio()
     

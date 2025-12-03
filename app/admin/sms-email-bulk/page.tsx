@@ -23,7 +23,7 @@ export default function SMSEmailBulkPage() {
     if (recipientType === 'selected' && users.length === 0) {
       fetchUsers()
     }
-  }, [recipientType])
+  }, [recipientType, users.length])
 
   const fetchUsers = async () => {
     setFetchingUsers(true)
