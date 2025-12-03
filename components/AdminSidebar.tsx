@@ -23,6 +23,7 @@ import {
   Eye,
   EyeOff,
   MessageSquare,
+  DollarSign,
 } from 'lucide-react'
 import { SessionUser } from '@/types'
 import toast from 'react-hot-toast'
@@ -36,6 +37,7 @@ const menuItems = [
   { href: '/admin/residents', label: 'Residents', icon: Users },
   { href: '/admin/resident-cards', label: 'Resident Cards', icon: UserCheck },
   { href: '/admin/sms-email-bulk', label: 'SMS and Email Bulk', icon: MessageSquare },
+  { href: '/admin/monthly-fees', label: 'Monthly Fees', icon: DollarSign },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
   { href: '/admin/announcements', label: 'Announcements', icon: Bell },
   { href: '/admin/assignments', label: 'Assignments', icon: UserCheck },
