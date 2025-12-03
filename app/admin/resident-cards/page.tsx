@@ -13,10 +13,26 @@ export default function ResidentCardsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [buildingFilter, setBuildingFilter] = useState('')
+  const [communityName, setCommunityName] = useState('Community Hub')
 
   useEffect(() => {
     fetchResidents()
+    fetchCommunityName()
   }, [])
+
+  const fetchCommunityName = async () => {
+    try {
+      const response = await fetch('/api/settings')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data?.communityName) {
+          setCommunityName(data.data.communityName)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching community name:', error)
+    }
+  }
 
   const fetchResidents = async () => {
     try {
@@ -69,13 +85,13 @@ export default function ResidentCardsPage() {
     const printWindow = window.open('', '_blank')
     if (!printWindow) return
 
-    const cardsHtml = selectedResidents.map(resident => generateCardHtml(resident)).join('')
+    const cardsHtml = selectedResidents.map(resident => generateCardHtml(resident, communityName)).join('')
 
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Community Hub - Resident Information Cards</title>
+          <title>${communityName} - Resident Information Cards</title>
           <meta charset="UTF-8">
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -343,7 +359,7 @@ export default function ResidentCardsPage() {
         </head>
         <body>
           <div class="print-header">
-            <h1 class="print-title">🏥 Community Hub</h1>
+            <h1 class="print-title">🏥 ${communityName}</h1>
             <p class="print-subtitle">Resident Information Cards - ${new Date().toLocaleDateString()}</p>
           </div>
           <div class="cards-container ${orientation === 'horizontal' ? 'horizontal-cards' : 'vertical-cards'}">
@@ -358,14 +374,14 @@ export default function ResidentCardsPage() {
     printWindow.print()
   }
 
-  const generateCardHtml = (resident: IUser) => {
+  const generateCardHtml = (resident: IUser, communityName: string) => {
     const cardClass = orientation === 'horizontal' ? 'horizontal-card' : 'vertical-card'
     const initial = resident.name.charAt(0).toUpperCase()
 
     return `
       <div class="card ${cardClass}">
         <div class="card-header">
-          <div class="community-logo">🏢 Community Hub</div>
+          <div class="community-logo">🏢 ${communityName}</div>
           <div class="card-type">Resident Information Card</div>
         </div>
 
@@ -433,7 +449,7 @@ export default function ResidentCardsPage() {
         </div>
 
         <div class="card-footer">
-          <p class="footer-text">Community Hub Management System</p>
+          <p class="footer-text">${communityName} Management System</p>
           <div class="emergency-note">
             <p class="emergency-text">🆘 Emergency Contact: Call Security at Ext. 911</p>
           </div>

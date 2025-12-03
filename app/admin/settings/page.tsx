@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Settings, Save, Bell, Shield, Database } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -8,7 +8,10 @@ import toast from 'react-hot-toast'
 export default function AdminSettingsPage() {
   const { data: session } = useSession()
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
   const [settings, setSettings] = useState({
+    // Community Settings
+    communityName: 'Community Hub',
     // System Settings
     systemName: 'Community Complaint System',
     systemEmail: 'admin@communityhub.com',
@@ -31,17 +34,56 @@ export default function AdminSettingsPage() {
     allowAnonymousComplaints: false,
   })
 
+  // Fetch settings on component mount
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/settings')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          setSettings(data.data)
+        }
+      } else {
+        toast.error('Failed to fetch settings')
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+      toast.error('Error loading settings')
+    } finally {
+      setFetching(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // Here you would typically save to a settings API
-      // For now, we'll just simulate saving
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+      })
 
-      toast.success('Settings saved successfully!')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          toast.success('Settings saved successfully!')
+        } else {
+          toast.error(data.error || 'Failed to save settings')
+        }
+      } else {
+        const data = await response.json()
+        toast.error(data.error || 'Failed to save settings')
+      }
     } catch (error) {
+      console.error('Error saving settings:', error)
       toast.error('Failed to save settings')
     } finally {
       setLoading(false)
@@ -52,6 +94,16 @@ export default function AdminSettingsPage() {
     setSettings({ ...settings, [field]: value })
   }
 
+
+  if (fetching) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,6 +126,20 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Community Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={settings.communityName}
+                  onChange={(e) => handleInputChange('communityName', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  placeholder="Enter community name"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-500">This name will appear on resident cards and printed documents</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   System Name
                 </label>
                 <input
@@ -83,6 +149,8 @@ export default function AdminSettingsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   System Email
