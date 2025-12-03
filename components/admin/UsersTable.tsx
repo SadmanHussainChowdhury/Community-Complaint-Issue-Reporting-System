@@ -5,7 +5,7 @@ import { IUser } from '@/types'
 import { UserRole } from '@/types/enums'
 import UserList from '@/components/admin/UserList'
 import Pagination from '@/components/ui/Pagination'
-import { Search, Filter, Download, UserCheck, UserX, Users, Loader2 } from 'lucide-react'
+import { Filter, Download, UserCheck, UserX, Users, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface UsersTableProps {
@@ -206,21 +206,9 @@ export default function UsersTable({
 
   return (
     <div className="space-y-6">
-      {/* Filters and Search */}
+      {/* Filters and Export */}
       <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search users by name or email..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
-            />
-          </div>
-
           {/* Filters Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -288,8 +276,6 @@ export default function UsersTable({
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         loading={loading}
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
         selectedItems={selectedUsers}
         onBulkAction={handleBulkAction}
         bulkActions={bulkActions}
