@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { User, Mail, Phone, Shield, Calendar, Edit, Save, X, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { User, Mail, Phone, Shield, Calendar, Edit, Save, X, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { SessionUser } from '@/types'
+import { SessionUser, IUser } from '@/types'
 
 export default function AdminProfilePage() {
   const { data: session, update } = useSession()
@@ -12,29 +12,59 @@ export default function AdminProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [userData, setUserData] = useState<IUser | null>(null)
 
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+    name: '',
+    email: '',
     phone: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
 
+  // Fetch full user data
   useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: user.name || '',
-        email: user.email || '',
-        phone: (user as any).phone || '',
-      }))
+    const fetchUserData = async () => {
+      if (!user?.id) {
+        setFetching(false)
+        return
+      }
+
+      try {
+        setFetching(true)
+        const response = await fetch(`/api/users/${user.id}`)
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data?.user) {
+            const fullUser = result.data.user
+            setUserData(fullUser)
+            setFormData({
+              name: fullUser.name || '',
+              email: fullUser.email || '',
+              phone: fullUser.phone || '',
+              currentPassword: '',
+              newPassword: '',
+              confirmPassword: '',
+            })
+          }
+        } else {
+          toast.error('Failed to load profile data')
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        toast.error('Error loading profile')
+      } finally {
+        setFetching(false)
+      }
     }
-  }, [user])
+
+    fetchUserData()
+  }, [user?.id])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -57,7 +87,10 @@ export default function AdminProfilePage() {
       return 'Please enter a valid email address'
     }
 
-    if (formData.newPassword || formData.confirmPassword) {
+    // Password change is optional - only validate if user is trying to change it
+    const isChangingPassword = formData.newPassword || formData.confirmPassword || formData.currentPassword
+    
+    if (isChangingPassword) {
       if (!formData.currentPassword) {
         return 'Current password is required to change password'
       }
@@ -88,13 +121,20 @@ export default function AdminProfilePage() {
     setLoading(true)
 
     try {
+      const userId = user?.id || userData?._id
+      if (!userId) {
+        toast.error('User ID not found')
+        setLoading(false)
+        return
+      }
+
       const updateData: Record<string, string> = {
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
       }
 
       if (formData.phone) {
-        updateData.phone = formData.phone
+        updateData.phone = formData.phone.trim()
       }
 
       if (formData.newPassword) {
@@ -102,7 +142,7 @@ export default function AdminProfilePage() {
         updateData.currentPassword = formData.currentPassword
       }
 
-      const response = await fetch(`/api/users/${user?.id}`, {
+      const response = await fetch(`/api/users/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +153,16 @@ export default function AdminProfilePage() {
       const result = await response.json()
 
       if (result.success) {
-        toast.success('Profile updated successfully')
+        toast.success('Profile updated successfully!', {
+          icon: '✅',
+          duration: 3000,
+        })
+        
+        // Update local user data
+        if (result.data?.user) {
+          setUserData(result.data.user)
+        }
+        
         setIsEditing(false)
         
         // Reset password fields
@@ -124,8 +173,15 @@ export default function AdminProfilePage() {
           confirmPassword: '',
         }))
 
-        // Update session
-        await update()
+        // Update session to reflect changes
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+          },
+        })
       } else {
         toast.error(result.error || 'Failed to update profile')
       }
@@ -138,11 +194,11 @@ export default function AdminProfilePage() {
   }
 
   const handleCancel = () => {
-    if (user) {
+    if (userData) {
       setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: (user as any).phone || '',
+        name: userData.name || '',
+        email: userData.email || '',
+        phone: userData.phone || '',
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
@@ -151,21 +207,24 @@ export default function AdminProfilePage() {
     setIsEditing(false)
   }
 
-  if (!user) {
+  if (fetching || !user || !userData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
       </div>
     )
   }
 
   const profileData = [
-    { label: 'Name', value: isEditing ? formData.name : user.name || 'N/A', icon: User, editable: true, field: 'name' },
-    { label: 'Email', value: isEditing ? formData.email : user.email || 'N/A', icon: Mail, editable: true, field: 'email' },
-    { label: 'Phone', value: isEditing ? formData.phone : (user as any).phone || 'N/A', icon: Phone, editable: true, field: 'phone' },
-    { label: 'Role', value: user.role?.charAt(0).toUpperCase() + user.role?.slice(1) || 'Admin', icon: Shield, editable: false },
-    { label: 'User ID', value: user.id || 'N/A', icon: User, editable: false },
-    { label: 'Account Status', value: 'Active', icon: Calendar, editable: false },
+    { label: 'Name', value: isEditing ? formData.name : userData.name || 'N/A', icon: User, editable: true, field: 'name' },
+    { label: 'Email', value: isEditing ? formData.email : userData.email || 'N/A', icon: Mail, editable: true, field: 'email' },
+    { label: 'Phone', value: isEditing ? formData.phone : userData.phone || 'N/A', icon: Phone, editable: true, field: 'phone' },
+    { label: 'Role', value: userData.role?.charAt(0).toUpperCase() + userData.role?.slice(1) || 'Admin', icon: Shield, editable: false },
+    { label: 'User ID', value: userData._id || userData.id || 'N/A', icon: User, editable: false },
+    { label: 'Account Status', value: userData.isActive !== false ? 'Active' : 'Inactive', icon: Calendar, editable: false },
   ]
 
   return (
@@ -240,34 +299,40 @@ export default function AdminProfilePage() {
               {profileData.map((item, index) => {
                 const Icon = item.icon
                 return (
-                  <tr key={index} className="hover:bg-gray-50">
+                  <tr key={index} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <Icon className="w-5 h-5 text-gray-400 mr-3" />
-                        <div className="text-sm font-medium text-gray-900">{item.label}</div>
+                        <div className="flex-shrink-0">
+                          <Icon className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-gray-900">{item.label}</div>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       {isEditing && item.editable ? (
-                        item.field === 'phone' ? (
-                          <input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter phone number"
-                          />
-                        ) : (
-                          <input
-                            type={item.field === 'email' ? 'email' : 'text'}
-                            value={formData[item.field as keyof typeof formData] as string}
-                            onChange={(e) => handleInputChange(item.field, e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder={`Enter ${item.label.toLowerCase()}`}
-                          />
-                        )
+                        <div className="max-w-md">
+                          {item.field === 'phone' ? (
+                            <input
+                              type="tel"
+                              value={formData.phone}
+                              onChange={(e) => handleInputChange('phone', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="Enter phone number"
+                            />
+                          ) : (
+                            <input
+                              type={item.field === 'email' ? 'email' : 'text'}
+                              value={formData[item.field as keyof typeof formData] as string}
+                              onChange={(e) => handleInputChange(item.field, e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder={`Enter ${item.label.toLowerCase()}`}
+                            />
+                          )}
+                        </div>
                       ) : (
-                        <div className="text-sm text-gray-900">{item.value}</div>
+                        <div className="text-sm text-gray-900 font-medium">{item.value}</div>
                       )}
                     </td>
                   </tr>
@@ -277,21 +342,33 @@ export default function AdminProfilePage() {
           </table>
         </div>
 
+        {profileData.length > 0 && (
+          <div className="px-6 py-4 border-t border-gray-200 text-sm text-gray-500">
+            Showing {profileData.length} profile fields
+          </div>
+        )}
+
         {/* Password Change Section */}
         {isEditing && (
-          <div className="p-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Change Password</h3>
-            <div className="space-y-4">
+          <div className="p-6 border-t border-gray-200 bg-gray-50">
+            <div className="flex items-center mb-4">
+              <Shield className="w-5 h-5 text-indigo-600 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-900">Change Password</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              <span className="font-medium">Optional:</span> Leave password fields empty if you don't want to change your password.
+            </p>
+            <div className="space-y-4 max-w-md">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Current Password
+                  Current Password <span className="text-gray-500 text-xs">(required if changing password)</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showCurrentPassword ? 'text' : 'password'}
                     value={formData.currentPassword}
                     onChange={(e) => handleInputChange('currentPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Enter current password"
                   />
                   <button
@@ -305,15 +382,15 @@ export default function AdminProfilePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  New Password
+                  New Password <span className="text-gray-500 text-xs">(required if changing password)</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showNewPassword ? 'text' : 'password'}
                     value={formData.newPassword}
                     onChange={(e) => handleInputChange('newPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter new password"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Enter new password (min. 6 characters)"
                   />
                   <button
                     type="button"
@@ -323,17 +400,18 @@ export default function AdminProfilePage() {
                     {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                <p className="mt-1 text-xs text-gray-500">Minimum 6 characters required</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm New Password
+                  Confirm New Password <span className="text-gray-500 text-xs">(required if changing password)</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Confirm new password"
                   />
                   <button
@@ -344,6 +422,15 @@ export default function AdminProfilePage() {
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {formData.newPassword && formData.confirmPassword && formData.newPassword !== formData.confirmPassword && (
+                  <p className="mt-1 text-xs text-red-500">Passwords do not match</p>
+                )}
+                {formData.newPassword && formData.confirmPassword && formData.newPassword === formData.confirmPassword && (
+                  <p className="mt-1 text-xs text-green-600 flex items-center">
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    Passwords match
+                  </p>
+                )}
               </div>
             </div>
           </div>
