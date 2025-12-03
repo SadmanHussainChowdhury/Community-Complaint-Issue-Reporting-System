@@ -75,62 +75,278 @@ export default function ResidentCardsPage() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Community Hub - Resident Cards</title>
+          <title>Community Hub - Resident Information Cards</title>
+          <meta charset="UTF-8">
           <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
             @media print {
-              body { margin: 0; }
-              .card { page-break-inside: avoid; }
-              .horizontal-cards { display: flex; flex-wrap: wrap; }
-              .vertical-cards { display: block; }
-              .horizontal-card { width: 48%; margin: 1%; }
+              body {
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+              }
+              .card {
+                page-break-inside: avoid;
+                page-break-after: always;
+              }
+              .horizontal-cards {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+              }
+              .vertical-cards {
+                display: block;
+              }
+              .horizontal-card {
+                width: calc(50% - 10px);
+                flex-shrink: 0;
+              }
+              @page {
+                size: A4;
+                margin: 15mm;
+              }
             }
-            body { font-family: Arial, sans-serif; }
-            .card {
-              border: 2px solid #000;
-              margin: 10px;
+
+            * {
+              box-sizing: border-box;
+            }
+
+            body {
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              background: #f8fafc;
+              color: #1e293b;
+              line-height: 1.5;
+              margin: 0;
               padding: 20px;
-              border-radius: 8px;
-              background: white;
             }
-            .horizontal-card {
-              display: inline-block;
-              width: calc(50% - 20px);
-              vertical-align: top;
-            }
-            .vertical-card {
-              width: 100%;
-            }
-            .header {
+
+            .print-header {
               text-align: center;
-              border-bottom: 2px solid #000;
-              padding-bottom: 10px;
-              margin-bottom: 15px;
+              margin-bottom: 30px;
+              padding-bottom: 20px;
+              border-bottom: 3px solid #e2e8f0;
             }
-            .community-name {
+
+            .print-title {
+              font-size: 28px;
+              font-weight: 700;
+              color: #0f172a;
+              margin: 0;
+              letter-spacing: -0.025em;
+            }
+
+            .print-subtitle {
+              font-size: 14px;
+              color: #64748b;
+              margin: 5px 0 0 0;
+              font-weight: 500;
+            }
+
+            .cards-container {
+              display: flex;
+              flex-direction: column;
+              gap: 25px;
+            }
+
+            .horizontal-cards {
+              flex-direction: row;
+              flex-wrap: wrap;
+              gap: 25px;
+            }
+
+            .card {
+              background: white;
+              border-radius: 12px;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+              border: 1px solid #e2e8f0;
+              overflow: hidden;
+              position: relative;
+            }
+
+            .card::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 4px;
+              background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            }
+
+            .card-header {
+              background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+              color: white;
+              padding: 20px;
+              text-align: center;
+              position: relative;
+            }
+
+            .card-header::after {
+              content: '';
+              position: absolute;
+              bottom: -10px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 0;
+              height: 0;
+              border-left: 10px solid transparent;
+              border-right: 10px solid transparent;
+              border-top: 10px solid #1e40af;
+            }
+
+            .community-logo {
               font-size: 24px;
-              font-weight: bold;
-              margin-bottom: 5px;
+              font-weight: 700;
+              margin-bottom: 4px;
+              letter-spacing: -0.025em;
             }
-            .card-title {
-              font-size: 18px;
-              font-weight: bold;
+
+            .card-type {
+              font-size: 12px;
+              font-weight: 500;
+              opacity: 0.9;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
             }
+
+            .card-body {
+              padding: 25px;
+            }
+
+            .resident-photo {
+              width: 80px;
+              height: 80px;
+              background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px auto;
+              border: 3px solid #e2e8f0;
+              font-size: 32px;
+              font-weight: 600;
+              color: #64748b;
+            }
+
+            .resident-name {
+              font-size: 20px;
+              font-weight: 600;
+              color: #0f172a;
+              text-align: center;
+              margin-bottom: 20px;
+            }
+
+            .info-grid {
+              display: grid;
+              grid-template-columns: 1fr;
+              gap: 12px;
+            }
+
             .info-row {
               display: flex;
-              margin-bottom: 8px;
+              align-items: center;
+              padding: 8px 12px;
+              background: #f8fafc;
+              border-radius: 6px;
+              border: 1px solid #e2e8f0;
             }
-            .label {
-              font-weight: bold;
-              width: 120px;
+
+            .info-icon {
+              width: 16px;
+              height: 16px;
+              margin-right: 12px;
+              color: #64748b;
               flex-shrink: 0;
             }
-            .value {
+
+            .info-content {
               flex: 1;
+              min-width: 0;
+            }
+
+            .info-label {
+              font-size: 11px;
+              font-weight: 600;
+              color: #64748b;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              margin-bottom: 2px;
+              display: block;
+            }
+
+            .info-value {
+              font-size: 14px;
+              font-weight: 500;
+              color: #0f172a;
+              word-break: break-word;
+            }
+
+            .status-badge {
+              display: inline-flex;
+              align-items: center;
+              padding: 4px 8px;
+              border-radius: 12px;
+              font-size: 10px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            }
+
+            .status-active {
+              background: #dcfce7;
+              color: #166534;
+            }
+
+            .status-inactive {
+              background: #fef2f2;
+              color: #dc2626;
+            }
+
+            .card-footer {
+              background: #f8fafc;
+              padding: 15px 25px;
+              border-top: 1px solid #e2e8f0;
+              text-align: center;
+            }
+
+            .footer-text {
+              font-size: 10px;
+              color: #64748b;
+              font-weight: 500;
+              margin: 0;
+            }
+
+            .emergency-note {
+              background: #fef3c7;
+              border: 1px solid #f59e0b;
+              border-radius: 6px;
+              padding: 12px;
+              margin-top: 15px;
+              text-align: center;
+            }
+
+            .emergency-text {
+              font-size: 12px;
+              color: #92400e;
+              font-weight: 600;
+              margin: 0;
+            }
+
+            @media (max-width: 640px) {
+              .horizontal-card {
+                width: 100% !important;
+              }
             }
           </style>
         </head>
         <body>
-          <div class="${orientation === 'horizontal' ? 'horizontal-cards' : 'vertical-cards'}">
+          <div class="print-header">
+            <h1 class="print-title">🏥 Community Hub</h1>
+            <p class="print-subtitle">Resident Information Cards - ${new Date().toLocaleDateString()}</p>
+          </div>
+          <div class="cards-container ${orientation === 'horizontal' ? 'horizontal-cards' : 'vertical-cards'}">
             ${cardsHtml}
           </div>
         </body>
@@ -144,40 +360,83 @@ export default function ResidentCardsPage() {
 
   const generateCardHtml = (resident: IUser) => {
     const cardClass = orientation === 'horizontal' ? 'horizontal-card' : 'vertical-card'
+    const initial = resident.name.charAt(0).toUpperCase()
 
     return `
       <div class="card ${cardClass}">
-        <div class="header">
-          <div class="community-name">COMMUNITY HUB</div>
-          <div class="card-title">RESIDENT CARD</div>
+        <div class="card-header">
+          <div class="community-logo">🏢 Community Hub</div>
+          <div class="card-type">Resident Information Card</div>
         </div>
-        <div class="info-row">
-          <span class="label">Name:</span>
-          <span class="value">${resident.name}</span>
+
+        <div class="card-body">
+          <div class="resident-photo">${initial}</div>
+          <h2 class="resident-name">${resident.name}</h2>
+
+          <div class="info-grid">
+            <div class="info-row">
+              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Email Address</span>
+                <span class="info-value">${resident.email}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Phone Number</span>
+                <span class="info-value">${resident.phone || 'Not provided'}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Building & Unit</span>
+                <span class="info-value">${resident.building || 'N/A'} ${resident.apartment || ''}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Member Since</span>
+                <span class="info-value">${new Date(resident.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}</span>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div class="info-content">
+                <span class="info-label">Status</span>
+                <span class="status-badge ${resident.isActive ? 'status-active' : 'status-inactive'}">
+                  ${resident.isActive ? '✓ Active Resident' : '✗ Inactive'}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="info-row">
-          <span class="label">Email:</span>
-          <span class="value">${resident.email}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Phone:</span>
-          <span class="value">${resident.phone || 'N/A'}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Building:</span>
-          <span class="value">${resident.building || 'N/A'}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Apartment:</span>
-          <span class="value">${resident.apartment || 'N/A'}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Status:</span>
-          <span class="value">${resident.isActive ? 'Active' : 'Inactive'}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Joined:</span>
-          <span class="value">${new Date(resident.createdAt).toLocaleDateString()}</span>
+
+        <div class="card-footer">
+          <p class="footer-text">Community Hub Management System</p>
+          <div class="emergency-note">
+            <p class="emergency-text">🆘 Emergency Contact: Call Security at Ext. 911</p>
+          </div>
         </div>
       </div>
     `
