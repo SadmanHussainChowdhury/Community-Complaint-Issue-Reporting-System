@@ -311,7 +311,7 @@ export default function AdminProfilePage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {isEditing && item.editable ? (
+                      {isEditing && item.editable && item.field ? (
                         <div className="max-w-md">
                           {item.field === 'phone' ? (
                             <input
@@ -325,7 +325,7 @@ export default function AdminProfilePage() {
                             <input
                               type={item.field === 'email' ? 'email' : 'text'}
                               value={formData[item.field as keyof typeof formData] as string}
-                              onChange={(e) => handleInputChange(item.field, e.target.value)}
+                              onChange={(e) => handleInputChange(item.field!, e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                               placeholder={`Enter ${item.label.toLowerCase()}`}
                             />
