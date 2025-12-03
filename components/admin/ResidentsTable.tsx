@@ -72,7 +72,9 @@ export default function ResidentsTable({
 
   const handleResidentUpdate = (updatedResidents: IUser[]) => {
     setResidents(updatedResidents)
-    fetchResidents()
+    setTotalResidents(updatedResidents.length)
+    // Refresh data to get accurate totals
+    fetchResidents(currentPage, itemsPerPage, searchQuery)
   }
 
   return (

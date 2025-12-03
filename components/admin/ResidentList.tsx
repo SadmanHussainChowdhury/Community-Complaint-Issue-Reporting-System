@@ -179,7 +179,7 @@ export default function ResidentList({
                           <span className="text-xs">View</span>
                         </Link>
                         <Link
-                          href={`/admin/users/${resident._id}`}
+                          href={`/admin/users/${resident._id}/edit`}
                           className="flex items-center space-x-1 text-blue-600 hover:text-blue-900 transition-colors"
                           title="Edit resident"
                         >
