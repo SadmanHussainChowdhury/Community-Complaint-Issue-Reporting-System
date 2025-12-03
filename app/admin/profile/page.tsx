@@ -298,6 +298,7 @@ export default function AdminProfilePage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {profileData.map((item, index) => {
                 const Icon = item.icon
+                const fieldName = item.field
                 return (
                   <tr key={index} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -311,9 +312,9 @@ export default function AdminProfilePage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {isEditing && item.editable && item.field ? (
+                      {isEditing && item.editable && fieldName ? (
                         <div className="max-w-md">
-                          {item.field === 'phone' ? (
+                          {fieldName === 'phone' ? (
                             <input
                               type="tel"
                               value={formData.phone}
@@ -323,9 +324,9 @@ export default function AdminProfilePage() {
                             />
                           ) : (
                             <input
-                              type={item.field === 'email' ? 'email' : 'text'}
-                              value={formData[item.field as keyof typeof formData] as string}
-                              onChange={(e) => handleInputChange(item.field!, e.target.value)}
+                              type={fieldName === 'email' ? 'email' : 'text'}
+                              value={formData[fieldName as keyof typeof formData] as string}
+                              onChange={(e) => handleInputChange(fieldName, e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                               placeholder={`Enter ${item.label.toLowerCase()}`}
                             />
