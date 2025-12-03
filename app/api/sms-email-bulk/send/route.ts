@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic'
 
 // Twilio client (will be initialized if credentials are available)
 let twilioClient: any = null
+let twilioAvailable = false
 
 const initTwilio = async () => {
   if (twilioClient) return twilioClient
@@ -21,12 +22,31 @@ const initTwilio = async () => {
 
   if (accountSid && authToken && fromNumber) {
     try {
-      // Dynamic import of Twilio
-      const twilio = await import('twilio')
-      twilioClient = twilio.default(accountSid, authToken)
+      // Dynamic import of Twilio - handle case where package is not installed
+      let twilioModule
+      try {
+        twilioModule = await import('twilio')
+      } catch (importError: any) {
+        if (importError.code === 'MODULE_NOT_FOUND' || importError.message?.includes('Cannot find module')) {
+          console.warn('Twilio package not installed. Install it with: npm install twilio')
+          twilioAvailable = false
+          return null
+        }
+        throw importError
+      }
+      
+      if (!twilioModule || !twilioModule.default) {
+        console.warn('Twilio module not available')
+        twilioAvailable = false
+        return null
+      }
+      
+      twilioClient = twilioModule.default(accountSid, authToken)
+      twilioAvailable = true
       return twilioClient
     } catch (error) {
       console.error('Error initializing Twilio:', error)
+      twilioAvailable = false
       return null
     }
   }
@@ -36,7 +56,11 @@ const initTwilio = async () => {
 const sendSMS = async (to: string, message: string): Promise<boolean> => {
   const client = await initTwilio()
   if (!client) {
-    console.log('Twilio not configured. Would send SMS to:', to, message)
+    if (!twilioAvailable) {
+      console.warn('Twilio package not installed. Install it with: npm install twilio')
+    } else {
+      console.log('Twilio not configured. Would send SMS to:', to, message)
+    }
     return false
   }
 
