@@ -223,7 +223,7 @@ export default function AdminProfilePage() {
     { label: 'Email', value: isEditing ? formData.email : userData.email || 'N/A', icon: Mail, editable: true, field: 'email' },
     { label: 'Phone', value: isEditing ? formData.phone : userData.phone || 'N/A', icon: Phone, editable: true, field: 'phone' },
     { label: 'Role', value: userData.role?.charAt(0).toUpperCase() + userData.role?.slice(1) || 'Admin', icon: Shield, editable: false },
-    { label: 'User ID', value: userData._id || userData.id || 'N/A', icon: User, editable: false },
+    { label: 'User ID', value: userData._id || 'N/A', icon: User, editable: false },
     { label: 'Account Status', value: userData.isActive !== false ? 'Active' : 'Inactive', icon: Calendar, editable: false },
   ]
 
