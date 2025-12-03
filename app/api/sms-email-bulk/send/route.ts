@@ -12,45 +12,65 @@ export const dynamic = 'force-dynamic'
 // Twilio client (will be initialized if credentials are available)
 let twilioClient: any = null
 let twilioAvailable = false
+let twilioChecked = false
 
 const initTwilio = async () => {
   if (twilioClient) return twilioClient
+  if (twilioChecked && !twilioAvailable) return null
 
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
   const fromNumber = process.env.TWILIO_PHONE_NUMBER
 
-  if (accountSid && authToken && fromNumber) {
-    try {
-      // Dynamic import of Twilio - handle case where package is not installed
-      let twilioModule
-      try {
-        twilioModule = await import('twilio')
-      } catch (importError: any) {
-        if (importError.code === 'MODULE_NOT_FOUND' || importError.message?.includes('Cannot find module')) {
-          console.warn('Twilio package not installed. Install it with: npm install twilio')
-          twilioAvailable = false
-          return null
-        }
-        throw importError
-      }
-      
-      if (!twilioModule || !twilioModule.default) {
-        console.warn('Twilio module not available')
-        twilioAvailable = false
-        return null
-      }
-      
-      twilioClient = twilioModule.default(accountSid, authToken)
-      twilioAvailable = true
-      return twilioClient
-    } catch (error) {
-      console.error('Error initializing Twilio:', error)
+  if (!accountSid || !authToken || !fromNumber) {
+    twilioChecked = true
+    return null
+  }
+
+  // Use dynamic require to avoid webpack static analysis
+  // This approach prevents webpack from trying to resolve the module at build time
+  try {
+    // Use eval to create a require that webpack can't statically analyze
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const requireTwilio = new Function('return typeof require !== "undefined" && require')
+    const requireFunc = requireTwilio()
+    
+    if (!requireFunc) {
+      console.warn('require function not available')
+      twilioAvailable = false
+      twilioChecked = true
+      return null
+    }
+
+    // Dynamically require twilio - webpack won't analyze this
+    const twilioModule = requireFunc('twilio')
+    
+    if (!twilioModule || !twilioModule.default) {
+      console.warn('Twilio module not available')
+      twilioAvailable = false
+      twilioChecked = true
+      return null
+    }
+    
+    twilioClient = twilioModule.default(accountSid, authToken)
+    twilioAvailable = true
+    twilioChecked = true
+    return twilioClient
+  } catch (error: any) {
+    twilioChecked = true
+    if (error.code === 'MODULE_NOT_FOUND' || 
+        error.message?.includes('Cannot find module') || 
+        error.message?.includes('Cannot resolve module') ||
+        error.message?.includes("Module not found")) {
+      console.warn('Twilio package not installed. Install it with: npm install twilio')
+      console.warn('SMS functionality will be disabled. Email functionality will still work.')
       twilioAvailable = false
       return null
     }
+    console.error('Error initializing Twilio:', error)
+    twilioAvailable = false
+    return null
   }
-  return null
 }
 
 const sendSMS = async (to: string, message: string): Promise<boolean> => {
