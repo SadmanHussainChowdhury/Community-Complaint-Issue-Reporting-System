@@ -307,7 +307,7 @@ export default function SMSEmailBulkPage() {
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Enter email subject"
-                required={messageType !== 'sms'}
+                required
               />
             </div>
           )}
