@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { IUser } from '@/types'
 import ResidentList from '@/components/admin/ResidentList'
 import Pagination from '@/components/ui/Pagination'
-import { Search, Filter, Download, UserPlus } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ResidentsTableProps {
@@ -26,7 +26,6 @@ export default function ResidentsTable({
   const [totalResidents, setTotalResidents] = useState(initialTotal)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
 
   const fetchResidents = useCallback(async (page: number = currentPage, limit: number = itemsPerPage, search: string = searchQuery) => {
     setLoading(true)
@@ -61,140 +60,49 @@ export default function ResidentsTable({
 
   const handlePageSizeChange = (newSize: number) => {
     setItemsPerPage(newSize)
-    setCurrentPage(1) // Reset to first page when changing page size
+    setCurrentPage(1)
     fetchResidents(1, newSize)
   }
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query)
-    setCurrentPage(1) // Reset to first page when searching
+    setCurrentPage(1)
     fetchResidents(1, itemsPerPage, query)
   }
 
   const handleResidentUpdate = (updatedResidents: IUser[]) => {
     setResidents(updatedResidents)
-    // Refresh data to get updated totals
     fetchResidents()
   }
 
-  const handleExport = () => {
-    // Create CSV export of current filtered results
-    const csvContent = [
-      ['Name', 'Email', 'Phone', 'Apartment', 'Building', 'Status', 'Joined Date'].join(','),
-      ...residents.map(resident => [
-        `"${resident.name}"`,
-        `"${resident.email}"`,
-        resident.phone || '',
-        resident.apartment || '',
-        resident.building || '',
-        resident.isActive ? 'Active' : 'Inactive',
-        new Date(resident.createdAt).toLocaleDateString()
-      ].join(','))
-    ].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `residents-export-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-    toast.success('Residents exported successfully')
-  }
-
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      {/* Header with Search and Filters */}
-      <div className="p-8 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                <UserPlus className="w-5 h-5 text-white" />
-              </div>
-              Community Residents
-            </h2>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-sm text-primary-600 font-medium">
-              {totalResidents} total residents
-            </div>
-          </div>
+    <div className="space-y-6">
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <span className="ml-3 text-slate-600">Loading residents...</span>
         </div>
+      )}
 
-        {/* Search and Filters */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* Search Input */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search residents by name or email..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Filters Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
-          </div>
-
-          {/* Advanced Filters */}
-          {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
-                  value="active"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="active">Active Residents</option>
-                  <option value="inactive">Inactive Residents</option>
-                  <option value="all">All Residents</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Building</label>
-                <select
-                  value="all"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="all">All Buildings</option>
-                  <option value="A">Building A</option>
-                  <option value="B">Building B</option>
-                  <option value="C">Building C</option>
-                </select>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
+      {/* Residents List */}
       <ResidentList
         residents={residents}
         onResidentsChange={handleResidentUpdate}
         loading={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
       />
 
+      {/* Enhanced Pagination */}
       <Pagination
         currentPage={currentPage}
         totalItems={totalResidents}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        onSearchChange={handleSearchChange}
-        searchQuery={searchQuery}
         loading={loading}
-        onExport={handleExport}
-        showPageJump={totalResidents > itemsPerPage * 5}
+        showPageJump={totalResidents > 50}
         showPageSizeSelector={true}
         className="border-0 shadow-2xl bg-gradient-to-br from-white via-slate-50 to-white"
       />

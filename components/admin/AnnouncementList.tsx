@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { IAnnouncement } from '@/types'
 import { UserRole } from '@/types/enums'
-import { Pin, Calendar, User, Trash2, Edit } from 'lucide-react'
+import { Pin, Calendar, User, Trash2, Edit, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface AnnouncementListProps {
@@ -13,12 +13,17 @@ interface AnnouncementListProps {
   onSelectAllAnnouncements?: (selected: boolean) => void
   selectedAnnouncements?: string[]
   loading?: boolean
+  searchQuery?: string
+  onSearchChange?: (query: string) => void
+  isPinnedFilter?: 'all' | 'pinned' | 'unpinned'
+  targetRoleFilter?: UserRole | 'all'
+  onFilterChange?: (type: 'pinned' | 'role', value: string) => void
 }
 
 const roleColors = {
-  [UserRole.ADMIN]: 'bg-purple-100 text-purple-800 border-purple-200',
-  [UserRole.STAFF]: 'bg-blue-100 text-blue-800 border-blue-200',
-  [UserRole.RESIDENT]: 'bg-green-100 text-green-800 border-green-200',
+  [UserRole.ADMIN]: 'bg-purple-100 text-purple-800',
+  [UserRole.STAFF]: 'bg-blue-100 text-blue-800',
+  [UserRole.RESIDENT]: 'bg-green-100 text-green-800',
 }
 
 export default function AnnouncementList({
@@ -27,13 +32,34 @@ export default function AnnouncementList({
   onAnnouncementSelect,
   onSelectAllAnnouncements,
   selectedAnnouncements = [],
-  loading = false
+  loading: externalLoading = false,
+  searchQuery: externalSearchQuery = '',
+  onSearchChange,
+  isPinnedFilter: externalIsPinnedFilter = 'all',
+  targetRoleFilter: externalTargetRoleFilter = 'all',
+  onFilterChange
 }: AnnouncementListProps) {
   const [announcements, setAnnouncements] = useState(initialAnnouncements)
+  const [internalLoading, setInternalLoading] = useState(false)
+
+  const loading = externalLoading || internalLoading
+
+  const filteredAnnouncements = announcements.filter((announcement) => {
+    const matchesSearch = !externalSearchQuery ||
+      announcement.title.toLowerCase().includes(externalSearchQuery.toLowerCase()) ||
+      announcement.content.toLowerCase().includes(externalSearchQuery.toLowerCase())
+    const matchesPinned = externalIsPinnedFilter === 'all' ||
+      (externalIsPinnedFilter === 'pinned' && announcement.isPinned) ||
+      (externalIsPinnedFilter === 'unpinned' && !announcement.isPinned)
+    const matchesRole = externalTargetRoleFilter === 'all' ||
+      (announcement.targetRoles && announcement.targetRoles.includes(externalTargetRoleFilter))
+    return matchesSearch && matchesPinned && matchesRole
+  })
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this announcement?')) return
 
+    setInternalLoading(true)
     try {
       const res = await fetch(`/api/announcements/${id}`, {
         method: 'DELETE',
@@ -51,115 +77,173 @@ export default function AnnouncementList({
     } catch (error) {
       console.error('Error deleting announcement:', error)
       toast.error('Error deleting announcement')
+    } finally {
+      setInternalLoading(false)
     }
   }
 
   return (
     <div className="bg-white rounded-lg shadow-md">
-      {/* Announcements List */}
-      <div className="p-6">
-        <div className="space-y-4">
-          {announcements.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Pin className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No announcements found</h3>
-              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
-            </div>
-          ) : (
-            announcements.map((announcement) => {
-              const createdBy = typeof announcement.createdBy === 'object' ? announcement.createdBy : null
-
-              return (
-                <div
-                  key={announcement._id}
-                  className="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30"
-                >
-                  {/* Selection Checkbox */}
-                  {onAnnouncementSelect && (
-                    <div className="flex items-center mb-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedAnnouncements.includes(announcement._id)}
-                        onChange={(e) => onAnnouncementSelect(announcement._id, e.target.checked)}
-                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        {announcement.isPinned && (
-                          <div className="flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
-                            <Pin className="w-3 h-3 fill-yellow-600" />
-                            PINNED
-                          </div>
-                        )}
-                        <h3 className="text-xl font-semibold text-gray-900 leading-tight">{announcement.title}</h3>
-                      </div>
-
-                      <p className="text-gray-700 mb-4 leading-relaxed line-clamp-3">{announcement.content}</p>
-
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center border border-indigo-200">
-                            <User className="w-4 h-4 text-indigo-600" />
-                          </div>
-                          <span className="font-medium">{createdBy?.name || 'Unknown'}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center border border-blue-200">
-                            <Calendar className="w-4 h-4 text-blue-600" />
-                          </div>
-                          <span>{new Date(announcement.createdAt).toLocaleDateString()}</span>
-                        </div>
-
-                        {announcement.targetRoles && announcement.targetRoles.length > 0 && (
-                          <div className="flex items-center gap-2">
-                            <User className="w-4 h-4 text-green-600" />
-                            <div className="flex gap-1">
-                              {announcement.targetRoles.map((role) => (
-                                <span
-                                  key={role}
-                                  className={`px-2 py-1 text-xs font-semibold rounded-full border ${roleColors[role as UserRole] || 'bg-gray-100 text-gray-800 border-gray-200'}`}
-                                >
-                                  {role.charAt(0).toUpperCase() + role.slice(1)}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 ml-6">
-                      <button className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200">
-                        <Edit className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(announcement._id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
-          )}
+      {/* Filters */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search announcements..."
+              value={externalSearchQuery}
+              onChange={(e) => onSearchChange?.(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <select
+            value={externalIsPinnedFilter}
+            onChange={(e) => onFilterChange?.('pinned', e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="all">All Announcements</option>
+            <option value="pinned">Pinned Only</option>
+            <option value="unpinned">Unpinned Only</option>
+          </select>
+          <select
+            value={externalTargetRoleFilter}
+            onChange={(e) => onFilterChange?.('role', e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="all">All Roles</option>
+            {Object.values(UserRole).map((role) => (
+              <option key={role} value={role}>
+                {role.charAt(0).toUpperCase() + role.slice(1)}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {announcements.length > 0 && (
-        <div className="px-6 py-4 border-t border-gray-200 text-sm text-gray-600 bg-gray-50 rounded-b-lg">
-          Showing {announcements.length} of {announcements.length} announcements
-        </div>
-      )}
+      {/* Announcements Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              {onAnnouncementSelect && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedAnnouncements.length === filteredAnnouncements.length && filteredAnnouncements.length > 0}
+                    onChange={(e) => onSelectAllAnnouncements?.(e.target.checked)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                </th>
+              )}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Title
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Content
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Target Roles
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Created By
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {loading ? (
+              <tr>
+                <td colSpan={onAnnouncementSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <span className="ml-3">Loading announcements...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : filteredAnnouncements.length === 0 ? (
+              <tr>
+                <td colSpan={onAnnouncementSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
+                  No announcements found
+                </td>
+              </tr>
+            ) : (
+              filteredAnnouncements.map((announcement) => {
+                const createdBy = typeof announcement.createdBy === 'object' ? announcement.createdBy : null
+
+                return (
+                  <tr key={announcement._id} className="hover:bg-gray-50">
+                    {onAnnouncementSelect && (
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedAnnouncements.includes(announcement._id)}
+                          onChange={(e) => onAnnouncementSelect(announcement._id, e.target.checked)}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        />
+                      </td>
+                    )}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {announcement.isPinned && (
+                          <Pin className="w-4 h-4 text-yellow-600 fill-yellow-600" />
+                        )}
+                        <div className="text-sm font-medium text-gray-900">{announcement.title}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-500 truncate max-w-xs">{announcement.content}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex gap-1">
+                        {announcement.targetRoles && announcement.targetRoles.length > 0 ? (
+                          announcement.targetRoles.map((role) => (
+                            <span
+                              key={role}
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                roleColors[role as UserRole] || 'bg-gray-100 text-gray-800'
+                              }`}
+                            >
+                              {role.charAt(0).toUpperCase() + role.slice(1)}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-sm text-gray-500">All</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {createdBy?.name || 'Unknown'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(announcement.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <button className="text-primary-600 hover:text-primary-900" title="Edit">
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(announcement._id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
-

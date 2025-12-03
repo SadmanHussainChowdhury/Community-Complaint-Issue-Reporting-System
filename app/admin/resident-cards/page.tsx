@@ -476,29 +476,6 @@ export default function ResidentCardsPage() {
       {/* Controls */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search residents..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Filters */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
-          </div>
-
           <div className="flex items-center space-x-4">
             {/* Orientation Toggle */}
             <div className="flex items-center space-x-2">
@@ -517,105 +494,142 @@ export default function ResidentCardsPage() {
               </button>
             </div>
 
-            {/* Print Button */}
+            {/* Filters Toggle */}
             <button
-              onClick={printCards}
-              disabled={selectedResidents.length === 0}
-              className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
-              <Printer className="h-4 w-4" />
-              <span>Print Cards ({selectedResidents.length})</span>
+              <Filter className="h-4 w-4" />
+              <span>Filters</span>
             </button>
           </div>
-        </div>
 
-        {/* Advanced Filters */}
-        {showFilters && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Building</label>
-                <select
-                  value={buildingFilter}
-                  onChange={(e) => setBuildingFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="">All Buildings</option>
-                  <option value="A">Building A</option>
-                  <option value="B">Building B</option>
-                  <option value="C">Building C</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
+          {/* Print Button */}
+          <button
+            onClick={printCards}
+            disabled={selectedResidents.length === 0}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Printer className="h-4 w-4" />
+            <span>Print Cards ({selectedResidents.length})</span>
+          </button>
+        </div>
       </div>
 
-      {/* Residents List */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+      {/* Residents Table */}
+      <div className="bg-white rounded-lg shadow-md">
+        {/* Filters */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="checkbox"
-                checked={selectedResidents.length === filteredResidents.length && filteredResidents.length > 0}
-                onChange={handleSelectAll}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                type="text"
+                placeholder="Search residents..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
-              <span className="text-sm font-medium text-gray-700">
-                Select All ({filteredResidents.length} residents)
-              </span>
             </div>
-            <div className="text-sm text-gray-500">
-              {selectedResidents.length} selected
-            </div>
+            {showFilters && (
+              <select
+                value={buildingFilter}
+                onChange={(e) => setBuildingFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Buildings</option>
+                <option value="A">Building A</option>
+                <option value="B">Building B</option>
+                <option value="C">Building C</option>
+              </select>
+            )}
           </div>
         </div>
 
-        <div className="divide-y divide-gray-200">
-          {filteredResidents.map((resident) => (
-            <div key={resident._id} className="px-6 py-4 hover:bg-gray-50">
-              <div className="flex items-center space-x-4">
-                <input
-                  type="checkbox"
-                  checked={selectedResidents.some(r => r._id === resident._id)}
-                  onChange={() => handleResidentSelect(resident)}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-900">{resident.name}</h3>
-                      <p className="text-sm text-gray-500">{resident.email}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-900">
+        {/* Residents Table */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedResidents.length === filteredResidents.length && filteredResidents.length > 0}
+                    onChange={handleSelectAll}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Resident
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Contact
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredResidents.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                    No residents found matching your criteria.
+                  </td>
+                </tr>
+              ) : (
+                filteredResidents.map((resident) => (
+                  <tr key={resident._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={selectedResidents.some(r => r._id === resident._id)}
+                        onChange={() => handleResidentSelect(resident)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                            <span className="text-white font-semibold">
+                              {resident.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{resident.name}</div>
+                          <div className="text-sm text-gray-500">{resident.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{resident.phone || 'N/A'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
                         {resident.building && resident.apartment
-                          ? `${resident.building} - ${resident.apartment}`
-                          : 'No unit assigned'
+                          ? `Building ${resident.building}, Apt ${resident.apartment}`
+                          : 'N/A'
                         }
-                      </p>
-                      <p className="text-sm text-gray-500">{resident.phone || 'No phone'}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  resident.isActive
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
-                }`}>
-                  {resident.isActive ? 'Active' : 'Inactive'}
-                </div>
-              </div>
-            </div>
-          ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        resident.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {resident.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-
-        {filteredResidents.length === 0 && (
-          <div className="px-6 py-8 text-center text-gray-500">
-            No residents found matching your criteria.
-          </div>
-        )}
       </div>
     </div>
   )
