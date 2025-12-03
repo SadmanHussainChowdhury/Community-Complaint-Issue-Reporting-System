@@ -24,6 +24,7 @@ import {
   EyeOff,
   MessageSquare,
   DollarSign,
+  ClipboardCheck,
 } from 'lucide-react'
 import { SessionUser } from '@/types'
 import toast from 'react-hot-toast'
@@ -36,14 +37,15 @@ const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/admin/residents', label: 'Residents', icon: Users },
   { href: '/admin/resident-cards', label: 'Resident Card', icon: UserCheck },
-  { href: '/admin/sms-email-bulk', label: 'SMS and Email Bulk', icon: MessageSquare },
-  { href: '/admin/monthly-fees', label: 'Monthly Fees', icon: DollarSign },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
+  { href: '/admin/assignments', label: 'Assignments', icon: ClipboardCheck },
   { href: '/admin/announcements', label: 'Announcements', icon: Bell },
-  { href: '/admin/assignments', label: 'Assignments', icon: UserCheck },
+  { href: '/admin/monthly-fees', label: 'Monthly Fees', icon: DollarSign },
   { href: '/admin/analytics', label: 'Analytics', icon: TrendingUp },
+  { href: '/admin/sms-email-bulk', label: 'SMS & Email', icon: MessageSquare },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/profile', label: 'Profile', icon: User },
 ]
 
 interface ProfileFormData {
