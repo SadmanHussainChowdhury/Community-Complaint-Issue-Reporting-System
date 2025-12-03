@@ -19,7 +19,7 @@ export default function ComplaintCard({ complaint, showActions = false }: Compla
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">{getCategoryIcon(complaint.category)}</span>
             <Link
-              href={`/complaints/${complaint._id}`}
+              href={`/resident/complaints/${complaint._id}`}
               className="text-lg font-semibold text-gray-900 hover:text-primary-600"
             >
               {complaint.title}

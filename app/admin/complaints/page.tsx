@@ -68,13 +68,6 @@ export default async function AdminComplaintsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Complaint Management</h1>
           <p className="mt-2 text-gray-600">Manage and track community complaints</p>
                   </div>
-        <Link
-          href="/admin/complaints/new"
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-flex items-center space-x-2"
-        >
-          <span>+</span>
-          <span>New Complaint</span>
-        </Link>
                             </div>
 
       <ComplaintsTable

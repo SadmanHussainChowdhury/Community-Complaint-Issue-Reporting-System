@@ -136,7 +136,7 @@ export default function ResidentList({ residents, onResidentsChange, loading = f
             {/* Actions */}
             <div className="flex items-center gap-2">
               <Link
-                href={`/admin/residents/${resident._id}/edit`}
+                href={`/admin/users/${resident._id}`}
                 className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 title="Edit resident"
               >

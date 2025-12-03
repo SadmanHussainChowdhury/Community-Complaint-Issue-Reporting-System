@@ -49,7 +49,7 @@ export default async function AdminResidentsPage() {
           <p className="mt-2 text-gray-600">Manage community residents</p>
         </div>
         <Link
-          href="/admin/residents/new"
+          href="/admin/users/new"
           className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 inline-flex items-center space-x-2"
         >
           <span>+</span>
