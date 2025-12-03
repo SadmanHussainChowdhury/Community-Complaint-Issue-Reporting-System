@@ -5,7 +5,7 @@ import { IUser } from '@/types'
 import { UserRole } from '@/types/enums'
 import UserList from '@/components/admin/UserList'
 import Pagination from '@/components/ui/Pagination'
-import { Filter, Download, UserCheck, UserX, Users, Loader2 } from 'lucide-react'
+import { UserCheck, UserX, Users, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface UsersTableProps {
@@ -29,7 +29,6 @@ export default function UsersTable({
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all')
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
-  const [showFilters, setShowFilters] = useState(false)
 
   const fetchUsers = useCallback(async (page: number = currentPage, limit: number = itemsPerPage, search: string = searchQuery, role: UserRole | 'all' = roleFilter) => {
     setLoading(true)
@@ -76,11 +75,6 @@ export default function UsersTable({
     fetchUsers(1, itemsPerPage, query, roleFilter)
   }
 
-  const handleRoleFilter = (role: UserRole | 'all') => {
-    setRoleFilter(role)
-    setCurrentPage(1) // Reset to first page when filtering
-    fetchUsers(1, itemsPerPage, searchQuery, role)
-  }
 
   // Bulk actions
   const handleBulkAction = (action: string) => {
@@ -158,31 +152,6 @@ export default function UsersTable({
     }
   }
 
-  const handleExport = () => {
-    // Create CSV export of current filtered results
-    const csvContent = [
-      ['Name', 'Email', 'Role', 'Phone', 'Apartment', 'Building', 'Status', 'Created'].join(','),
-      ...users.map(user => [
-        `"${user.name}"`,
-        `"${user.email}"`,
-        user.role,
-        `"${user.phone || ''}"`,
-        `"${user.apartment || ''}"`,
-        `"${user.building || ''}"`,
-        user.isActive ? 'Active' : 'Inactive',
-        new Date(user.createdAt).toLocaleDateString()
-      ].join(','))
-    ].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `users-export-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-    toast.success('Users exported successfully')
-  }
 
   const handleUserUpdate = (updatedUsers: IUser[]) => {
     setUsers(updatedUsers)
@@ -206,51 +175,6 @@ export default function UsersTable({
 
   return (
     <div className="space-y-6">
-      {/* Filters and Export */}
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Filters Toggle */}
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors"
-          >
-            <Filter className="w-4 h-4" />
-            Filters
-            {showFilters ? '▲' : '▼'}
-          </button>
-
-          {/* Export Button */}
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            Export
-          </button>
-        </div>
-
-        {/* Advanced Filters */}
-        {showFilters && (
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Role</label>
-                <select
-                  value={roleFilter}
-                  onChange={(e) => handleRoleFilter(e.target.value as UserRole | 'all')}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-                >
-                  <option value="all">All Roles</option>
-                  <option value="resident">Resident</option>
-                  <option value="staff">Staff</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-8">
