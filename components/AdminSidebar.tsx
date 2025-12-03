@@ -33,6 +33,7 @@ interface AdminSidebarProps {
 const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/admin/residents', label: 'Residents', icon: Users },
+  { href: '/admin/resident-cards', label: 'Resident Cards', icon: UserCheck },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
   { href: '/admin/announcements', label: 'Announcements', icon: Bell },
   { href: '/admin/assignments', label: 'Assignments', icon: UserCheck },
