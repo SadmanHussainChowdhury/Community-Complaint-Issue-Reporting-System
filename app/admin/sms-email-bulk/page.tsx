@@ -246,48 +246,103 @@ export default function SMSEmailBulkPage() {
             </p>
           </div>
 
-          {/* User Selection List */}
+          {/* User Selection Table */}
           {recipientType === 'selected' && (
             <div className="mt-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-md font-semibold text-gray-900">Select Users</h3>
-                <button
-                  type="button"
-                  onClick={handleSelectAll}
-                  className="text-sm text-primary-600 hover:text-primary-700"
-                >
-                  {selectedUsers.length === users.length ? 'Deselect All' : 'Select All'}
-                </button>
-              </div>
-              {fetchingUsers ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
-                </div>
-              ) : (
-                <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
-                  {users.map((user) => (
-                    <div
-                      key={user._id}
-                      className="flex items-center space-x-3 p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+              <div className="bg-white rounded-lg shadow-md">
+                {/* Filters */}
+                <div className="p-6 border-b border-gray-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-md font-semibold text-gray-900">Select Users</h3>
+                    <button
+                      type="button"
+                      onClick={handleSelectAll}
+                      className="text-sm text-primary-600 hover:text-primary-700"
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.some(u => u._id === user._id)}
-                        onChange={() => handleUserToggle(user)}
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-sm text-gray-500">{user.email}</p>
-                        {user.phone && <p className="text-xs text-gray-400">{user.phone}</p>}
-                      </div>
-                      <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 capitalize">
-                        {user.role}
-                      </span>
-                    </div>
-                  ))}
+                      {selectedUsers.length === users.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  </div>
                 </div>
-              )}
+
+                {/* Users Table */}
+                {fetchingUsers ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+                    <span className="ml-3 text-gray-600">Loading users...</span>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.length === users.length && users.length > 0}
+                              onChange={handleSelectAll}
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            User
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Contact
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Role
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {users.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                              No users found
+                            </td>
+                          </tr>
+                        ) : (
+                          users.map((user) => (
+                            <tr key={user._id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedUsers.some(u => u._id === user._id)}
+                                  onChange={() => handleUserToggle(user)}
+                                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 h-10 w-10">
+                                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                      <span className="text-white font-semibold">
+                                        {user.name.charAt(0).toUpperCase()}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                                    <div className="text-sm text-gray-500">{user.email}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">{user.phone || 'N/A'}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
+                                  {user.role}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { DollarSign, Plus, Search, Filter, Download, Edit, Trash2, CheckCircle2, XCircle, Calendar, User, Loader2, X } from 'lucide-react'
+import { DollarSign, Plus, Search, Edit, Trash2, CheckCircle2, XCircle, Calendar, Loader2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Pagination from '@/components/ui/Pagination'
 
@@ -51,7 +51,6 @@ export default function MonthlyFeesPage() {
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [monthFilter, setMonthFilter] = useState<string>('')
   const [yearFilter, setYearFilter] = useState<string>(new Date().getFullYear().toString())
-  const [showFilters, setShowFilters] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingFee, setEditingFee] = useState<MonthlyFee | null>(null)
   const [residents, setResidents] = useState<any[]>([])
@@ -241,12 +240,13 @@ export default function MonthlyFeesPage() {
         </div>
       )}
 
-      {/* Search and Filters */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+      {/* Fees Table */}
+      <div className="bg-white rounded-lg shadow-md">
+        {/* Filters */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search by resident name or email..."
@@ -255,96 +255,52 @@ export default function MonthlyFeesPage() {
                   setSearchQuery(e.target.value)
                   setCurrentPage(1)
                 }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
-            <button
-              onClick={handleExport}
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+            <select
+              value={monthFilter}
+              onChange={(e) => {
+                setMonthFilter(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <Download className="h-4 w-4" />
-              <span>Export</span>
-            </button>
+              <option value="">All Months</option>
+              {monthNames.map((month, index) => (
+                <option key={index} value={(index + 1).toString()}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              value={yearFilter}
+              onChange={(e) => {
+                setYearFilter(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Year"
+            />
           </div>
         </div>
-
-        {/* Advanced Filters */}
-        {showFilters && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
-                  <option value="overdue">Overdue</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <select
-                  value={monthFilter}
-                  onChange={(e) => {
-                    setMonthFilter(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="">All Months</option>
-                  {monthNames.map((month, index) => (
-                    <option key={index} value={(index + 1).toString()}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <input
-                  type="number"
-                  value={yearFilter}
-                  onChange={(e) => {
-                    setYearFilter(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                  placeholder="Year"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Fees Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
-          </div>
-        ) : fees.length === 0 ? (
-          <div className="text-center py-12">
-            <DollarSign className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No monthly fees found</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+        {/* Fees Table */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resident</th>
@@ -356,7 +312,24 @@ export default function MonthlyFeesPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {fees.map((fee) => (
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                      <div className="flex items-center justify-center">
+                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                        <span className="ml-3">Loading fees...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : fees.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                      <DollarSign className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p>No monthly fees found</p>
+                    </td>
+                  </tr>
+                ) : (
+                  fees.map((fee) => (
                   <tr key={fee._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
@@ -417,12 +390,12 @@ export default function MonthlyFeesPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
 
       {/* Pagination */}
       <Pagination
