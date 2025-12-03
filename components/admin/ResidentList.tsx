@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { IUser } from '@/types'
-import { Search, Edit, Trash2, Mail, Phone, Building, User } from 'lucide-react'
+import { Search, Edit, Trash2, Mail, Phone, Building, User, Eye } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ResidentListProps {
@@ -97,7 +97,10 @@ export default function ResidentList({
                 Contact
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Location
+                Address
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
@@ -110,7 +113,7 @@ export default function ResidentList({
           <tbody className="bg-white divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
                     <span className="ml-3">Loading residents...</span>
@@ -119,7 +122,7 @@ export default function ResidentList({
               </tr>
             ) : filteredResidents.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                   No residents found
                 </td>
               </tr>
@@ -143,13 +146,19 @@ export default function ResidentList({
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{resident.phone || 'N/A'}</div>
+                      <div className="text-sm text-gray-900">{resident.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
                         {resident.apartment && `Apt ${resident.apartment}`}
                         {resident.building && `, Building ${resident.building}`}
                         {!resident.apartment && !resident.building && 'N/A'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center text-sm text-gray-900">
+                        <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                        {resident.phone || 'N/A'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -160,24 +169,36 @@ export default function ResidentList({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-3">
                         <Link
                           href={`/admin/users/${resident._id}`}
-                          className="text-primary-600 hover:text-primary-900"
+                          className="flex items-center space-x-1 text-indigo-600 hover:text-indigo-900 transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span className="text-xs">View</span>
+                        </Link>
+                        <Link
+                          href={`/admin/users/${resident._id}`}
+                          className="flex items-center space-x-1 text-blue-600 hover:text-blue-900 transition-colors"
                           title="Edit resident"
                         >
                           <Edit className="w-4 h-4" />
+                          <span className="text-xs">Edit</span>
                         </Link>
                         <button
                           onClick={() => handleDeleteResident(resident)}
                           disabled={deletingResident?._id === resident._id}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                          className="flex items-center space-x-1 text-red-600 hover:text-red-900 disabled:opacity-50 transition-colors"
                           title="Delete resident"
                         >
                           {deletingResident?._id === resident._id ? (
                             <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
                           ) : (
-                            <Trash2 className="w-4 h-4" />
+                            <>
+                              <Trash2 className="w-4 h-4" />
+                              <span className="text-xs">Delete</span>
+                            </>
                           )}
                         </button>
                       </div>
