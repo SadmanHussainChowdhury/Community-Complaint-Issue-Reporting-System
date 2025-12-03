@@ -35,7 +35,7 @@ interface AdminSidebarProps {
 const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/admin/residents', label: 'Residents', icon: Users },
-  { href: '/admin/resident-cards', label: 'Resident Cards', icon: UserCheck },
+  { href: '/admin/resident-cards', label: 'Resident Card', icon: UserCheck },
   { href: '/admin/sms-email-bulk', label: 'SMS and Email Bulk', icon: MessageSquare },
   { href: '/admin/monthly-fees', label: 'Monthly Fees', icon: DollarSign },
   { href: '/admin/complaints', label: 'All Complaints', icon: ClipboardList },
