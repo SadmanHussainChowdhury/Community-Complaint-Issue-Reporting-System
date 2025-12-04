@@ -408,14 +408,16 @@ export default function ResidentCardsPage() {
         </button>
       </div>
 
-      {/* Cards Preview Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {filteredResidents.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-gray-500">
-            No residents found matching your search criteria.
-          </div>
-        ) : (
-          filteredResidents.map((resident) => {
+      {/* Cards Preview Grid - Centered */}
+      <div className="flex justify-center mb-8">
+        <div className="w-full max-w-7xl">
+          {filteredResidents.length === 0 ? (
+            <div className="text-center py-12 text-gray-500 animate-fade-in">
+              <p className="text-lg">No residents found matching your search criteria.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredResidents.map((resident, index) => {
             const initial = resident.name.charAt(0).toUpperCase()
             const residentId = resident._id.substring(0, 8).toUpperCase()
             const regDate = new Date(resident.createdAt).toLocaleDateString('en-GB', {
@@ -428,7 +430,11 @@ export default function ResidentCardsPage() {
             return (
               <div
                 key={resident._id}
-                className="relative bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-colors cursor-pointer"
+                className="relative bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-all duration-300 cursor-pointer animate-fade-in-up"
+                style={{
+                  animationDelay: `${index * 50}ms`,
+                  animationFillMode: 'both'
+                }}
                 onClick={() => handleResidentSelect(resident)}
               >
                 {/* Card Header */}
@@ -495,8 +501,10 @@ export default function ResidentCardsPage() {
                 )}
               </div>
             )
-          })
-        )}
+          })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
