@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Printer, Search } from 'lucide-react'
+import { Printer, Search, X, CheckCircle2, Users, FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { IUser } from '@/types'
 
@@ -65,7 +65,24 @@ export default function ResidentCardsPage() {
     )
   }
 
-  // Removed handleSelectAll as it's not used in the card view
+  const handleSelectAll = () => {
+    if (selectedResidents.length === filteredResidents.length) {
+      setSelectedResidents([])
+      toast.success('All cards deselected')
+    } else {
+      setSelectedResidents([...filteredResidents])
+      toast.success(`${filteredResidents.length} cards selected`)
+    }
+  }
+
+  const handleClearSelection = () => {
+    setSelectedResidents([])
+    toast.success('Selection cleared')
+  }
+
+  const handleClearSearch = () => {
+    setSearchQuery('')
+  }
 
   const printCards = () => {
     if (selectedResidents.length === 0) {
@@ -367,145 +384,172 @@ export default function ResidentCardsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <div className="h-8 bg-gray-200 rounded-lg w-64 mb-2 animate-pulse"></div>
+          <div className="h-4 bg-gray-200 rounded-lg w-96 animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="h-4 bg-gray-200 rounded w-24 mb-4 animate-pulse"></div>
+              <div className="h-8 bg-gray-200 rounded w-16 animate-pulse"></div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center items-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading residents...</p>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Resident Cards</h1>
-        <p className="mt-2 text-gray-600">Generate and print resident identification cards</p>
-      </div>
-
-      {/* Middle Search Bar */}
-      <div className="flex justify-center mb-8">
-        <div className="w-full max-w-2xl">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search residents by name, email, phone, or apartment..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base"
-            />
+      {/* Professional Search Bar */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Search Residents
+            </label>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by name, email, phone, or apartment..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-12 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  title="Clear search"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <p className="mt-2 text-sm text-gray-500">
+                Showing {filteredResidents.length} of {residents.length} residents
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Print Button */}
-      <div className="flex justify-center mb-6">
-        <button
-          onClick={printCards}
-          disabled={selectedResidents.length === 0}
-          className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-        >
-          <Printer className="h-5 w-5" />
-          <span>Print Selected Cards ({selectedResidents.length})</span>
-        </button>
-      </div>
-
       {/* Cards Preview Grid - Centered */}
-      <div className="flex justify-center mb-8">
-        <div className="w-full max-w-7xl">
-          {filteredResidents.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 animate-fade-in">
-              <p className="text-lg">No residents found matching your search criteria.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResidents.map((resident, index) => {
-            const initial = resident.name.charAt(0).toUpperCase()
-            const residentId = resident._id.substring(0, 8).toUpperCase()
-            const regDate = new Date(resident.createdAt).toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            })
-            const barcode = resident._id.substring(0, 12).replace(/-/g, '').toUpperCase()
-
-            return (
-              <div
-                key={resident._id}
-                className="relative bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-all duration-300 cursor-pointer animate-fade-in-up"
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                  animationFillMode: 'both'
-                }}
-                onClick={() => handleResidentSelect(resident)}
-              >
-                {/* Card Header */}
-                <div className="flex justify-between items-start p-4 border-b-2 border-gray-200 bg-white">
-                  <div>
-                    <div className="text-lg font-bold text-gray-900 leading-tight">{communityName}</div>
-                    <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">COMMUNITY</div>
+      {searchQuery && (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="w-full max-w-7xl">
+            {filteredResidents.length === 0 ? (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center animate-fade-in">
+                <div className="max-w-md mx-auto">
+                  <div className="bg-gray-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                    <Search className="h-10 w-10 text-gray-400" />
                   </div>
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-3 border-orange-600 flex flex-col items-center justify-center text-white text-[8px] font-bold text-center px-2 shadow-md flex-shrink-0">
-                    <div className="leading-tight">QUALITY</div>
-                    <div className="leading-tight">APPROVED</div>
-                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Residents Found</h3>
+                  <p className="text-gray-600 mb-4">
+                    No residents match your search criteria. Try adjusting your search terms.
+                  </p>
+                  <button
+                    onClick={handleClearSearch}
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                    <span>Clear Search</span>
+                  </button>
                 </div>
-
-                {/* Purple Title Bar */}
-                <div className="bg-purple-600 text-white py-2.5 px-4 text-center text-sm font-semibold uppercase tracking-wide">
-                  RESIDENT IDENTIFICATION CARD
-                </div>
-
-                {/* Card Body */}
-                <div className="p-5">
-                  <div className="mb-4 space-y-1">
-                    <div className="text-xs">
-                      <span className="font-semibold text-gray-600">RESIDENT ID :</span>{' '}
-                      <span className="text-gray-900">{residentId}</span>
-                    </div>
-                    <div className="text-xs">
-                      <span className="font-semibold text-gray-600">REG. DATE :</span>{' '}
-                      <span className="text-gray-900">{regDate}</span>
-                    </div>
-                  </div>
-
-                  {/* Photo Section */}
-                  <div className="flex justify-center my-4">
-                    <div className="w-24 h-28 bg-gradient-to-br from-indigo-100 to-purple-100 rounded border-2 border-gray-300 flex items-center justify-center text-4xl font-bold text-indigo-600">
-                      {initial}
-                    </div>
-                  </div>
-
-                  {/* Name */}
-                  <div className="text-center mt-3">
-                    <div className="text-base font-semibold text-gray-900 uppercase tracking-wide">
-                      {resident.name}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Barcode Section */}
-                <div className="bg-gray-50 py-3 px-4 border-t border-gray-200">
-                  <div className="flex justify-center">
-                    <div className="font-mono text-sm font-bold tracking-widest text-gray-900 bg-white px-4 py-2 border border-gray-300 rounded">
-                      {barcode}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Selection Indicator */}
-                {selectedResidents.some(r => r._id === resident._id) && (
-                  <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                )}
               </div>
-            )
-          })}
-            </div>
-          )}
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredResidents.map((resident, index) => {
+                  const initial = resident.name.charAt(0).toUpperCase()
+                  const residentId = resident._id.substring(0, 8).toUpperCase()
+                  const regDate = new Date(resident.createdAt).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })
+                  const barcode = resident._id.substring(0, 12).replace(/-/g, '').toUpperCase()
+
+                  return (
+                    <div
+                      key={resident._id}
+                      className="relative bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-all duration-300 animate-fade-in-up"
+                      style={{
+                        animationDelay: `${index * 50}ms`,
+                        animationFillMode: 'both'
+                      }}
+                    >
+                      {/* Card Header */}
+                      <div className="flex justify-between items-start p-4 border-b-2 border-gray-200 bg-white">
+                        <div>
+                          <div className="text-lg font-bold text-gray-900 leading-tight">{communityName}</div>
+                          <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">COMMUNITY</div>
+                        </div>
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-3 border-orange-600 flex flex-col items-center justify-center text-white text-[8px] font-bold text-center px-2 shadow-md flex-shrink-0">
+                          <div className="leading-tight">QUALITY</div>
+                          <div className="leading-tight">APPROVED</div>
+                        </div>
+                      </div>
+
+                      {/* Purple Title Bar */}
+                      <div className="bg-purple-600 text-white py-2.5 px-4 text-center text-sm font-semibold uppercase tracking-wide">
+                        RESIDENT IDENTIFICATION CARD
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5">
+                        <div className="mb-4 space-y-1">
+                          <div className="text-xs">
+                            <span className="font-semibold text-gray-600">RESIDENT ID :</span>{' '}
+                            <span className="text-gray-900">{residentId}</span>
+                          </div>
+                          <div className="text-xs">
+                            <span className="font-semibold text-gray-600">REG. DATE :</span>{' '}
+                            <span className="text-gray-900">{regDate}</span>
+                          </div>
+                        </div>
+
+                        {/* Photo Section */}
+                        <div className="flex justify-center my-4">
+                          <div className="w-24 h-28 bg-gradient-to-br from-indigo-100 to-purple-100 rounded border-2 border-gray-300 flex items-center justify-center text-4xl font-bold text-indigo-600">
+                            {initial}
+                          </div>
+                        </div>
+
+                        {/* Name */}
+                        <div className="text-center mt-3">
+                          <div className="text-base font-semibold text-gray-900 uppercase tracking-wide">
+                            {resident.name}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Barcode Section */}
+                      <div className="bg-gray-50 py-3 px-4 border-t border-gray-200">
+                        <div className="flex justify-center">
+                          <div className="font-mono text-sm font-bold tracking-widest text-gray-900 bg-white px-4 py-2 border border-gray-300 rounded">
+                            {barcode}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
