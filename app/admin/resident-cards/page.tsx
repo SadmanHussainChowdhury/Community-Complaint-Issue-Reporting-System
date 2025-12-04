@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Printer, Download, Layout, RotateCcw, Search, Filter } from 'lucide-react'
+import { Printer, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { IUser } from '@/types'
 
@@ -9,10 +9,7 @@ export default function ResidentCardsPage() {
   const [residents, setResidents] = useState<IUser[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedResidents, setSelectedResidents] = useState<IUser[]>([])
-  const [orientation, setOrientation] = useState<'vertical' | 'horizontal'>('vertical')
   const [searchQuery, setSearchQuery] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
-  const [buildingFilter, setBuildingFilter] = useState('')
   const [communityName, setCommunityName] = useState('Community Hub')
 
   useEffect(() => {
@@ -36,7 +33,7 @@ export default function ResidentCardsPage() {
 
   const fetchResidents = async () => {
     try {
-      const response = await fetch('/api/users/residents?limit=1000') // Get all residents for card generation
+      const response = await fetch('/api/users/residents?limit=1000')
       if (response.ok) {
         const data = await response.json()
         setResidents(data.data?.residents || [])
@@ -55,11 +52,9 @@ export default function ResidentCardsPage() {
     const matchesSearch = !searchQuery ||
       resident.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       resident.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resident.apartment?.toLowerCase().includes(searchQuery.toLowerCase())
-
-    const matchesBuilding = !buildingFilter || resident.building === buildingFilter
-
-    return matchesSearch && matchesBuilding
+      resident.apartment?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      resident.phone?.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesSearch
   })
 
   const handleResidentSelect = (resident: IUser) => {
@@ -91,7 +86,7 @@ export default function ResidentCardsPage() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${communityName} - Resident Information Cards</title>
+          <title>${communityName} - Resident Identification Cards</title>
           <meta charset="UTF-8">
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -107,21 +102,9 @@ export default function ResidentCardsPage() {
                 page-break-inside: avoid;
                 page-break-after: always;
               }
-              .horizontal-cards {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 20px;
-              }
-              .vertical-cards {
-                display: block;
-              }
-              .horizontal-card {
-                width: calc(50% - 10px);
-                flex-shrink: 0;
-              }
               @page {
                 size: A4;
-                margin: 15mm;
+                margin: 10mm;
               }
             }
 
@@ -131,238 +114,191 @@ export default function ResidentCardsPage() {
 
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              background: #f8fafc;
+              background: #f5f5f5;
               color: #1e293b;
               line-height: 1.5;
               margin: 0;
               padding: 20px;
             }
 
-            .print-header {
-              text-align: center;
-              margin-bottom: 30px;
-              padding-bottom: 20px;
-              border-bottom: 3px solid #e2e8f0;
-            }
-
-            .print-title {
-              font-size: 28px;
-              font-weight: 700;
-              color: #0f172a;
-              margin: 0;
-              letter-spacing: -0.025em;
-            }
-
-            .print-subtitle {
-              font-size: 14px;
-              color: #64748b;
-              margin: 5px 0 0 0;
-              font-weight: 500;
-            }
-
             .cards-container {
-              display: flex;
-              flex-direction: column;
-              gap: 25px;
-            }
-
-            .horizontal-cards {
-              flex-direction: row;
-              flex-wrap: wrap;
-              gap: 25px;
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+              gap: 20px;
             }
 
             .card {
               background: white;
-              border-radius: 12px;
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-              border: 1px solid #e2e8f0;
+              border-radius: 8px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
               overflow: hidden;
               position: relative;
-            }
-
-            .card::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              height: 4px;
-              background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+              width: 100%;
+              max-width: 400px;
+              margin: 0 auto;
             }
 
             .card-header {
-              background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-              color: white;
-              padding: 20px;
-              text-align: center;
-              position: relative;
-            }
-
-            .card-header::after {
-              content: '';
-              position: absolute;
-              bottom: -10px;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 0;
-              height: 0;
-              border-left: 10px solid transparent;
-              border-right: 10px solid transparent;
-              border-top: 10px solid #1e40af;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              padding: 15px 20px;
+              background: white;
+              border-bottom: 2px solid #e5e7eb;
             }
 
             .community-logo {
-              font-size: 24px;
-              font-weight: 700;
-              margin-bottom: 4px;
-              letter-spacing: -0.025em;
+              display: flex;
+              flex-direction: column;
             }
 
-            .card-type {
-              font-size: 12px;
+            .logo-text {
+              font-size: 18px;
+              font-weight: 700;
+              color: #1e293b;
+              letter-spacing: -0.5px;
+              margin-bottom: 2px;
+            }
+
+            .logo-subtitle {
+              font-size: 10px;
+              color: #6b7280;
               font-weight: 500;
-              opacity: 0.9;
               text-transform: uppercase;
-              letter-spacing: 0.05em;
+              letter-spacing: 0.5px;
+            }
+
+            .seal {
+              width: 60px;
+              height: 60px;
+              border-radius: 50%;
+              background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+              border: 3px solid #d97706;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              font-size: 8px;
+              font-weight: 600;
+              text-align: center;
+              line-height: 1.2;
+              padding: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .seal-line1 {
+              font-size: 7px;
+              margin-bottom: 2px;
+            }
+
+            .seal-line2 {
+              font-size: 6px;
+            }
+
+            .card-title-bar {
+              background: #7c3aed;
+              color: white;
+              padding: 12px 20px;
+              text-align: center;
+              font-size: 14px;
+              font-weight: 600;
+              letter-spacing: 0.5px;
+              text-transform: uppercase;
             }
 
             .card-body {
-              padding: 25px;
+              padding: 20px;
             }
 
-            .resident-photo {
-              width: 80px;
-              height: 80px;
-              background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin: 0 auto 20px auto;
-              border: 3px solid #e2e8f0;
-              font-size: 32px;
-              font-weight: 600;
-              color: #64748b;
-            }
-
-            .resident-name {
-              font-size: 20px;
-              font-weight: 600;
-              color: #0f172a;
-              text-align: center;
-              margin-bottom: 20px;
-            }
-
-            .info-grid {
-              display: grid;
-              grid-template-columns: 1fr;
-              gap: 12px;
+            .resident-info {
+              margin-bottom: 15px;
             }
 
             .info-row {
-              display: flex;
-              align-items: center;
-              padding: 8px 12px;
-              background: #f8fafc;
-              border-radius: 6px;
-              border: 1px solid #e2e8f0;
-            }
-
-            .info-icon {
-              width: 16px;
-              height: 16px;
-              margin-right: 12px;
-              color: #64748b;
-              flex-shrink: 0;
-            }
-
-            .info-content {
-              flex: 1;
-              min-width: 0;
+              margin-bottom: 8px;
+              font-size: 12px;
             }
 
             .info-label {
-              font-size: 11px;
               font-weight: 600;
-              color: #64748b;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
-              margin-bottom: 2px;
-              display: block;
+              color: #4b5563;
+              margin-right: 5px;
             }
 
             .info-value {
-              font-size: 14px;
+              color: #1e293b;
               font-weight: 500;
-              color: #0f172a;
-              word-break: break-word;
             }
 
-            .status-badge {
-              display: inline-flex;
+            .resident-photo-section {
+              display: flex;
+              justify-content: center;
+              margin: 20px 0;
+            }
+
+            .resident-photo {
+              width: 100px;
+              height: 120px;
+              background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+              border-radius: 4px;
+              display: flex;
               align-items: center;
-              padding: 4px 8px;
-              border-radius: 12px;
-              font-size: 10px;
+              justify-content: center;
+              border: 2px solid #e5e7eb;
+              font-size: 48px;
               font-weight: 600;
+              color: #6366f1;
+              position: relative;
+              overflow: hidden;
+            }
+
+            .resident-photo img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+
+            .resident-name {
+              text-align: center;
+              font-size: 16px;
+              font-weight: 600;
+              color: #1e293b;
+              margin-top: 10px;
               text-transform: uppercase;
-              letter-spacing: 0.05em;
+              letter-spacing: 0.5px;
             }
 
-            .status-active {
-              background: #dcfce7;
-              color: #166534;
+            .barcode-section {
+              padding: 15px 20px;
+              background: #f9fafb;
+              border-top: 1px solid #e5e7eb;
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
 
-            .status-inactive {
-              background: #fef2f2;
-              color: #dc2626;
-            }
-
-            .card-footer {
-              background: #f8fafc;
-              padding: 15px 25px;
-              border-top: 1px solid #e2e8f0;
-              text-align: center;
-            }
-
-            .footer-text {
-              font-size: 10px;
-              color: #64748b;
-              font-weight: 500;
-              margin: 0;
-            }
-
-            .emergency-note {
-              background: #fef3c7;
-              border: 1px solid #f59e0b;
-              border-radius: 6px;
-              padding: 12px;
-              margin-top: 15px;
-              text-align: center;
-            }
-
-            .emergency-text {
-              font-size: 12px;
-              color: #92400e;
+            .barcode {
+              font-family: 'Courier New', monospace;
+              font-size: 20px;
               font-weight: 600;
-              margin: 0;
+              letter-spacing: 2px;
+              color: #1e293b;
+              padding: 8px 15px;
+              background: white;
+              border: 1px solid #d1d5db;
+              border-radius: 4px;
             }
 
             @media (max-width: 640px) {
-              .horizontal-card {
-                width: 100% !important;
+              .cards-container {
+                grid-template-columns: 1fr;
               }
             }
           </style>
         </head>
         <body>
-          <div class="print-header">
-            <h1 class="print-title">🏥 ${communityName}</h1>
-            <p class="print-subtitle">Resident Information Cards - ${new Date().toLocaleDateString()}</p>
-          </div>
-          <div class="cards-container ${orientation === 'horizontal' ? 'horizontal-cards' : 'vertical-cards'}">
+          <div class="cards-container">
             ${cardsHtml}
           </div>
         </body>
@@ -375,84 +311,59 @@ export default function ResidentCardsPage() {
   }
 
   const generateCardHtml = (resident: IUser, communityName: string) => {
-    const cardClass = orientation === 'horizontal' ? 'horizontal-card' : 'vertical-card'
     const initial = resident.name.charAt(0).toUpperCase()
+    const residentId = resident._id.substring(0, 8).toUpperCase()
+    const regDate = new Date(resident.createdAt).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+
+    // Generate a simple barcode representation using the resident ID
+    const barcode = resident._id.substring(0, 12).replace(/-/g, '').toUpperCase()
 
     return `
-      <div class="card ${cardClass}">
+      <div class="card">
         <div class="card-header">
-          <div class="community-logo">🏢 ${communityName}</div>
-          <div class="card-type">Resident Information Card</div>
+          <div class="community-logo">
+            <div class="logo-text">${communityName}</div>
+            <div class="logo-subtitle">COMMUNITY</div>
+          </div>
+          <div class="seal">
+            <div class="seal-line1">QUALITY</div>
+            <div class="seal-line2">APPROVED</div>
+          </div>
+        </div>
+
+        <div class="card-title-bar">
+          RESIDENT IDENTIFICATION CARD
         </div>
 
         <div class="card-body">
-          <div class="resident-photo">${initial}</div>
-          <h2 class="resident-name">${resident.name}</h2>
-
-          <div class="info-grid">
+          <div class="resident-info">
             <div class="info-row">
-              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-              </svg>
-              <div class="info-content">
-                <span class="info-label">Email Address</span>
-                <span class="info-value">${resident.email}</span>
-              </div>
+              <span class="info-label">RESIDENT ID :</span>
+              <span class="info-value">${residentId}</span>
             </div>
-
             <div class="info-row">
-              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-              </svg>
-              <div class="info-content">
-                <span class="info-label">Phone Number</span>
-                <span class="info-value">${resident.phone || 'Not provided'}</span>
-              </div>
+              <span class="info-label">REG. DATE :</span>
+              <span class="info-value">${regDate}</span>
             </div>
+          </div>
 
-            <div class="info-row">
-              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-              </svg>
-              <div class="info-content">
-                <span class="info-label">Building & Unit</span>
-                <span class="info-value">${resident.building || 'N/A'} ${resident.apartment || ''}</span>
-              </div>
+          <div class="resident-photo-section">
+            <div class="resident-photo">
+              ${resident.image ? `<img src="${resident.image}" alt="${resident.name}" />` : initial}
             </div>
+          </div>
 
-            <div class="info-row">
-              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <div class="info-content">
-                <span class="info-label">Member Since</span>
-                <span class="info-value">${new Date(resident.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric'
-                })}</span>
-              </div>
-            </div>
-
-            <div class="info-row">
-              <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <div class="info-content">
-                <span class="info-label">Status</span>
-                <span class="status-badge ${resident.isActive ? 'status-active' : 'status-inactive'}">
-                  ${resident.isActive ? '✓ Active Resident' : '✗ Inactive'}
-                </span>
-              </div>
-            </div>
+          <div class="resident-name">
+            ${resident.name.toUpperCase()}
           </div>
         </div>
 
-        <div class="card-footer">
-          <p class="footer-text">${communityName} Management System</p>
-          <div class="emergency-note">
-            <p class="emergency-text">🆘 Emergency Contact: Call Security at Ext. 911</p>
-          </div>
+        <div class="barcode-section">
+          <div class="barcode">${barcode}</div>
         </div>
       </div>
     `
@@ -467,169 +378,133 @@ export default function ResidentCardsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Resident Cards</h1>
-        <p className="mt-2 text-gray-600">Generate and print resident information cards</p>
+        <p className="mt-2 text-gray-600">Generate and print resident identification cards</p>
       </div>
 
-      {/* Controls */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {/* Orientation Toggle */}
-            <div className="flex items-center space-x-2">
-              <Layout className="h-4 w-4 text-gray-500" />
-              <button
-                onClick={() => setOrientation('vertical')}
-                className={`px-3 py-1 rounded ${orientation === 'vertical' ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-              >
-                Vertical
-              </button>
-              <button
-                onClick={() => setOrientation('horizontal')}
-                className={`px-3 py-1 rounded ${orientation === 'horizontal' ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-              >
-                Horizontal
-              </button>
-            </div>
-
-            {/* Filters Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
+      {/* Middle Search Bar */}
+      <div className="flex justify-center mb-8">
+        <div className="w-full max-w-2xl">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search residents by name, email, phone, or apartment..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base"
+            />
           </div>
-
-          {/* Print Button */}
-          <button
-            onClick={printCards}
-            disabled={selectedResidents.length === 0}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Printer className="h-4 w-4" />
-            <span>Print Cards ({selectedResidents.length})</span>
-          </button>
         </div>
       </div>
 
-      {/* Residents Table */}
-      <div className="bg-white rounded-lg shadow-md">
-        {/* Filters */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search residents..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            {showFilters && (
-              <select
-                value={buildingFilter}
-                onChange={(e) => setBuildingFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="">All Buildings</option>
-                <option value="A">Building A</option>
-                <option value="B">Building B</option>
-                <option value="C">Building C</option>
-              </select>
-            )}
-          </div>
-        </div>
+      {/* Print Button */}
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={printCards}
+          disabled={selectedResidents.length === 0}
+          className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+        >
+          <Printer className="h-5 w-5" />
+          <span>Print Selected Cards ({selectedResidents.length})</span>
+        </button>
+      </div>
 
-        {/* Residents Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    checked={selectedResidents.length === filteredResidents.length && filteredResidents.length > 0}
-                    onChange={handleSelectAll}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Resident
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Contact
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Location
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredResidents.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                    No residents found matching your criteria.
-                  </td>
-                </tr>
-              ) : (
-                filteredResidents.map((resident) => (
-                  <tr key={resident._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <input
-                        type="checkbox"
-                        checked={selectedResidents.some(r => r._id === resident._id)}
-                        onChange={() => handleResidentSelect(resident)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                            <span className="text-white font-semibold">
-                              {resident.name.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{resident.name}</div>
-                          <div className="text-sm text-gray-500">{resident.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{resident.phone || 'N/A'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {resident.building && resident.apartment
-                          ? `Building ${resident.building}, Apt ${resident.apartment}`
-                          : 'N/A'
-                        }
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        resident.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {resident.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      {/* Cards Preview Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {filteredResidents.length === 0 ? (
+          <div className="col-span-full text-center py-12 text-gray-500">
+            No residents found matching your search criteria.
+          </div>
+        ) : (
+          filteredResidents.map((resident) => {
+            const initial = resident.name.charAt(0).toUpperCase()
+            const residentId = resident._id.substring(0, 8).toUpperCase()
+            const regDate = new Date(resident.createdAt).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            })
+            const barcode = resident._id.substring(0, 12).replace(/-/g, '').toUpperCase()
+
+            return (
+              <div
+                key={resident._id}
+                className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-colors cursor-pointer"
+                onClick={() => handleResidentSelect(resident)}
+              >
+                {/* Card Header */}
+                <div className="flex justify-between items-start p-4 border-b-2 border-gray-200">
+                  <div>
+                    <div className="text-lg font-bold text-gray-900">{communityName}</div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wide">COMMUNITY</div>
+                  </div>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-2 border-orange-600 flex flex-col items-center justify-center text-white text-[8px] font-bold text-center px-2 shadow-md">
+                    <div>QUALITY</div>
+                    <div>APPROVED</div>
+                  </div>
+                </div>
+
+                {/* Purple Title Bar */}
+                <div className="bg-purple-600 text-white py-2 px-4 text-center text-sm font-semibold uppercase tracking-wide">
+                  RESIDENT IDENTIFICATION CARD
+                </div>
+
+                {/* Card Body */}
+                <div className="p-5">
+                  <div className="mb-4 space-y-1">
+                    <div className="text-xs">
+                      <span className="font-semibold text-gray-600">RESIDENT ID :</span>{' '}
+                      <span className="text-gray-900">{residentId}</span>
+                    </div>
+                    <div className="text-xs">
+                      <span className="font-semibold text-gray-600">REG. DATE :</span>{' '}
+                      <span className="text-gray-900">{regDate}</span>
+                    </div>
+                  </div>
+
+                  {/* Photo Section */}
+                  <div className="flex justify-center my-4">
+                    <div className="w-24 h-28 bg-gradient-to-br from-indigo-100 to-purple-100 rounded border-2 border-gray-300 flex items-center justify-center text-4xl font-bold text-indigo-600">
+                      {resident.image ? (
+                        <img src={resident.image} alt={resident.name} className="w-full h-full object-cover rounded" />
+                      ) : (
+                        initial
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Name */}
+                  <div className="text-center mt-3">
+                    <div className="text-base font-semibold text-gray-900 uppercase tracking-wide">
+                      {resident.name}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Barcode Section */}
+                <div className="bg-gray-50 py-3 px-4 border-t border-gray-200">
+                  <div className="flex justify-center">
+                    <div className="font-mono text-sm font-bold tracking-widest text-gray-900 bg-white px-4 py-2 border border-gray-300 rounded">
+                      {barcode}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Selection Indicator */}
+                {selectedResidents.some(r => r._id === resident._id) && (
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            )
+          })
+        )}
       </div>
     </div>
   )
