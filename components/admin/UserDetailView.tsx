@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { IUser } from '@/types'
+import { formatDateForDisplay } from '@/lib/utils'
 import { UserRole } from '@/types/enums'
 import { ArrowLeft, Edit, Trash2, Mail, Phone, Building, User, Shield, UserCheck, Calendar, CheckCircle2, XCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -184,11 +185,7 @@ export default function UserDetailView({ user: initialUser }: UserDetailViewProp
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Created At</dt>
                     <dd className="text-sm text-gray-900">
-                      {new Date(user.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {formatDateForDisplay(user.createdAt)}
                     </dd>
                   </div>
                 </div>
@@ -197,11 +194,7 @@ export default function UserDetailView({ user: initialUser }: UserDetailViewProp
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
                     <dd className="text-sm text-gray-900">
-                      {new Date(user.updatedAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {formatDateForDisplay(user.updatedAt)}
                     </dd>
                   </div>
                 </div>

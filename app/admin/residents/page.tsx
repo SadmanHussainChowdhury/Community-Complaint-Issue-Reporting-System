@@ -20,9 +20,26 @@ async function getResidents(page: number = 1, limit: number = 10): Promise<{ res
       .limit(limit)
       .lean()
 
-    console.log('Server-side: Found', residents.length, 'residents (page', page, 'of', Math.ceil(total / limit), ')')
+    // Convert MongoDB objects to plain objects for client component
+    // Note: Next.js will automatically serialize Date objects to strings when passing to client components
+    const serializedResidents: IUser[] = residents.map(u => ({
+      _id: String(u._id),
+      name: String(u.name),
+      email: String(u.email),
+      password: '', // Required by IUser but not used/displayed
+      role: u.role,
+      phone: u.phone ? String(u.phone) : undefined,
+      apartment: u.apartment ? String(u.apartment) : undefined,
+      building: u.building ? String(u.building) : undefined,
+      communityId: u.communityId ? String(u.communityId) : undefined,
+      isActive: u.isActive !== false,
+      createdAt: u.createdAt ? new Date(u.createdAt) : new Date(),
+      updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date()
+    }))
+
+    console.log('Server-side: Found', serializedResidents.length, 'residents (page', page, 'of', Math.ceil(total / limit), ')')
     return {
-      residents: residents as IUser[],
+      residents: serializedResidents,
       total,
       page,
       limit

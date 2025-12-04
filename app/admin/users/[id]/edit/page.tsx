@@ -19,14 +19,15 @@ async function getUser(id: string) {
   }
 }
 
-export default async function EditUserPage({ params }: { params: { id: string } }) {
+export default async function EditUserPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   
   if (!session?.user || session.user.role !== UserRole.ADMIN) {
     redirect('/admin/dashboard')
   }
 
-  const user = await getUser(params.id)
+  const user = await getUser(id)
 
   if (!user) {
     notFound()

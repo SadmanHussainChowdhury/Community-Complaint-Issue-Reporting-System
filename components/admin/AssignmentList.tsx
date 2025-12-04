@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { IAssignment } from '@/types'
 import { Calendar, User, Clock, CheckCircle, XCircle, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { formatDateForDisplay } from '@/lib/utils'
 
 interface AssignmentListProps {
   assignments: IAssignment[]
@@ -163,7 +164,7 @@ export default function AssignmentList({
                       {assignedBy?.name || 'Unknown'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : 'N/A'}
+                      {formatDateForDisplay(assignment.dueDate)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -173,7 +174,7 @@ export default function AssignmentList({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(assignment.assignedAt).toLocaleDateString()}
+                      {formatDateForDisplay(assignment.assignedAt)}
                     </td>
                   </tr>
                 )

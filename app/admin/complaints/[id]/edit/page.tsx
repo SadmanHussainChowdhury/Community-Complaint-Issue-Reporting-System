@@ -19,8 +19,9 @@ async function getComplaint(id: string) {
   return data.data?.complaint || null
 }
 
-export default async function AdminEditComplaintPage({ params }: { params: { id: string } }) {
-  const complaint = await getComplaint(params.id)
+export default async function AdminEditComplaintPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const complaint = await getComplaint(id)
 
   if (!complaint) {
     return (

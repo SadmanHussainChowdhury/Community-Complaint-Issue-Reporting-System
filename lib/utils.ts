@@ -49,3 +49,15 @@ export function formatDate(date: Date | string): string {
     day: 'numeric',
   })
 }
+
+// Format date consistently for display (prevents hydration mismatches)
+export function formatDateForDisplay(date: Date | string | undefined): string {
+  if (!date) return 'N/A'
+  const d = typeof date === 'string' ? new Date(date) : date
+  // Use consistent locale and options to prevent hydration mismatches
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}

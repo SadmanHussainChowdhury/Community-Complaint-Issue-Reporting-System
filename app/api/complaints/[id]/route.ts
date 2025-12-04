@@ -16,8 +16,9 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 // GET /api/complaints/[id] - Get single complaint
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401)
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     await connectDB()
 
-    const complaint = await Complaint.findById(params.id)
+    const complaint = await Complaint.findById(id)
       .populate('submittedBy', 'name email phone apartment building')
       .populate('assignedTo', 'name email')
       .populate('notes.addedBy', 'name email role')
@@ -77,8 +78,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PATCH /api/complaints/[id] - Update complaint
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401)
@@ -86,7 +88,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     await connectDB()
 
-    const complaint = await Complaint.findById(params.id)
+    const complaint = await Complaint.findById(id)
     if (!complaint) {
       return jsonResponse({ success: false, error: 'Complaint not found' }, 404)
     }
@@ -215,7 +217,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const previousStatus = complaint.status
-    const updatedComplaint = await Complaint.findByIdAndUpdate(params.id, updates, {
+    const updatedComplaint = await Complaint.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
     })
@@ -231,7 +233,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       user: session.user.id,
       action: 'complaint_updated',
       entityType: 'complaint',
-      entityId: params.id,
+      entityId: id,
       details: updates,
       communityId: session.user.communityId,
     })
@@ -287,7 +289,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     // Trigger real-time update
-    await triggerPusherEvent(CHANNELS.complaint(params.id), EVENTS.COMPLAINT_UPDATED, {
+    await triggerPusherEvent(CHANNELS.complaint(id), EVENTS.COMPLAINT_UPDATED, {
       complaint: updatedComplaint,
     })
 
@@ -306,8 +308,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/complaints/[id] - Delete complaint (Admin only)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user || session.user.role !== UserRole.ADMIN) {
       return jsonResponse({ success: false, error: 'Unauthorized' }, 401)
@@ -315,7 +318,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
     await connectDB()
 
-    const complaint = await Complaint.findByIdAndDelete(params.id)
+    const complaint = await Complaint.findByIdAndDelete(id)
     if (!complaint) {
       return jsonResponse({ success: false, error: 'Complaint not found' }, 404)
     }
@@ -325,7 +328,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       user: session.user.id,
       action: 'complaint_deleted',
       entityType: 'complaint',
-      entityId: params.id,
+      entityId: id,
       details: { title: complaint.title },
       communityId: session.user.communityId,
     })

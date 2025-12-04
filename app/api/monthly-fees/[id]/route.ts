@@ -9,8 +9,9 @@ import { ApiResponse } from '@/types'
 export const dynamic = 'force-dynamic'
 
 // PATCH /api/monthly-fees/[id] - Update monthly fee (mark as paid, update amount, etc.)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json<ApiResponse>(
@@ -28,8 +29,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     await connectDB()
-
-    const { id } = params
     const body = await req.json()
     const { status, amount, description, dueDate, paidDate, paymentMethod, paymentNotes, month, year, residentId } = body
 
@@ -104,8 +103,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/monthly-fees/[id] - Delete monthly fee
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json<ApiResponse>(
@@ -123,8 +123,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     await connectDB()
-
-    const { id } = params
     const fee = await MonthlyFee.findByIdAndDelete(id)
 
     if (!fee) {

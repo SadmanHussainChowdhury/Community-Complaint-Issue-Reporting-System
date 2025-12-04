@@ -9,6 +9,7 @@ import { ComplaintStatus, UserRole } from '@/types/enums'
 import StatusTracker from '@/components/StatusTracker'
 import { ArrowLeft, MapPin, Calendar, User, Image as ImageIcon, MessageSquare, Edit, Trash2, Settings, Users, X, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { formatDateForDisplay } from '@/lib/utils'
 
 interface ComplaintDetailProps {
   complaint: IComplaint
@@ -114,7 +115,7 @@ export default function ComplaintDetail({ complaint: initialComplaint }: Complai
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                {new Date(complaint.createdAt).toLocaleDateString()}
+                {formatDateForDisplay(complaint.createdAt)}
               </span>
               <span className="flex items-center gap-1">
                 <User className="w-4 h-4" />

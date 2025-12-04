@@ -11,9 +11,10 @@ import { ApiResponse } from '@/types'
 // POST /api/complaints/[id]/feedback - Submit feedback and rating for resolved complaint
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Unauthorized' }, { status: 401 })
@@ -21,7 +22,7 @@ export async function POST(
 
     await connectDB()
 
-    const complaint = await Complaint.findById(params.id)
+    const complaint = await Complaint.findById(id)
     if (!complaint) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Complaint not found' }, { status: 404 })
     }
@@ -62,7 +63,7 @@ export async function POST(
       user: session.user.id,
       action: 'complaint_feedback_submitted',
       entityType: 'complaint',
-      entityId: params.id,
+      entityId: id,
       details: { rating, hasComment: !!comment },
       communityId: session.user.communityId,
     })

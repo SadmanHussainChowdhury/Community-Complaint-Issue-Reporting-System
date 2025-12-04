@@ -8,6 +8,7 @@ import { Eye, Edit, Trash2, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 import StaffAssignment from '@/components/admin/StaffAssignment'
 import StatusUpdate from '@/components/admin/StatusUpdate'
+import { formatDateForDisplay } from '@/lib/utils'
 
 interface ComplaintListProps {
   complaints: IComplaint[]
@@ -257,7 +258,7 @@ export default function ComplaintList({
                       {assignedTo?.name || 'Unassigned'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(complaint.createdAt).toLocaleDateString()}
+                      {formatDateForDisplay(complaint.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">

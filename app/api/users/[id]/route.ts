@@ -8,8 +8,9 @@ import { UserRole } from '@/types/enums'
 import { ApiResponse, IUser } from '@/types'
 
 // GET /api/users/[id] - Get single user
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Unauthorized' }, { status: 401 })
@@ -18,11 +19,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     await connectDB()
 
     // Users can only view their own profile unless they're admin
-    if (session.user.role !== UserRole.ADMIN && session.user.id !== params.id) {
+    if (session.user.role !== UserRole.ADMIN && session.user.id !== id) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Access denied' }, { status: 403 })
     }
 
-    const user = await User.findById(params.id).select('-password').lean()
+    const user = await User.findById(id).select('-password').lean()
 
     if (!user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'User not found' }, { status: 404 })
@@ -42,8 +43,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PATCH /api/users/[id] - Update user
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Unauthorized' }, { status: 401 })
@@ -51,7 +53,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     await connectDB()
 
-    const user = await User.findById(params.id)
+    const user = await User.findById(id)
     if (!user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'User not found' }, { status: 404 })
     }
@@ -60,7 +62,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const updates: Record<string, unknown> = {}
 
     // Users can only update their own profile (limited fields)
-    if (session.user.role !== UserRole.ADMIN && session.user.id !== params.id) {
+    if (session.user.role !== UserRole.ADMIN && session.user.id !== id) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Access denied' }, { status: 403 })
     }
 
@@ -105,7 +107,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(params.id, updates, {
+    const updatedUser = await User.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
     }).select('-password')
@@ -122,7 +124,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       user: session.user.id,
       action: 'user_updated',
       entityType: 'user',
-      entityId: params.id,
+      entityId: id,
       details: updates,
       communityId: session.user.communityId,
     })
@@ -142,8 +144,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/users/[id] - Delete user (Admin only)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session?.user || session.user.role !== UserRole.ADMIN) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'Unauthorized' }, { status: 401 })
@@ -152,14 +155,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await connectDB()
 
     // Prevent self-deletion
-    if (session.user.id === params.id) {
+    if (session.user.id === id) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Cannot delete your own account' },
         { status: 400 }
       )
     }
 
-    const user = await User.findByIdAndDelete(params.id)
+    const user = await User.findByIdAndDelete(id)
     if (!user) {
       return NextResponse.json<ApiResponse>({ success: false, error: 'User not found' }, { status: 404 })
     }
@@ -169,7 +172,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       user: session.user.id,
       action: 'user_deleted',
       entityType: 'user',
-      entityId: params.id,
+      entityId: id,
       details: { name: user.name, email: user.email },
       communityId: session.user.communityId,
     })

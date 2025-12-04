@@ -23,7 +23,7 @@ import Announcement from '@/models/Announcement'
 import Assignment from '@/models/Assignment'
 import { UserRole, ComplaintStatus } from '@/types/enums'
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard'
-import { DashboardStats } from '@/types'
+import { DashboardStats, IComplaint, IUser } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -132,6 +132,7 @@ async function getDashboardData() {
   )
 
   // Create stats object for AnalyticsDashboard
+  // Convert all MongoDB objects to plain objects for client component
   const stats: DashboardStats = {
     totalComplaints,
     pendingComplaints,
@@ -140,31 +141,135 @@ async function getDashboardData() {
     complaintsByCategory: complaintsByCategory.reduce((acc, item) => {
       acc[item._id] = item.count
       return acc
-    }, {}),
+    }, {} as Record<string, number>),
     complaintsByPriority: complaintsByPriority.reduce((acc, item) => {
       acc[item._id] = item.count
       return acc
-    }, {}),
-    recentComplaints: recentComplaintsForStats.map(c => ({
-      _id: c._id.toString(),
-      title: c.title,
-      description: c.description,
-      category: c.category,
-      priority: c.priority,
-      status: c.status,
-      submittedBy: c.submittedBy,
-      assignedTo: c.assignedTo,
-      images: c.images || [],
-      location: c.location,
-      communityId: c.communityId,
-      notes: c.notes || [],
-      resolutionProof: c.resolutionProof || [],
-      resolvedAt: c.resolvedAt,
-      createdAt: c.createdAt,
-      updatedAt: c.updatedAt
-    })),
-    staffPerformance
+    }, {} as Record<string, number>),
+    recentComplaints: recentComplaintsForStats.map(c => {
+      // Convert populated fields to plain objects
+      // Ensure submittedBy is never null (required field)
+      let submittedBy: string | IUser
+      if (c.submittedBy) {
+        if (typeof c.submittedBy === 'object' && '_id' in c.submittedBy) {
+          submittedBy = {
+            _id: String(c.submittedBy._id),
+            name: String(c.submittedBy.name || ''),
+            email: String(c.submittedBy.email || ''),
+            password: '',
+            role: UserRole.RESIDENT,
+            isActive: true,
+            createdAt: new Date(0), // Fixed date for consistency
+            updatedAt: new Date(0) // Fixed date for consistency
+          }
+        } else {
+          submittedBy = String(c.submittedBy)
+        }
+      } else {
+        submittedBy = 'unknown'
+      }
+
+      // assignedTo is optional, but if present, must not be null
+      let assignedTo: string | IUser | undefined
+      if (c.assignedTo) {
+        if (typeof c.assignedTo === 'object' && '_id' in c.assignedTo) {
+          assignedTo = {
+            _id: String(c.assignedTo._id),
+            name: String(c.assignedTo.name || ''),
+            email: String(c.assignedTo.email || ''),
+            password: '',
+            role: UserRole.STAFF,
+            isActive: true,
+            createdAt: new Date(0), // Fixed date for consistency
+            updatedAt: new Date(0) // Fixed date for consistency
+          }
+        } else {
+          assignedTo = String(c.assignedTo)
+        }
+      }
+
+      return {
+        _id: String(c._id),
+        title: String(c.title),
+        description: String(c.description),
+        category: c.category,
+        priority: c.priority,
+        status: c.status,
+        submittedBy,
+        assignedTo,
+        images: Array.isArray(c.images) ? c.images.map(img => String(img)) : [],
+        location: c.location ? {
+          building: c.location.building ? String(c.location.building) : undefined,
+          floor: c.location.floor ? String(c.location.floor) : undefined,
+          room: c.location.room ? String(c.location.room) : undefined
+        } : undefined,
+        communityId: c.communityId ? String(c.communityId) : undefined,
+        notes: Array.isArray(c.notes) ? c.notes.map(note => ({
+          content: String(note.content || ''),
+          addedBy: typeof note.addedBy === 'object' && '_id' in note.addedBy
+            ? String(note.addedBy._id)
+            : String(note.addedBy || ''),
+          addedAt: note.addedAt ? new Date(note.addedAt) : new Date(),
+          isInternal: Boolean(note.isInternal)
+        })) : [],
+        resolutionProof: Array.isArray(c.resolutionProof) ? c.resolutionProof.map(proof => String(proof)) : [],
+        resolvedAt: c.resolvedAt ? new Date(c.resolvedAt) : undefined,
+        createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+        updatedAt: c.updatedAt ? new Date(c.updatedAt) : new Date()
+      } as IComplaint
+    }),
+    staffPerformance: staffPerformance.map(sp => ({
+      staffId: String(sp.staffId),
+      staffName: String(sp.staffName),
+      assignedCount: Number(sp.assignedCount),
+      resolvedCount: Number(sp.resolvedCount),
+      averageResolutionTime: Number(sp.averageResolutionTime)
+    }))
   }
+
+  // Convert recentActivity data to plain objects
+  const serializedRecentComplaints = recentComplaints.map(c => ({
+    _id: String(c._id),
+    title: String(c.title),
+    status: c.status,
+    createdAt: c.createdAt ? new Date(c.createdAt).toISOString() : new Date().toISOString(),
+    submittedBy: c.submittedBy 
+      ? (typeof c.submittedBy === 'object' && '_id' in c.submittedBy
+          ? { _id: String(c.submittedBy._id), name: String(c.submittedBy.name || ''), email: String(c.submittedBy.email || '') }
+          : typeof c.submittedBy === 'string'
+            ? { _id: c.submittedBy, name: '', email: '' }
+            : null)
+      : null,
+    assignedTo: c.assignedTo
+      ? (typeof c.assignedTo === 'object' && '_id' in c.assignedTo
+          ? { _id: String(c.assignedTo._id), name: String(c.assignedTo.name || ''), email: String(c.assignedTo.email || '') }
+          : typeof c.assignedTo === 'string'
+            ? { _id: c.assignedTo, name: '', email: '' }
+            : null)
+      : null
+  }))
+
+  const serializedRecentUsers = recentUsers.map(u => ({
+    _id: String(u._id),
+    name: String(u.name),
+    email: String(u.email),
+    role: u.role,
+    createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString()
+  }))
+
+  const serializedRecentAnnouncements = recentAnnouncements.map(a => ({
+    _id: String(a._id),
+    title: String(a.title),
+    content: String(a.content),
+    createdAt: a.createdAt ? new Date(a.createdAt).toISOString() : new Date().toISOString(),
+    createdBy: a.createdBy
+      ? (typeof a.createdBy === 'object' && '_id' in a.createdBy
+          ? { _id: String(a.createdBy._id), name: String(a.createdBy.name || '') }
+          : typeof a.createdBy === 'string'
+            ? { _id: a.createdBy, name: '' }
+            : null)
+      : null
+  }))
 
   return {
     stats: {
@@ -180,9 +285,9 @@ async function getDashboardData() {
       activeUsers: totalUsers // Assuming all users are active for now
     },
     recentActivity: {
-      complaints: recentComplaints,
-      users: recentUsers,
-      announcements: recentAnnouncements
+      complaints: serializedRecentComplaints,
+      users: serializedRecentUsers,
+      announcements: serializedRecentAnnouncements
     },
     analyticsStats: stats
   }

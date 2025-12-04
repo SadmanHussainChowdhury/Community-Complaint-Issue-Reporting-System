@@ -2,7 +2,8 @@ import AssignmentsTable from '@/components/admin/AssignmentsTable'
 import Link from 'next/link'
 import connectDB from '@/lib/mongodb'
 import Assignment from '@/models/Assignment'
-import { IAssignment } from '@/types'
+import { IAssignment, IComplaint, IUser } from '@/types'
+import { ComplaintStatus, ComplaintCategory, ComplaintPriority, UserRole } from '@/types/enums'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,9 +23,93 @@ async function getAssignments(page: number = 1, limit: number = 10): Promise<{ a
       .limit(limit)
       .lean()
 
-    console.log('Server-side: Found', assignments.length, 'assignments (page', page, 'of', Math.ceil(total / limit), ')')
+    // Convert MongoDB objects to plain objects for client component
+    // Note: Next.js will automatically serialize Date objects to strings when passing to client components
+    const serializedAssignments: IAssignment[] = assignments.map(a => {
+      // Ensure complaint is never null
+      let complaint: string | IComplaint
+      if (a.complaint) {
+        if (typeof a.complaint === 'object' && '_id' in a.complaint) {
+          complaint = {
+            _id: String(a.complaint._id),
+            title: String(a.complaint.title || ''),
+            description: String(a.complaint.description || ''),
+            category: a.complaint.category || ComplaintCategory.OTHER,
+            priority: a.complaint.priority || ComplaintPriority.MEDIUM,
+            status: a.complaint.status || ComplaintStatus.PENDING,
+            submittedBy: typeof a.complaint.submittedBy === 'object' && '_id' in a.complaint.submittedBy
+              ? String(a.complaint.submittedBy._id)
+              : String(a.complaint.submittedBy || ''),
+            images: Array.isArray(a.complaint.images) ? a.complaint.images.map(img => String(img)) : [],
+            notes: [],
+            createdAt: a.complaint.createdAt ? new Date(a.complaint.createdAt) : new Date(),
+            updatedAt: a.complaint.updatedAt ? new Date(a.complaint.updatedAt) : new Date()
+          }
+        } else {
+          complaint = String(a.complaint)
+        }
+      } else {
+        // Fallback: use empty string if complaint is missing
+        complaint = ''
+      }
+
+      // Ensure assignedTo is never null
+      let assignedTo: string | IUser
+      if (a.assignedTo) {
+        if (typeof a.assignedTo === 'object' && '_id' in a.assignedTo) {
+          assignedTo = {
+            _id: String(a.assignedTo._id),
+            name: String(a.assignedTo.name || ''),
+            email: String(a.assignedTo.email || ''),
+            password: '',
+            role: UserRole.STAFF,
+            isActive: true,
+            createdAt: new Date(0), // Fixed date for consistency
+            updatedAt: new Date(0) // Fixed date for consistency
+          }
+        } else {
+          assignedTo = String(a.assignedTo)
+        }
+      } else {
+        assignedTo = 'unknown'
+      }
+
+      // Ensure assignedBy is never null
+      let assignedBy: string | IUser
+      if (a.assignedBy) {
+        if (typeof a.assignedBy === 'object' && '_id' in a.assignedBy) {
+          assignedBy = {
+            _id: String(a.assignedBy._id),
+            name: String(a.assignedBy.name || ''),
+            email: String(a.assignedBy.email || ''),
+            password: '',
+            role: UserRole.ADMIN,
+            isActive: true,
+            createdAt: new Date(0), // Fixed date for consistency
+            updatedAt: new Date(0) // Fixed date for consistency
+          }
+        } else {
+          assignedBy = String(a.assignedBy)
+        }
+      } else {
+        assignedBy = 'unknown'
+      }
+
+      return {
+        _id: String(a._id),
+        complaint,
+        assignedTo,
+        assignedBy,
+        assignedAt: a.assignedAt ? new Date(a.assignedAt) : new Date(),
+        dueDate: a.dueDate ? new Date(a.dueDate) : undefined,
+        status: a.status || 'active',
+        notes: a.notes ? String(a.notes) : undefined
+      }
+    })
+
+    console.log('Server-side: Found', serializedAssignments.length, 'assignments (page', page, 'of', Math.ceil(total / limit), ')')
     return {
-      assignments: assignments as IAssignment[],
+      assignments: serializedAssignments,
       total,
       page,
       limit
