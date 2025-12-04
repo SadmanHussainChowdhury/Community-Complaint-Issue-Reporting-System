@@ -65,11 +65,7 @@ export default function ResidentCardsPage() {
     )
   }
 
-  const handleSelectAll = () => {
-    setSelectedResidents(prev =>
-      prev.length === filteredResidents.length ? [] : filteredResidents
-    )
-  }
+  // Removed handleSelectAll as it's not used in the card view
 
   const printCards = () => {
     if (selectedResidents.length === 0) {
@@ -353,7 +349,7 @@ export default function ResidentCardsPage() {
 
           <div class="resident-photo-section">
             <div class="resident-photo">
-              ${resident.image ? `<img src="${resident.image}" alt="${resident.name}" />` : initial}
+              ${initial}
             </div>
           </div>
 
@@ -432,23 +428,23 @@ export default function ResidentCardsPage() {
             return (
               <div
                 key={resident._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-colors cursor-pointer"
+                className="relative bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-colors cursor-pointer"
                 onClick={() => handleResidentSelect(resident)}
               >
                 {/* Card Header */}
-                <div className="flex justify-between items-start p-4 border-b-2 border-gray-200">
+                <div className="flex justify-between items-start p-4 border-b-2 border-gray-200 bg-white">
                   <div>
-                    <div className="text-lg font-bold text-gray-900">{communityName}</div>
-                    <div className="text-xs text-gray-500 uppercase tracking-wide">COMMUNITY</div>
+                    <div className="text-lg font-bold text-gray-900 leading-tight">{communityName}</div>
+                    <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">COMMUNITY</div>
                   </div>
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-2 border-orange-600 flex flex-col items-center justify-center text-white text-[8px] font-bold text-center px-2 shadow-md">
-                    <div>QUALITY</div>
-                    <div>APPROVED</div>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-3 border-orange-600 flex flex-col items-center justify-center text-white text-[8px] font-bold text-center px-2 shadow-md flex-shrink-0">
+                    <div className="leading-tight">QUALITY</div>
+                    <div className="leading-tight">APPROVED</div>
                   </div>
                 </div>
 
                 {/* Purple Title Bar */}
-                <div className="bg-purple-600 text-white py-2 px-4 text-center text-sm font-semibold uppercase tracking-wide">
+                <div className="bg-purple-600 text-white py-2.5 px-4 text-center text-sm font-semibold uppercase tracking-wide">
                   RESIDENT IDENTIFICATION CARD
                 </div>
 
@@ -468,11 +464,7 @@ export default function ResidentCardsPage() {
                   {/* Photo Section */}
                   <div className="flex justify-center my-4">
                     <div className="w-24 h-28 bg-gradient-to-br from-indigo-100 to-purple-100 rounded border-2 border-gray-300 flex items-center justify-center text-4xl font-bold text-indigo-600">
-                      {resident.image ? (
-                        <img src={resident.image} alt={resident.name} className="w-full h-full object-cover rounded" />
-                      ) : (
-                        initial
-                      )}
+                      {initial}
                     </div>
                   </div>
 
