@@ -176,7 +176,7 @@ export default function ResidentList({
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />
-                          <span className="text-xs">View</span>
+                          <span className="text-xs">Details</span>
                         </Link>
                         <Link
                           href={`/admin/users/${resident._id}/edit`}
