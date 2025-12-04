@@ -1,10 +1,11 @@
 # 🏢 CommunityHub Pro
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2.0-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.0.0-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.1-blue)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.3.0-green)](https://www.mongodb.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 > **Enterprise-Grade Community Management Platform** - A comprehensive SaaS solution for modern residential communities, apartment complexes, and housing societies. Built with cutting-edge technologies and designed for scalability, security, and exceptional user experience.
 
@@ -142,7 +143,7 @@ CommunityHub Pro is a **production-ready SaaS platform** that revolutionizes com
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Next.js 14    │    │   MongoDB       │    │   Cloudinary    │
+│   Next.js 15    │    │   MongoDB       │    │   Cloudinary    │
 │   Frontend &    │◄──►│   Atlas         │    │   CDN           │
 │   API Routes    │    │   Database      │    │   Images        │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -187,8 +188,8 @@ community-issue/
 ### 🛠️ Tech Stack & Dependencies
 
 #### **Core Framework**
-- **Next.js 14.2.0** - React framework with App Router
-- **React 18.3.0** - UI library with concurrent features
+- **Next.js 15.0.0** - React framework with App Router
+- **React 19.2.1** - UI library with latest features
 - **TypeScript 5.3.3** - Type-safe JavaScript
 
 #### **Database & Storage**
@@ -360,7 +361,7 @@ community-issue/
 
 | Requirement | Version | Purpose |
 |-------------|---------|---------|
-| **Node.js** | 18.0+ | Runtime environment |
+| **Node.js** | 20.0+ (24.x recommended) | Runtime environment |
 | **npm/yarn** | Latest | Package manager |
 | **MongoDB Atlas** | 8.0+ | Database (cloud) |
 | **Cloudinary** | Free tier | Image storage |
@@ -1886,13 +1887,13 @@ GET /api/admin/debug
 ### 📊 System Requirements
 
 #### **Minimum Requirements**
-- **Node.js**: 18.0.0+
+- **Node.js**: 20.0.0+
 - **RAM**: 512MB
 - **Storage**: 1GB
 - **Browser**: Chrome 90+, Firefox 88+, Safari 14+
 
 #### **Recommended Requirements**
-- **Node.js**: 20.0.0+
+- **Node.js**: 24.x (or 20.0.0+)
 - **RAM**: 1GB+
 - **Storage**: 5GB+
 - **Database**: MongoDB Atlas M0 cluster or better
@@ -1901,8 +1902,8 @@ GET /api/admin/debug
 
 | Version | Next.js | React | Node.js | MongoDB |
 |---------|---------|-------|---------|---------|
-| 1.0.x | 14.2+ | 18.3+ | 18.0+ | 8.0+ |
-| Future | 15.x | 19.x | 20.0+ | 9.0+ |
+| 1.0.x | 15.0+ | 19.2+ | 20.0+ | 8.0+ |
+| Current | 15.0+ | 19.2+ | 24.x | 8.3+ |
 
 ---
 
@@ -2083,7 +2084,7 @@ This project is **CodeCanyon-ready** and includes all required documentation and
 
 ### ✨ CodeCanyon Highlights
 - ✅ Full TypeScript implementation
-- ✅ Modern Next.js 14 App Router
+- ✅ Modern Next.js 15 App Router
 - ✅ Secure authentication system
 - ✅ Role-based access control
 - ✅ Image upload with Cloudinary
@@ -2094,7 +2095,7 @@ This project is **CodeCanyon-ready** and includes all required documentation and
 - ✅ Easy deployment to Vercel
 
 ### 📋 Requirements
-- Node.js 18+
+- Node.js 20.0+ (24.x recommended)
 - MongoDB Atlas account
 - Cloudinary account (for images)
 - Twilio account (optional, for SMS)

@@ -41,7 +41,7 @@ Complete guide for submitting CommunityHub Pro to CodeCanyon.
 
 ### Short Description (160 characters)
 ```
-Enterprise-grade community management platform with complaint tracking, user management, analytics, and real-time updates. Built with Next.js 14 & TypeScript.
+Enterprise-grade community management platform with complaint tracking, user management, analytics, and real-time updates. Built with Next.js 15 & React 19.
 ```
 
 ### Full Description
@@ -115,7 +115,7 @@ CommunityHub Pro is a **production-ready, enterprise-grade** community managemen
 
 ## 🛠️ Technical Stack
 
-- **Frontend**: Next.js 14.2.0 (App Router), React 18.3.0
+- **Frontend**: Next.js 15.0.0 (App Router), React 19.2.1
 - **Language**: TypeScript 5.3.3
 - **Database**: MongoDB 8.3.0 (Mongoose)
 - **Styling**: Tailwind CSS 3.4.1
@@ -147,7 +147,7 @@ CommunityHub Pro is a **production-ready, enterprise-grade** community managemen
 
 ## 📋 Requirements
 
-- Node.js 18.0.0 or higher
+- Node.js 20.0.0 or higher (24.x recommended)
 - MongoDB Atlas account (free tier available)
 - Cloudinary account (for image uploads)
 - Twilio account (optional, for SMS)
@@ -191,7 +191,7 @@ CommunityHub Pro is a **production-ready, enterprise-grade** community managemen
 ## 💡 Why Choose CommunityHub Pro?
 
 ✅ **Production Ready** - Battle-tested and deployed
-✅ **Modern Stack** - Latest Next.js 14 and TypeScript
+✅ **Modern Stack** - Latest Next.js 15, React 19, and TypeScript
 ✅ **Comprehensive** - All features you need out of the box
 ✅ **Well Documented** - Extensive documentation included
 ✅ **Secure** - Enterprise-grade security practices
