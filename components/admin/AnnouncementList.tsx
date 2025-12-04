@@ -5,6 +5,7 @@ import { IAnnouncement } from '@/types'
 import { UserRole } from '@/types/enums'
 import { Pin, Calendar, User, Trash2, Edit, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { formatDateForDisplay } from '@/lib/utils'
 
 interface AnnouncementListProps {
   announcements: IAnnouncement[]
