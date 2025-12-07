@@ -62,7 +62,6 @@ async function getAnnouncements(page: number = 1, limit: number = 10): Promise<{
       }
     })
 
-    console.log('Server-side: Found', serializedAnnouncements.length, 'announcements (page', page, 'of', Math.ceil(total / limit), ')')
     return {
       announcements: serializedAnnouncements,
       total,

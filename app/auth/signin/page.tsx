@@ -29,31 +29,24 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      console.log('🔐 Attempting sign in for:', formData.email)
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
         redirect: false,
       })
 
-      console.log('🔍 Sign in result:', result)
-
       if (result?.error) {
-        console.log('❌ Sign in error:', result.error)
         toast.error(result.error)
       } else {
-        console.log('✅ Sign in successful, redirecting based on role')
         toast.success('Signed in successfully')
 
         // Get user role from session and redirect accordingly
-        const event = new CustomEvent('checkSession')
         setTimeout(async () => {
           try {
             const response = await fetch('/api/auth/session')
             const session = await response.json()
 
             if (session?.user?.role) {
-              console.log('🔍 User role detected:', session.user.role)
               switch (session.user.role) {
                 case 'admin':
                   window.location.href = '/admin/dashboard'
@@ -65,15 +58,12 @@ export default function SignInPage() {
                   window.location.href = '/resident/dashboard'
                   break
                 default:
-                  console.log('⚠️ Unknown role, redirecting to home')
                   window.location.href = '/'
               }
             } else {
-              console.log('⚠️ No role detected, redirecting to home')
               window.location.href = '/'
             }
           } catch (error) {
-            console.log('⚠️ Error getting session, redirecting to home')
             window.location.href = '/'
           }
         }, 500)

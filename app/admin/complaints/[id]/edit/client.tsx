@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { ComplaintCategory, ComplaintPriority } from '@/types/enums'
@@ -239,7 +240,7 @@ export default function AdminEditComplaintClient({ complaint }: AdminEditComplai
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <Loader size="sm" variant="white" />
                     <span>Updating...</span>
                   </>
                 ) : (

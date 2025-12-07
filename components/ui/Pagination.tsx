@@ -178,7 +178,6 @@ export default function Pagination({
     const cachedData = getCache(`${page}-${itemsPerPage}-${debouncedSearchQuery}`)
     if (cachedData) {
       // Use cached data if available
-      console.log('Using cached pagination data for page:', page)
       handlePageChange(page)
       return
     }

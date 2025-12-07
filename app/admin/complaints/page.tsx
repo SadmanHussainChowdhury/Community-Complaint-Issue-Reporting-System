@@ -95,7 +95,6 @@ async function getComplaints(page: number = 1, limit: number = 10): Promise<{ co
       } as IComplaint
     })
 
-    console.log('Server-side: Found', serializedComplaints.length, 'complaints (page', page, 'of', Math.ceil(total / limit), ')')
     return {
       complaints: serializedComplaints,
       total,

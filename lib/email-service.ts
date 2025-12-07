@@ -119,13 +119,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   const transporter = createTransporter()
   
   if (!transporter) {
-    // If email is not configured, log to console
-    console.log('Email not configured. Would send:', {
-      to: options.to,
-      subject: options.subject,
-      template: options.template,
-      context: options.context,
-    })
+    // Email service not configured
     return
   }
 
@@ -143,8 +137,6 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
       subject: options.subject,
       html,
     })
-    
-    console.log(`Email sent to ${options.to}`)
   } catch (error) {
     console.error('Error sending email:', error)
     // Don't throw error - email failure shouldn't break the application

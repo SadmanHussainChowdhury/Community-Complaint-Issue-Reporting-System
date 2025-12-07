@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { IComplaint } from '@/types'
 import { ComplaintPriority, ComplaintCategory } from '@/types/enums'
-import { Save, ArrowLeft, Loader2, Upload, X } from 'lucide-react'
+import { Save, ArrowLeft, Upload, X } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
 
@@ -140,7 +141,7 @@ export default function EditComplaintPage() {
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+            <Loader size="md" variant="primary" />
           </div>
         </div>
       </div>
@@ -361,7 +362,7 @@ export default function EditComplaintPage() {
                 disabled={saving}
                 className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
               >
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                {saving && <Loader size="sm" variant="white" />}
                 <Save className="w-4 h-4" />
                 Update Complaint
               </button>

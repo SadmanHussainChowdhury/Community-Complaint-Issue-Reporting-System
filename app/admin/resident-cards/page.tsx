@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Printer, Search, X, CheckCircle2, Users, FileText } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 import { IUser } from '@/types'
 
@@ -399,7 +400,7 @@ export default function ResidentCardsPage() {
         </div>
         <div className="flex justify-center items-center py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <Loader size="md" variant="primary" className="mx-auto mb-4" />
             <p className="text-gray-600 font-medium">Loading residents...</p>
           </div>
         </div>

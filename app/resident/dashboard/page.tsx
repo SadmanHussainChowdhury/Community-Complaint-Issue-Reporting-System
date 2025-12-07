@@ -12,13 +12,13 @@ import {
   AlertCircle,
   Bell,
   Pin,
-  Loader2,
   Plus,
   Eye,
   Edit,
   Activity,
   BarChart3,
 } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import Link from 'next/link'
 import { formatDateForDisplay } from '@/lib/utils'
 import toast from 'react-hot-toast'
@@ -113,7 +113,7 @@ export default function ResidentDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-600" />
+          <Loader size="md" variant="primary" className="mx-auto mb-4" />
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function ResidentDashboard() {
               disabled={loading}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 inline-flex items-center space-x-2 transition-colors disabled:opacity-50"
             >
-              <Loader2 className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              {loading ? <Loader size="sm" variant="primary" /> : null}
               <span>Refresh</span>
             </button>
             <Link

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, UserCheck } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { IComplaint, IUser } from '@/types'
@@ -84,27 +85,22 @@ export default function AdminNewAssignmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/admin/assignments"
-                className="text-gray-600 hover:text-gray-900 flex items-center space-x-2"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Back to Assignments</span>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">Create Assignment</h1>
-            </div>
-          </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Create Assignment</h1>
+          <p className="mt-2 text-gray-600">Assign complaints to staff members</p>
         </div>
+        <Link
+          href="/admin/assignments"
+          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 inline-flex items-center space-x-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Assignments</span>
+        </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl">
         <div className="bg-white rounded-lg shadow-md">
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center space-x-3">
@@ -233,7 +229,7 @@ export default function AdminNewAssignmentPage() {
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <Loader size="sm" variant="white" />
                     <span>Creating...</span>
                   </>
                 ) : (

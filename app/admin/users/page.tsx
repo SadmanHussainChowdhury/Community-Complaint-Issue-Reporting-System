@@ -37,7 +37,6 @@ async function getUsers(page: number = 1, limit: number = 10): Promise<{ users: 
       updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date()
     }))
 
-    console.log('Server-side: Found', serializedUsers.length, 'users (page', page, 'of', Math.ceil(total / limit), ')')
     return {
       users: serializedUsers,
       total,

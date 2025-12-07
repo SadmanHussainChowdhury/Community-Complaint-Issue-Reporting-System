@@ -47,7 +47,6 @@ export class PushNotificationService {
     if (this.permission !== 'granted') {
       const granted = await this.requestPermission()
       if (!granted) {
-        console.log('Notification permission denied')
         return
       }
     }

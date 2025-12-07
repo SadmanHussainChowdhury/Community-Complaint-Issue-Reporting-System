@@ -37,7 +37,6 @@ async function getResidents(page: number = 1, limit: number = 10): Promise<{ res
       updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date()
     }))
 
-    console.log('Server-side: Found', serializedResidents.length, 'residents (page', page, 'of', Math.ceil(total / limit), ')')
     return {
       residents: serializedResidents,
       total,

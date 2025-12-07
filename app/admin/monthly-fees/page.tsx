@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { DollarSign, Plus, Search, Edit, Trash2, CheckCircle2, XCircle, Calendar, Loader2, X } from 'lucide-react'
+import { DollarSign, Plus, Search, Edit, Trash2, CheckCircle2, XCircle, Calendar, X } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 import Pagination from '@/components/ui/Pagination'
 
@@ -316,7 +317,7 @@ export default function MonthlyFeesPage() {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex items-center justify-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                        <Loader size="md" variant="primary" />
                         <span className="ml-3">Loading fees...</span>
                       </div>
                     </td>

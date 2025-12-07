@@ -78,8 +78,6 @@ const sendSMS = async (to: string, message: string): Promise<boolean> => {
   if (!client) {
     if (!twilioAvailable) {
       console.warn('Twilio package not installed. Install it with: npm install twilio')
-    } else {
-      console.log('Twilio not configured. Would send SMS to:', to, message)
     }
     return false
   }

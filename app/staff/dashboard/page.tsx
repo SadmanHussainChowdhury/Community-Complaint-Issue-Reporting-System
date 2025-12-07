@@ -12,7 +12,6 @@ import {
   AlertCircle,
   Bell,
   Pin,
-  Loader2,
   PlayCircle,
   CheckCircle2,
   Activity,
@@ -20,6 +19,7 @@ import {
   Eye,
   Award,
 } from 'lucide-react'
+import { Loader } from '@/components/ui'
 import { formatDateForDisplay } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -179,7 +179,7 @@ export default function StaffDashboard() {
       <div className="min-h-screen bg-gray-50">
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-primary-600 mx-auto mb-4" />
+            <Loader size="md" variant="primary" className="mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Your Dashboard</h2>
             <p className="text-gray-600">Fetching your assigned tasks...</p>
           </div>
@@ -215,7 +215,7 @@ export default function StaffDashboard() {
             disabled={refreshing}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 inline-flex items-center space-x-2 transition-colors disabled:opacity-50"
           >
-            <Loader2 className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? <Loader size="sm" variant="primary" /> : null}
             <span>Refresh</span>
           </button>
         </div>
@@ -438,7 +438,7 @@ export default function StaffDashboard() {
                                 title="Start Working"
                               >
                                 {updatingStatus === complaint._id ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                  <Loader size="sm" variant="white" />
                                 ) : (
                                   <PlayCircle className="w-3 h-3" />
                                 )}
@@ -454,7 +454,7 @@ export default function StaffDashboard() {
                                 title="Mark as Done"
                               >
                                 {updatingStatus === complaint._id ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                  <Loader size="sm" variant="white" />
                                 ) : (
                                   <CheckCircle2 className="w-3 h-3" />
                                 )}

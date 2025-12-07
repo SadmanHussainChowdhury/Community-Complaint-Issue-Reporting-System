@@ -53,8 +53,6 @@ export async function GET(req: NextRequest) {
       .limit(limit)
       .lean()
 
-    console.log(`📊 Found ${residents.length} residents for page ${page}`)
-
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {

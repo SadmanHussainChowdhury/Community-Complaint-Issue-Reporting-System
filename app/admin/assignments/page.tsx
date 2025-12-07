@@ -107,7 +107,6 @@ async function getAssignments(page: number = 1, limit: number = 10): Promise<{ a
       }
     })
 
-    console.log('Server-side: Found', serializedAssignments.length, 'assignments (page', page, 'of', Math.ceil(total / limit), ')')
     return {
       assignments: serializedAssignments,
       total,
