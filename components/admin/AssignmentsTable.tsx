@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { IAssignment } from '@/types'
 import AssignmentList from '@/components/admin/AssignmentList'
 import Pagination from '@/components/ui/Pagination'
-import { CheckCircle, Clock, AlertCircle, Loader2 } from 'lucide-react'
+import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface AssignmentsTableProps {
@@ -171,7 +171,7 @@ export default function AssignmentsTable({
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <span className="ml-3 text-slate-600">Loading assignments...</span>
         </div>
       )}

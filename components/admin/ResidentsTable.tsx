@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react'
 import { IUser } from '@/types'
 import ResidentList from '@/components/admin/ResidentList'
 import Pagination from '@/components/ui/Pagination'
-import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ResidentsTableProps {
@@ -82,7 +81,7 @@ export default function ResidentsTable({
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <span className="ml-3 text-slate-600">Loading residents...</span>
         </div>
       )}

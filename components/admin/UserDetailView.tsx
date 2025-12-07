@@ -89,7 +89,7 @@ export default function UserDetailView({ user: initialUser }: UserDetailViewProp
             >
               {deleting ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   <span>Deleting...</span>
                 </>
               ) : (
