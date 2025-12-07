@@ -20,7 +20,6 @@ async function getAnnouncements() {
 
     if (!res.ok) return { announcements: [] }
 
-    // Check if response is JSON
     const contentType = res.headers.get('content-type')
     if (!contentType || !contentType.includes('application/json')) {
       console.error('Announcements API returned non-JSON response')
@@ -35,10 +34,10 @@ async function getAnnouncements() {
   }
 }
 
-export default async function ResidentAnnouncementsPage() {
+export default async function StaffAnnouncementsPage() {
   const session = await getServerSession(authOptions)
 
-  if (!session || session.user.role !== UserRole.RESIDENT) {
+  if (!session || session.user.role !== UserRole.STAFF) {
     redirect('/auth/signin')
   }
 
@@ -57,7 +56,7 @@ export default async function ResidentAnnouncementsPage() {
               <p className="mt-2 text-gray-600">Stay updated with the latest community announcements</p>
             </div>
             <Link
-              href="/resident/dashboard"
+              href="/staff/dashboard"
               className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
               Back to Dashboard
@@ -69,19 +68,19 @@ export default async function ResidentAnnouncementsPage() {
         {pinnedAnnouncements.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <Pin className="w-5 h-5 text-primary-600 fill-current" />
+              <Pin className="w-5 h-5 text-blue-600 fill-current" />
               <h2 className="text-2xl font-semibold text-gray-900">Important Announcements</h2>
             </div>
             <div className="space-y-4">
               {pinnedAnnouncements.map((announcement: IAnnouncement) => (
                 <div
                   key={announcement._id}
-                  className="bg-gradient-to-r from-primary-50 to-primary-100 border-2 border-primary-500 rounded-lg shadow-md p-6"
+                  className="bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-500 rounded-lg shadow-md p-6"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-3">
-                        <Pin className="w-4 h-4 text-primary-600 fill-current" />
+                        <Pin className="w-4 h-4 text-blue-600 fill-current" />
                         <h3 className="text-xl font-bold text-gray-900">{announcement.title}</h3>
                       </div>
                       <p className="text-gray-700 mb-4 leading-relaxed">{announcement.content}</p>
@@ -108,24 +107,6 @@ export default async function ResidentAnnouncementsPage() {
                           </span>
                         )}
                       </div>
-                      {announcement.attachments && announcement.attachments.length > 0 && (
-                        <div className="mt-4">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Attachments:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {announcement.attachments.map((attachment: string, index: number) => (
-                              <a
-                                key={index}
-                                href={attachment}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800 hover:bg-primary-200 transition-colors"
-                              >
-                                <span>Attachment {index + 1}</span>
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -137,7 +118,7 @@ export default async function ResidentAnnouncementsPage() {
         {/* Regular Announcements */}
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
-            <Bell className="w-6 h-6 text-primary-600" />
+            <Bell className="w-6 h-6 text-blue-600" />
             All Announcements
           </h2>
         </div>
@@ -186,24 +167,6 @@ export default async function ResidentAnnouncementsPage() {
                         </span>
                       )}
                     </div>
-                    {announcement.attachments && announcement.attachments.length > 0 && (
-                      <div className="mt-4">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Attachments:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {announcement.attachments.map((attachment: string, index: number) => (
-                            <a
-                              key={index}
-                              href={attachment}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
-                            >
-                              <span>Attachment {index + 1}</span>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -214,3 +177,4 @@ export default async function ResidentAnnouncementsPage() {
     </div>
   )
 }
+

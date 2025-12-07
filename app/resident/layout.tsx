@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth-options'
 import { UserRole } from '@/types/enums'
+import ResidentSidebar from '@/components/ResidentSidebar'
 
 export default async function ResidentLayout({
   children,
@@ -10,27 +11,38 @@ export default async function ResidentLayout({
 }) {
   const session = await getServerSession(authOptions)
 
-  console.log('🔍 Resident Layout - Session:', session ? 'EXISTS' : 'NULL')
-  console.log('🔍 Resident Layout - User:', session?.user ? 'EXISTS' : 'NULL')
-  console.log('🔍 Resident Layout - User Role:', session?.user?.role)
-  console.log('🔍 Resident Layout - Expected Resident Role:', UserRole.RESIDENT)
-
+  // Redirect to sign in if not authenticated
   if (!session) {
-    console.log('❌ Resident Layout - No session, redirecting to signin')
-    redirect('/auth/signin')
+    redirect('/auth/signin?callbackUrl=/resident/dashboard')
   }
 
+  // Redirect if not resident
   if (session.user.role !== UserRole.RESIDENT) {
-    console.log('❌ Resident Layout - User role is not resident, redirecting to signin')
-    console.log('   Current role:', session.user.role, 'Expected:', UserRole.RESIDENT)
-    redirect('/auth/signin')
+    redirect('/')
   }
 
-  console.log('✅ Resident Layout - Access granted for resident user')
+  // Ensure user has required fields
+  if (!session.user.id) {
+    redirect('/auth/signin?callbackUrl=/resident/dashboard')
+  }
+
+  // Ensure user object is properly structured
+  const user = {
+    id: session.user.id,
+    name: session.user.name || null,
+    email: session.user.email || null,
+    role: session.user.role,
+    communityId: session.user.communityId || undefined,
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {children}
+      <ResidentSidebar user={user} />
+      <div className="lg:pl-64">
+        <main className="py-8">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

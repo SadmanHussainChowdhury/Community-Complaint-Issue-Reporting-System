@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import Navbar from '@/components/Navbar'
 import StatusTracker from '@/components/StatusTracker'
 import FeedbackForm from '@/components/FeedbackForm'
 import { IComplaint, ComplaintNote } from '@/types'
@@ -57,7 +56,6 @@ export default function ComplaintDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="flex items-center justify-center py-12">
           <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
         </div>
@@ -68,7 +66,6 @@ export default function ComplaintDetailPage() {
   if (!complaint) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-gray-500">Complaint not found</p>
         </div>
@@ -81,7 +78,6 @@ export default function ComplaintDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => router.back()}

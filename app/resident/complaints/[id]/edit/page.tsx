@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import Navbar from '@/components/Navbar'
 import { IComplaint } from '@/types'
 import { ComplaintPriority, ComplaintCategory } from '@/types/enums'
 import { Save, ArrowLeft, Loader2, Upload, X } from 'lucide-react'
@@ -139,7 +138,6 @@ export default function EditComplaintPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-center h-64">
             <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
@@ -152,7 +150,6 @@ export default function EditComplaintPage() {
   if (!complaint) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Complaint Not Found</h1>
@@ -167,7 +164,6 @@ export default function EditComplaintPage() {
   if (complaint.status === 'resolved') {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Cannot Edit Resolved Complaint</h1>

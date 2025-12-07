@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
-import Navbar from '@/components/Navbar'
 import { ComplaintCategory, ComplaintPriority } from '@/types/enums'
 import { Upload, X } from 'lucide-react'
 
@@ -80,7 +79,6 @@ export default function NewComplaintPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Submit New Complaint</h1>
 
