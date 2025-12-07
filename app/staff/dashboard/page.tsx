@@ -138,7 +138,7 @@ export default function StaffDashboard() {
     fetchData()
   }, [session, status, router, fetchData])
 
-  const updateComplaintStatus = async (complaintId: string, newStatus: string) => {
+  const updateComplaintStatus = useCallback(async (complaintId: string, newStatus: string) => {
     setUpdatingStatus(complaintId)
 
     try {
@@ -153,15 +153,18 @@ export default function StaffDashboard() {
 
       if (res.ok) {
         const data = await res.json()
-        // Update local state
-        setComplaints(prev => prev.map(c =>
-          c._id === complaintId ? { ...c, status: newStatus as ComplaintStatus } : c
-        ))
-        toast.success(`Complaint status updated to ${newStatus.replace('_', ' ')}`)
+        if (data.success) {
+          // Refresh data to get latest from server
+          await fetchData(false)
+          const statusLabel = newStatus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+          toast.success(`Complaint status updated to ${statusLabel}`)
+        } else {
+          toast.error(data.error || 'Failed to update complaint status')
+        }
       } else {
         const errorData = await res.json().catch(() => ({}))
         toast.error(errorData.error || 'Failed to update complaint status')
-        console.error('Failed to update complaint status')
+        console.error('Failed to update complaint status:', res.status, errorData)
       }
     } catch (error) {
       console.error('Error updating complaint status:', error)
@@ -169,7 +172,7 @@ export default function StaffDashboard() {
     } finally {
       setUpdatingStatus(null)
     }
-  }
+  }, [fetchData])
 
   if (status === 'loading' || loading) {
     return (
@@ -189,9 +192,9 @@ export default function StaffDashboard() {
     return null // Will redirect
   }
 
-  const pendingCount = complaints.filter(c => c.status === 'pending').length
-  const inProgressCount = complaints.filter(c => c.status === 'in_progress').length
-  const resolvedCount = complaints.filter(c => c.status === 'resolved').length
+  const pendingCount = complaints.filter(c => c.status === ComplaintStatus.PENDING).length
+  const inProgressCount = complaints.filter(c => c.status === ComplaintStatus.IN_PROGRESS).length
+  const resolvedCount = complaints.filter(c => c.status === ComplaintStatus.RESOLVED).length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -387,7 +390,10 @@ export default function StaffDashboard() {
                   </tr>
                 ) : (
                   complaints.map((complaint) => {
-                    const submittedBy = typeof complaint.submittedBy === 'object' ? complaint.submittedBy : null
+                    const submittedBy = typeof complaint.submittedBy === 'object' && complaint.submittedBy !== null 
+                      ? complaint.submittedBy 
+                      : null
+                    const submittedByName = submittedBy?.name || (typeof complaint.submittedBy === 'string' ? 'Loading...' : 'Unknown')
 
                     return (
                       <tr key={complaint._id} className="hover:bg-gray-50">
@@ -396,7 +402,7 @@ export default function StaffDashboard() {
                           <div className="text-sm text-gray-500 truncate max-w-xs">{complaint.description}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-900 capitalize">{complaint.category.replace('_', ' ')}</span>
+                          <span className="text-sm text-gray-900 capitalize">{complaint.category.replace(/_/g, ' ')}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
@@ -413,20 +419,20 @@ export default function StaffDashboard() {
                               statusColors[complaint.status as ComplaintStatus] || 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            {complaint.status.charAt(0).toUpperCase() + complaint.status.slice(1).replace('_', ' ')}
+                            {complaint.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {submittedBy?.name || 'Unknown'}
+                          {submittedByName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatDateForDisplay(complaint.createdAt)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex items-center space-x-2">
-                            {complaint.status === 'pending' && (
+                            {complaint.status === ComplaintStatus.PENDING && (
                               <button
-                                onClick={() => updateComplaintStatus(complaint._id, 'in_progress')}
+                                onClick={() => updateComplaintStatus(complaint._id, ComplaintStatus.IN_PROGRESS)}
                                 disabled={updatingStatus === complaint._id}
                                 className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all text-xs disabled:opacity-50"
                                 title="Start Working"
@@ -440,9 +446,9 @@ export default function StaffDashboard() {
                               </button>
                             )}
 
-                            {complaint.status === 'in_progress' && (
+                            {complaint.status === ComplaintStatus.IN_PROGRESS && (
                               <button
-                                onClick={() => updateComplaintStatus(complaint._id, 'resolved')}
+                                onClick={() => updateComplaintStatus(complaint._id, ComplaintStatus.RESOLVED)}
                                 disabled={updatingStatus === complaint._id}
                                 className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all text-xs disabled:opacity-50"
                                 title="Mark as Done"
@@ -456,7 +462,7 @@ export default function StaffDashboard() {
                               </button>
                             )}
 
-                            {complaint.status === 'resolved' && (
+                            {complaint.status === ComplaintStatus.RESOLVED && (
                               <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg text-xs">
                                 <Award className="w-3 h-3" />
                                 Done
