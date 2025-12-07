@@ -252,7 +252,7 @@ export default function AdminProfilePage() {
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                     <span>Saving...</span>
                   </>
                 ) : (

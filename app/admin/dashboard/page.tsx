@@ -295,27 +295,9 @@ async function getDashboardData() {
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-20"></div>
-                <div className="h-8 bg-gray-200 rounded w-12"></div>
-              </div>
-              <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-4"></div>
-        <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-4 bg-gray-200 rounded w-full"></div>
-          ))}
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     </div>
   )

@@ -128,27 +128,22 @@ export default function AdminNewAssignmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
+      <div className="mb-8">
         <Link
           href="/admin/assignments"
-                className="text-gray-600 hover:text-gray-900 flex items-center space-x-2"
+          className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
         >
-                <ArrowLeft className="w-5 h-5" />
-          <span>Back to Assignments</span>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Assignments
         </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">Create Assignment</h1>
-            </div>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">New Assignment</h1>
+          <p className="mt-2 text-gray-600">Assign complaints to staff members for resolution</p>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl">
         <div className="bg-white rounded-lg shadow-md">
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center space-x-3">

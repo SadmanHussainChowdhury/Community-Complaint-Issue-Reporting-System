@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import {
@@ -40,9 +40,31 @@ interface ProfileFormData {
   confirmPassword: string
 }
 
+// Memoized menu item component for better performance
+const StaffMenuItem = memo(({ item, isActive }: { item: typeof menuItems[0], isActive: boolean }) => {
+  const Icon = item.icon
+  return (
+    <Link
+      href={item.href}
+      prefetch={true}
+      className={`
+        flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-150
+        ${
+          isActive
+            ? 'bg-purple-600 text-white'
+            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+        }
+      `}
+    >
+      <Icon className="w-5 h-5 flex-shrink-0" />
+      <span className="text-sm font-medium">{item.label}</span>
+    </Link>
+  )
+})
+StaffMenuItem.displayName = 'StaffMenuItem'
+
 export default function StaffSidebar({ user }: StaffSidebarProps) {
   const pathname = usePathname()
-  const router = useRouter()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -59,38 +81,48 @@ export default function StaffSidebar({ user }: StaffSidebarProps) {
     confirmPassword: '',
   })
 
-  // Update form data when user prop changes
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      name: user.name || '',
-      email: user.email || '',
+  // Memoize active menu items to avoid recalculating on every render
+  const activeMenuItems = useMemo(() => {
+    return menuItems.map(item => ({
+      ...item,
+      isActive: pathname === item.href || pathname?.startsWith(item.href + '/')
     }))
-  }, [user])
+  }, [pathname])
 
-  // Close dropdown when clicking outside
+  // Update form data when user prop changes (only if values actually changed)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
-        setIsEditingProfile(false)
-      }
+    if (user.name !== formData.name || user.email !== formData.email) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || '',
+      }))
     }
+  }, [user.name, user.email, formData.name, formData.email])
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+  // Close dropdown when clicking outside (optimized with useCallback)
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false)
+      setIsEditingProfile(false)
+    }
   }, [])
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/auth/signin' })
-  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [handleClickOutside])
 
-  const handleFormInputChange = (field: keyof ProfileFormData, value: string) => {
+  const handleSignOut = useCallback(async () => {
+    await signOut({ callbackUrl: '/auth/signin' })
+  }, [])
+
+  const handleFormInputChange = useCallback((field: keyof ProfileFormData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }))
-  }
+  }, [])
 
   const validateProfileForm = (): string | null => {
     if (!formData.name.trim()) {
@@ -127,7 +159,7 @@ export default function StaffSidebar({ user }: StaffSidebarProps) {
     return null
   }
 
-  const handleProfileSave = async () => {
+  const handleProfileSave = useCallback(async () => {
     const validationError = validateProfileForm()
     if (validationError) {
       toast.error(validationError)
@@ -177,9 +209,9 @@ export default function StaffSidebar({ user }: StaffSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [formData, user.id])
 
-  const handleProfileCancel = () => {
+  const handleProfileCancel = useCallback(() => {
     setFormData({
       name: user.name || '',
       email: user.email || '',
@@ -188,7 +220,11 @@ export default function StaffSidebar({ user }: StaffSidebarProps) {
       confirmPassword: '',
     })
     setIsEditingProfile(false)
-  }
+  }, [user.name, user.email])
+
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen(prev => !prev)
+  }, [])
 
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white flex flex-col">
@@ -234,8 +270,8 @@ export default function StaffSidebar({ user }: StaffSidebarProps) {
       {/* Staff User Section - Bottom of Sidebar */}
       <div className="relative mt-auto" ref={dropdownRef}>
         <div
-          className="px-4 py-3 border-t border-gray-800 cursor-pointer hover:bg-gray-800 transition-colors"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="px-4 py-3 border-t border-gray-800 cursor-pointer hover:bg-gray-800 transition-colors duration-150"
+          onClick={toggleDropdown}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">

@@ -78,10 +78,13 @@ export default function NewComplaintPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Submit New Complaint</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Submit New Complaint</h1>
+        <p className="mt-2 text-gray-600">Report an issue or concern to the community management</p>
+      </div>
 
+      <div className="max-w-3xl">
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
