@@ -198,7 +198,7 @@ export default function ComplaintList({
               <tr>
                 <td colSpan={onComplaintSelect ? 9 : 8} className="px-6 py-12 text-center text-gray-500">
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                     <span className="ml-3">Loading complaints...</span>
                   </div>
                 </td>
@@ -275,7 +275,7 @@ export default function ComplaintList({
                         />
                         <Link
                           href={`/admin/complaints/${complaint._id}`}
-                          className="text-primary-600 hover:text-primary-900"
+                          className="text-primary-600 hover:text-primary-900 transition-colors"
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />

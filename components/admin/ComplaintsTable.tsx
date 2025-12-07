@@ -5,7 +5,7 @@ import { IComplaint, IUser } from '@/types'
 import { ComplaintStatus, ComplaintPriority, ComplaintCategory } from '@/types/enums'
 import ComplaintList from '@/components/admin/ComplaintList'
 import Pagination from '@/components/ui/Pagination'
-import { UserCheck, UserX, Users, Loader2, Clock, AlertCircle, CheckCircle, ClipboardList } from 'lucide-react'
+import { UserCheck, UserX, Users, Clock, AlertCircle, CheckCircle, ClipboardList } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ComplaintsTableProps {
@@ -188,7 +188,7 @@ export default function ComplaintsTable({
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <span className="ml-3 text-slate-600">Loading complaints...</span>
         </div>
       )}

@@ -18,7 +18,6 @@ import {
   Activity,
   BarChart3,
 } from 'lucide-react'
-import { Loader } from '@/components/ui'
 import Link from 'next/link'
 import { formatDateForDisplay } from '@/lib/utils'
 import toast from 'react-hot-toast'
@@ -113,7 +112,7 @@ export default function ResidentDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader size="md" variant="primary" className="mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -130,7 +129,7 @@ export default function ResidentDashboard() {
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -147,12 +146,12 @@ export default function ResidentDashboard() {
               disabled={loading}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 inline-flex items-center space-x-2 transition-colors disabled:opacity-50"
             >
-              {loading ? <Loader size="sm" variant="primary" /> : null}
+              <div className={`w-4 h-4 ${loading ? 'animate-spin rounded-full border-b-2 border-gray-700' : ''}`}></div>
               <span>Refresh</span>
             </button>
             <Link
               href="/resident/complaints/new"
-              className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 inline-flex items-center space-x-2 transition-colors shadow-lg"
+              className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 inline-flex items-center space-x-2 transition-colors shadow-lg"
             >
               <Plus className="w-4 h-4" />
               <span>New Complaint</span>
@@ -200,17 +199,17 @@ export default function ResidentDashboard() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-indigo-600 mb-1">In Progress</p>
-                <p className="text-3xl font-bold text-indigo-900">{inProgressCount}</p>
+                <p className="text-sm font-medium text-blue-600 mb-1">In Progress</p>
+                <p className="text-3xl font-bold text-blue-900">{inProgressCount}</p>
                 <div className="flex items-center mt-2">
-                  <Activity className="w-4 h-4 text-indigo-600 mr-1" />
-                  <span className="text-xs text-indigo-600">Being handled</span>
+                  <Activity className="w-4 h-4 text-blue-600 mr-1" />
+                  <span className="text-xs text-blue-600">Being handled</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
                 <Activity className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -244,7 +243,7 @@ export default function ResidentDashboard() {
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <Bell className="w-5 h-5 text-green-600 mr-2" />
+                  <Bell className="w-5 h-5 text-indigo-600 mr-2" />
                   Recent Announcements
                 </h2>
               </div>
@@ -252,20 +251,20 @@ export default function ResidentDashboard() {
                 {announcements.map((announcement: IAnnouncement) => (
                   <div
                     key={announcement._id}
-                    className={`p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border ${
-                      announcement.isPinned ? 'border-green-300 border-2' : 'border-green-200'
+                    className={`p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg border ${
+                      announcement.isPinned ? 'border-indigo-300 border-2' : 'border-indigo-200'
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           {announcement.isPinned && (
-                            <Pin className="w-4 h-4 text-green-600 fill-current" />
+                            <Pin className="w-4 h-4 text-indigo-600 fill-current" />
                           )}
-                          <h3 className="font-medium text-green-900">{announcement.title}</h3>
+                          <h3 className="font-medium text-indigo-900">{announcement.title}</h3>
                         </div>
-                        <p className="text-sm text-green-700 mb-3 line-clamp-2">{announcement.content}</p>
-                        <div className="flex items-center gap-4 text-xs text-green-600">
+                        <p className="text-sm text-indigo-700 mb-3 line-clamp-2">{announcement.content}</p>
+                        <div className="flex items-center gap-4 text-xs text-indigo-600">
                           {announcement.createdBy && typeof announcement.createdBy === 'object' && (
                             <span>By {announcement.createdBy.name}</span>
                           )}
@@ -289,7 +288,7 @@ export default function ResidentDashboard() {
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-              <ClipboardList className="w-5 h-5 text-green-600 mr-2" />
+              <ClipboardList className="w-5 h-5 text-indigo-600 mr-2" />
               My Complaints
             </h2>
           </div>
@@ -331,7 +330,7 @@ export default function ResidentDashboard() {
                         <p className="text-sm text-gray-600 mb-4">Submit your first complaint to get started</p>
                         <Link
                           href="/resident/complaints/new"
-                          className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 inline-flex items-center space-x-2 transition-colors"
+                          className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 inline-flex items-center space-x-2 transition-colors"
                         >
                           <Plus className="w-4 h-4" />
                           <span>New Complaint</span>
@@ -380,7 +379,7 @@ export default function ResidentDashboard() {
                           <div className="flex items-center space-x-2">
                             <Link
                               href={`/resident/complaints/${complaint._id}`}
-                              className="text-green-600 hover:text-green-900"
+                              className="text-indigo-600 hover:text-indigo-900"
                               title="View Details"
                             >
                               <Eye className="w-4 h-4" />
@@ -388,7 +387,7 @@ export default function ResidentDashboard() {
                             {complaint.status !== ComplaintStatus.RESOLVED && (
                               <Link
                                 href={`/resident/complaints/${complaint._id}/edit`}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-primary-600 hover:text-primary-900"
                                 title="Edit Complaint"
                               >
                                 <Edit className="w-4 h-4" />

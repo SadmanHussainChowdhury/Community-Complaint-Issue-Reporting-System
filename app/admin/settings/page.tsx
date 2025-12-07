@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Settings, Save, Bell, Shield, Database } from 'lucide-react'
-import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 
 export default function AdminSettingsPage() {
@@ -100,7 +99,7 @@ export default function AdminSettingsPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center min-h-screen">
-          <Loader size="md" variant="primary" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
         </div>
       </div>
     )
@@ -359,7 +358,7 @@ export default function AdminSettingsPage() {
           >
             {loading ? (
               <>
-                <Loader size="sm" variant="white" />
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 <span>Saving...</span>
               </>
             ) : (

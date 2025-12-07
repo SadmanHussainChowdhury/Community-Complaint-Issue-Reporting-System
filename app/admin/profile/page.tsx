@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { User, Mail, Phone, Shield, Calendar, Edit, Save, X, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
-import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 import { SessionUser, IUser } from '@/types'
 
@@ -212,7 +211,7 @@ export default function AdminProfilePage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Loader size="md" variant="primary" className="mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -253,7 +252,7 @@ export default function AdminProfilePage() {
               >
                 {loading ? (
                   <>
-                    <Loader size="sm" variant="white" />
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     <span>Saving...</span>
                   </>
                 ) : (

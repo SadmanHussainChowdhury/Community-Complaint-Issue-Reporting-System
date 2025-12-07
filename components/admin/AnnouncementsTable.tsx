@@ -5,7 +5,7 @@ import { IAnnouncement } from '@/types'
 import { UserRole } from '@/types/enums'
 import AnnouncementList from '@/components/admin/AnnouncementList'
 import Pagination from '@/components/ui/Pagination'
-import { Pin, PinOff, Trash2, Loader2 } from 'lucide-react'
+import { Pin, PinOff, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface AnnouncementsTableProps {
@@ -177,7 +177,7 @@ export default function AnnouncementsTable({
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <span className="ml-3 text-slate-600">Loading announcements...</span>
         </div>
       )}

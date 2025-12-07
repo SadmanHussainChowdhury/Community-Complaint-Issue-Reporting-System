@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import StatusTracker from '@/components/StatusTracker'
 import FeedbackForm from '@/components/FeedbackForm'
-import { Loader } from '@/components/ui'
 import { IComplaint, ComplaintNote } from '@/types'
 import { ComplaintStatus } from '@/types/enums'
 import { MapPin, Calendar, User, Image as ImageIcon, MessageSquare, Star } from 'lucide-react'
@@ -58,7 +57,7 @@ export default function ComplaintDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="flex items-center justify-center py-12">
-          <Loader size="md" variant="primary" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
         </div>
       </div>
     )

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard'
 import { DashboardStats } from '@/types'
-import { Loader } from '@/components/ui'
 
 export default function AdminAnalyticsPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
@@ -52,11 +51,9 @@ export default function AdminAnalyticsPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <Loader size="md" variant="primary" className="mx-auto" />
-            <p className="mt-4 text-gray-600">Loading analytics...</p>
-          </div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading analytics...</p>
         </div>
       </div>
     )

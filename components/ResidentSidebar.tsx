@@ -196,7 +196,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
       {/* Logo */}
       <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
             <Home className="w-6 h-6" />
           </div>
           <div>
@@ -220,7 +220,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
                 ${
                   isActive
-                    ? 'bg-green-600 text-white'
+                    ? 'bg-purple-600 text-white'
                     : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                 }
               `}
@@ -240,7 +240,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
                 <User className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -268,7 +268,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
               <div className="p-4 space-y-3">
                 {/* Profile Info */}
                 <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center mx-auto mb-2">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center mx-auto mb-2">
                     <User className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-sm font-semibold text-white">
@@ -277,7 +277,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                   <p className="text-xs text-gray-400">
                     {user.email}
                   </p>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900/50 text-green-300 mt-1">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-900/50 text-purple-300 mt-1">
                     Resident
                   </span>
                 </div>
@@ -336,7 +336,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                       type="text"
                       value={formData.name}
                       onChange={(e) => handleFormInputChange('name', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -348,7 +348,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleFormInputChange('email', e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -361,7 +361,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                         type={showCurrentPassword ? 'text' : 'password'}
                         value={formData.currentPassword}
                         onChange={(e) => handleFormInputChange('currentPassword', e.target.value)}
-                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         placeholder="Enter current password"
                       />
                       <button
@@ -382,7 +382,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                         type={showNewPassword ? 'text' : 'password'}
                         value={formData.newPassword}
                         onChange={(e) => handleFormInputChange('newPassword', e.target.value)}
-                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         placeholder="Enter new password"
                       />
                       <button
@@ -403,7 +403,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
                         onChange={(e) => handleFormInputChange('confirmPassword', e.target.value)}
-                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                        className="w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         placeholder="Confirm new password"
                       />
                       <button

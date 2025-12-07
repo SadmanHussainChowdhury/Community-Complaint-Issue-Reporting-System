@@ -1,16 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { ArrowLeft, Save, Bell } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { ArrowLeft, Save, Bell, X } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { UserRole } from '@/types/enums'
+import { IAnnouncement } from '@/types'
 
-export default function AdminNewAnnouncementPage() {
+export default function AdminEditAnnouncementPage() {
+  const params = useParams()
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const id = params.id as string
+
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [attachments, setAttachments] = useState<File[]>([])
+  const [existingAttachments, setExistingAttachments] = useState<string[]>([])
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -18,6 +24,49 @@ export default function AdminNewAnnouncementPage() {
     targetRoles: [UserRole.RESIDENT],
     expiresAt: '',
   })
+
+  useEffect(() => {
+    const fetchAnnouncement = async () => {
+      try {
+        setLoading(true)
+        const res = await fetch(`/api/announcements/${id}`, {
+          credentials: 'include'
+        })
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch announcement')
+        }
+
+        const data = await res.json()
+        if (data.success && data.data.announcement) {
+          const announcement = data.data.announcement
+          setFormData({
+            title: announcement.title || '',
+            content: announcement.content || '',
+            isPinned: announcement.isPinned || false,
+            targetRoles: announcement.targetRoles || [UserRole.RESIDENT],
+            expiresAt: announcement.expiresAt
+              ? new Date(announcement.expiresAt).toISOString().slice(0, 16)
+              : '',
+          })
+          setExistingAttachments(announcement.attachments || [])
+        } else {
+          toast.error('Announcement not found')
+          router.push('/admin/announcements')
+        }
+      } catch (error) {
+        console.error('Error fetching announcement:', error)
+        toast.error('Failed to load announcement')
+        router.push('/admin/announcements')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (id) {
+      fetchAnnouncement()
+    }
+  }, [id, router])
 
   const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -30,9 +79,13 @@ export default function AdminNewAnnouncementPage() {
     setAttachments(attachments.filter((_, i) => i !== index))
   }
 
+  const removeExistingAttachment = (index: number) => {
+    setExistingAttachments(existingAttachments.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    setSaving(true)
 
     try {
       const formDataToSend = new FormData()
@@ -40,16 +93,20 @@ export default function AdminNewAnnouncementPage() {
       formDataToSend.append('content', formData.content)
       formDataToSend.append('isPinned', formData.isPinned.toString())
       formDataToSend.append('targetRoles', JSON.stringify(formData.targetRoles))
+      formDataToSend.append('existingAttachments', JSON.stringify(existingAttachments))
+      
       if (formData.expiresAt) {
         formDataToSend.append('expiresAt', formData.expiresAt)
+      } else {
+        formDataToSend.append('expiresAt', '')
       }
 
       attachments.forEach((file) => {
         formDataToSend.append('attachments', file)
       })
 
-      const res = await fetch('/api/announcements', {
-        method: 'POST',
+      const res = await fetch(`/api/announcements/${id}`, {
+        method: 'PATCH',
         body: formDataToSend,
         credentials: 'include'
       })
@@ -57,15 +114,15 @@ export default function AdminNewAnnouncementPage() {
       const data = await res.json()
 
       if (data.success) {
-        toast.success('Announcement created successfully!')
+        toast.success('Announcement updated successfully!')
         router.push('/admin/announcements')
       } else {
-        toast.error(data.error || 'Failed to create announcement')
+        toast.error(data.error || 'Failed to update announcement')
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.')
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
   }
 
@@ -76,6 +133,19 @@ export default function AdminNewAnnouncementPage() {
         ? formData.targetRoles.filter(r => r !== role)
         : [...formData.targetRoles, role]
     })
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading announcement...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -93,7 +163,7 @@ export default function AdminNewAnnouncementPage() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">Create Announcement</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Edit Announcement</h1>
             </div>
           </div>
         </div>
@@ -105,8 +175,8 @@ export default function AdminNewAnnouncementPage() {
             <div className="flex items-center space-x-3">
               <Bell className="w-6 h-6 text-gray-400" />
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">New Announcement</h2>
-                <p className="text-sm text-gray-600">Create and broadcast announcements to community members</p>
+                <h2 className="text-lg font-semibold text-gray-900">Edit Announcement</h2>
+                <p className="text-sm text-gray-600">Update announcement details and settings</p>
               </div>
             </div>
           </div>
@@ -196,8 +266,36 @@ export default function AdminNewAnnouncementPage() {
 
             <div>
               <label htmlFor="attachments" className="block text-sm font-medium text-gray-700 mb-2">
-                Attachments (Optional)
+                Attachments
               </label>
+              
+              {/* Existing Attachments */}
+              {existingAttachments.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  <p className="text-sm text-gray-600 mb-2">Existing Attachments:</p>
+                  {existingAttachments.map((url, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary-600 hover:text-primary-800 truncate max-w-md"
+                      >
+                        {url.split('/').pop() || `Attachment ${index + 1}`}
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => removeExistingAttachment(index)}
+                        className="text-red-500 hover:text-red-700 ml-2"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* New Attachments Upload */}
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 <div className="space-y-1 text-center">
                   <div className="text-gray-400">
@@ -222,8 +320,10 @@ export default function AdminNewAnnouncementPage() {
                   <p className="text-xs text-gray-500">PDF, DOC, DOCX, JPG, PNG up to 10MB each</p>
                 </div>
               </div>
+              
               {attachments.length > 0 && (
                 <div className="mt-4 grid grid-cols-1 gap-2">
+                  <p className="text-sm text-gray-600 mb-2">New Attachments:</p>
                   {attachments.map((file, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                       <span className="text-sm text-gray-700">{file.name}</span>
@@ -232,9 +332,7 @@ export default function AdminNewAnnouncementPage() {
                         onClick={() => removeAttachment(index)}
                         className="text-red-500 hover:text-red-700"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
@@ -251,18 +349,18 @@ export default function AdminNewAnnouncementPage() {
               </Link>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={saving}
                 className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
-                {loading ? (
+                {saving ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Creating...</span>
+                    <span>Updating...</span>
                   </>
                 ) : (
                   <>
                     <Save className="w-4 h-4" />
-                    <span>Create Announcement</span>
+                    <span>Update Announcement</span>
                   </>
                 )}
               </button>
@@ -273,3 +371,4 @@ export default function AdminNewAnnouncementPage() {
     </div>
   )
 }
+

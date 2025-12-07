@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, Eye, EyeOff, Shield, Sparkles, Users, Building } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Shield, Sparkles, Users, Building } from 'lucide-react'
 
 // Prevent static generation for this page
 export const dynamic = 'force-dynamic'
@@ -181,7 +181,7 @@ export default function SignInPage() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white mr-2"></div>
                     Authenticating...
                   </>
                 ) : (

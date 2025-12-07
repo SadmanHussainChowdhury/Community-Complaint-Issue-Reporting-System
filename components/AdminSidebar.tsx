@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo, memo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
@@ -56,7 +56,7 @@ interface ProfileFormData {
   confirmPassword: string
 }
 
-const AdminSidebar = memo(function AdminSidebar({ user }: AdminSidebarProps) {
+export default function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -231,9 +231,8 @@ const AdminSidebar = memo(function AdminSidebar({ user }: AdminSidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              prefetch={true}
               className={`
-                flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-150
+                flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
                 ${
                   isActive
                     ? 'bg-purple-600 text-white'
@@ -241,7 +240,7 @@ const AdminSidebar = memo(function AdminSidebar({ user }: AdminSidebarProps) {
                 }
               `}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-5 h-5" />
               <span className="text-sm font-medium">{item.label}</span>
             </Link>
           )
@@ -439,7 +438,5 @@ const AdminSidebar = memo(function AdminSidebar({ user }: AdminSidebarProps) {
       </div>
     </div>
   )
-})
-
-export default AdminSidebar
+}
 

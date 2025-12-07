@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { IAnnouncement } from '@/types'
 import { UserRole } from '@/types/enums'
 import { Pin, Calendar, User, Trash2, Edit, Search } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { formatDateForDisplay } from '@/lib/utils'
 
@@ -40,6 +41,7 @@ export default function AnnouncementList({
   targetRoleFilter: externalTargetRoleFilter = 'all',
   onFilterChange
 }: AnnouncementListProps) {
+  const router = useRouter()
   const [announcements, setAnnouncements] = useState(initialAnnouncements)
   const [internalLoading, setInternalLoading] = useState(false)
 
@@ -162,7 +164,7 @@ export default function AnnouncementList({
               <tr>
                 <td colSpan={onAnnouncementSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                     <span className="ml-3">Loading announcements...</span>
                   </div>
                 </td>
@@ -226,12 +228,16 @@ export default function AnnouncementList({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
-                        <button className="text-primary-600 hover:text-primary-900" title="Edit">
+                        <button
+                          onClick={() => router.push(`/admin/announcements/${announcement._id}/edit`)}
+                          className="text-primary-600 hover:text-primary-900 transition-colors"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(announcement._id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 transition-colors"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />

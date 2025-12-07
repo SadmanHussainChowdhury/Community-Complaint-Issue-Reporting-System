@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, User, Eye, EyeOff, ArrowRight, Shield } from 'lucide-react'
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Shield } from 'lucide-react'
 import Link from 'next/link'
 
 export default function RegisterPage() {
@@ -256,7 +256,7 @@ export default function RegisterPage() {
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
-                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white mr-2"></div>
                     Creating account...
                   </span>
                 ) : (

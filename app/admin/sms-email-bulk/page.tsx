@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Send, Mail, MessageSquare, Users, UserCheck, Building, CheckCircle2, XCircle } from 'lucide-react'
-import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 import { IUser } from '@/types'
 
@@ -268,7 +267,7 @@ export default function SMSEmailBulkPage() {
                 {/* Users Table */}
                 {fetchingUsers ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader size="md" variant="primary" />
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                     <span className="ml-3 text-gray-600">Loading users...</span>
                   </div>
                 ) : (
@@ -427,7 +426,7 @@ export default function SMSEmailBulkPage() {
           >
             {loading ? (
               <>
-                <Loader size="sm" variant="white" />
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 <span>Sending...</span>
               </>
             ) : (

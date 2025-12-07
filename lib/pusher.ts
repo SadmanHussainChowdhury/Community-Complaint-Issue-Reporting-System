@@ -52,6 +52,8 @@ export const EVENTS = {
   COMPLAINT_ASSIGNED: 'complaint:assigned',
   COMPLAINT_STATUS_CHANGED: 'complaint:status-changed',
   ANNOUNCEMENT_CREATED: 'announcement:created',
+  ANNOUNCEMENT_UPDATED: 'announcement:updated',
+  ANNOUNCEMENT_DELETED: 'announcement:deleted',
   ASSIGNMENT_CREATED: 'assignment:created',
 } as const
 

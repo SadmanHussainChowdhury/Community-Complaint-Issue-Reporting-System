@@ -20,7 +20,6 @@ import {
   Clock,
   CheckCircle
 } from 'lucide-react'
-import { Loader } from '@/components/ui'
 import toast from 'react-hot-toast'
 
 export default function StaffComplaintDetailPage() {
@@ -120,7 +119,7 @@ export default function StaffComplaintDetailPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="flex items-center justify-center py-12">
-          <Loader size="md" variant="primary" className="mx-auto" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       </div>
     )
@@ -197,7 +196,7 @@ export default function StaffComplaintDetailPage() {
                       className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
                     >
                       {updatingStatus ? (
-                        <Loader size="sm" variant="white" />
+                        <div className="w-4 h-4 animate-spin rounded-full border-b-2 border-white"></div>
                       ) : (
                         <PlayCircle className="w-4 h-4" />
                       )}
@@ -212,7 +211,7 @@ export default function StaffComplaintDetailPage() {
                       className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50"
                     >
                       {updatingStatus ? (
-                        <Loader size="sm" variant="white" />
+                        <div className="w-4 h-4 animate-spin rounded-full border-b-2 border-white"></div>
                       ) : (
                         <CheckCircle2 className="w-4 h-4" />
                       )}
@@ -367,7 +366,7 @@ export default function StaffComplaintDetailPage() {
                           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {addingNote ? (
-                            <Loader size="sm" variant="white" />
+                            <div className="w-4 h-4 animate-spin rounded-full border-b-2 border-white"></div>
                           ) : (
                             <Send className="w-4 h-4" />
                           )}
@@ -433,7 +432,7 @@ export default function StaffComplaintDetailPage() {
                           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 disabled:opacity-50"
                         >
                           {updatingStatus ? (
-                            <Loader size="sm" variant="white" />
+                            <div className="w-4 h-4 animate-spin rounded-full border-b-2 border-white"></div>
                           ) : (
                             <PlayCircle className="w-4 h-4" />
                           )}
@@ -448,7 +447,7 @@ export default function StaffComplaintDetailPage() {
                           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-200 disabled:opacity-50"
                         >
                           {updatingStatus ? (
-                            <Loader size="sm" variant="white" />
+                            <div className="w-4 h-4 animate-spin rounded-full border-b-2 border-white"></div>
                           ) : (
                             <CheckCircle2 className="w-4 h-4" />
                           )}
