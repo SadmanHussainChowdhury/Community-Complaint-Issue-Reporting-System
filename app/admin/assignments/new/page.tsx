@@ -221,7 +221,7 @@ export default function AdminNewAssignmentPage() {
                     <div className="overflow-y-auto max-h-64">
                       {complaintsLoading ? (
                         <div className="p-8 text-center">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 mx-auto"></div>
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
                           <p className="text-sm text-gray-500 mt-2">Loading complaints...</p>
                         </div>
                       ) : filteredComplaints.length === 0 ? (

@@ -427,7 +427,7 @@ export default async function AdminDashboard() {
               </div>
             </div>
           </div>
-        </div>
+      </div>
 
         {/* Quick Actions */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
@@ -469,7 +469,7 @@ export default async function AdminDashboard() {
               <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                 <Bell className="w-5 h-5 text-white" />
               </div>
-              <div>
+            <div>
                 <p className="font-medium text-green-900">New Announcement</p>
                 <p className="text-sm text-green-600">Broadcast to community</p>
               </div>
@@ -481,14 +481,14 @@ export default async function AdminDashboard() {
             >
               <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                 <BarChart3 className="w-5 h-5 text-white" />
-              </div>
-              <div>
+                </div>
+                <div>
                 <p className="font-medium text-purple-900">View Analytics</p>
                 <p className="text-sm text-purple-600">Detailed insights</p>
               </div>
             </Link>
-          </div>
-        </div>
+                </div>
+              </div>
 
         {/* Analytics Dashboard */}
         <Suspense fallback={<DashboardSkeleton />}>
@@ -534,7 +534,7 @@ export default async function AdminDashboard() {
                 ))
               )}
             </div>
-          </div>
+            </div>
 
           {/* Recent Users */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
@@ -575,7 +575,7 @@ export default async function AdminDashboard() {
                     }`}>
                       {user.role}
                     </span>
-                  </div>
+              </div>
                 ))
               )}
             </div>
@@ -608,7 +608,7 @@ export default async function AdminDashboard() {
                     <span>by {announcement.createdBy?.name || 'Admin'}</span>
                     <span>{new Date(announcement.createdAt).toLocaleDateString()}</span>
                   </div>
-                </div>
+            </div>
               ))
             )}
           </div>
