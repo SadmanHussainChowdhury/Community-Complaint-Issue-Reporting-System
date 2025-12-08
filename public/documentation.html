@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommunityHub Pro - Complete Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .code-block {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+        }
+        .section-anchor {
+            scroll-margin-top: 100px;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="gradient-bg text-white shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-building text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">CommunityHub Pro</h1>
+                        <p class="text-sm text-purple-200">Complete Documentation</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#installation" class="hover:text-purple-200 transition">Installation</a>
+                    <a href="#user-guide" class="hover:text-purple-200 transition">User Guide</a>
+                    <a href="#admin" class="hover:text-purple-200 transition">Admin</a>
+                    <a href="#staff" class="hover:text-purple-200 transition">Staff</a>
+                    <a href="#resident" class="hover:text-purple-200 transition">Resident</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 pt-24 pb-12">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="sidebar bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Table of Contents</h2>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="block text-primary-600 hover:text-primary-800 font-medium py-2 border-b border-gray-200">Overview</a>
+                        <a href="#installation" class="block text-primary-600 hover:text-primary-800 font-medium py-2 border-b border-gray-200">Installation</a>
+                        <a href="#prerequisites" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Prerequisites</a>
+                        <a href="#quick-install" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Quick Installation</a>
+                        <a href="#env-setup" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Environment Setup</a>
+                        <a href="#mongodb" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">MongoDB Setup</a>
+                        <a href="#user-guide" class="block text-primary-600 hover:text-primary-800 font-medium py-2 border-b border-gray-200 mt-4">User Documentation</a>
+                        <a href="#admin" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Admin Guide</a>
+                        <a href="#staff" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Staff Guide</a>
+                        <a href="#resident" class="block text-gray-600 hover:text-primary-600 pl-4 text-sm py-1">Resident Guide</a>
+                        <a href="#troubleshooting" class="block text-primary-600 hover:text-primary-800 font-medium py-2 border-b border-gray-200 mt-4">Troubleshooting</a>
+                        <a href="#support" class="block text-primary-600 hover:text-primary-800 font-medium py-2">Support</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <!-- Overview Section -->
+                <section id="overview" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-info-circle text-4xl text-primary-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Overview</h2>
+                    </div>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                        <strong>CommunityHub Pro</strong> is an enterprise-grade community management platform designed for modern residential communities, apartment complexes, and housing societies. Built with cutting-edge technologies including Next.js 15, React 19, TypeScript, and MongoDB.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-6 mt-8">
+                        <div class="feature-card bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100">
+                            <i class="fas fa-rocket text-3xl text-blue-600 mb-3"></i>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Fast & Efficient</h3>
+                            <p class="text-gray-600">75% faster complaint resolution with streamlined workflows</p>
+                        </div>
+                        <div class="feature-card bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-lg border border-green-100">
+                            <i class="fas fa-shield-alt text-3xl text-green-600 mb-3"></i>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Secure</h3>
+                            <p class="text-gray-600">Bank-grade encryption and GDPR compliance</p>
+                        </div>
+                        <div class="feature-card bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
+                            <i class="fas fa-mobile-alt text-3xl text-purple-600 mb-3"></i>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Mobile-First</h3>
+                            <p class="text-gray-600">Responsive design across all devices</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Installation Section -->
+                <section id="installation" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-download text-4xl text-primary-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Installation Guide</h2>
+                    </div>
+
+                    <!-- Prerequisites -->
+                    <div id="prerequisites" class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                            Prerequisites
+                        </h3>
+                        <div class="bg-gray-50 rounded-lg p-6 mb-4">
+                            <p class="text-gray-700 mb-4">Before you begin, ensure you have the following installed:</p>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span><strong>Node.js</strong> 18.0.0 or higher (<a href="https://nodejs.org/" class="text-primary-600 hover:underline">Download</a>)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span><strong>npm</strong> 10.0.0 or higher (comes with Node.js)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span><strong>MongoDB</strong> account (MongoDB Atlas recommended) (<a href="https://www.mongodb.com/cloud/atlas" class="text-primary-600 hover:underline">Sign up</a>)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span><strong>Git</strong> (for cloning the repository)</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <p class="text-blue-800"><strong>Optional Services:</strong> Cloudinary (image uploads), Twilio (SMS), Pusher (real-time features), Email SMTP (notifications)</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Installation -->
+                    <div id="quick-install" class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-bolt text-primary-600 mr-2"></i>
+                            Quick Installation
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-xl font-semibold text-gray-800 mb-3">Step 1: Clone or Download the Repository</h4>
+                                <div class="code-block">
+                                    <code class="text-sm">
+# If using Git<br>
+git clone https://github.com/SadmanHussainChowdhury/Community-Complaint-Issue-Reporting-System.git<br><br>
+# Or download and extract the ZIP file<br>
+cd Community-Complaint-Issue-Reporting-System
+                                    </code>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold text-gray-800 mb-3">Step 2: Install Dependencies</h4>
+                                <div class="code-block">
+                                    <code class="text-sm">npm install</code>
+                                </div>
+                                <p class="text-gray-600 mt-2">This will install all required packages listed in package.json</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environment Setup -->
+                    <div id="env-setup" class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-cog text-primary-600 mr-2"></i>
+                            Environment Variables Setup
+                        </h3>
+                        <p class="text-gray-700 mb-4">Create a <code class="bg-gray-200 px-2 py-1 rounded">.env.local</code> file in the root directory:</p>
+                        <div class="code-block">
+                            <code class="text-sm">
+# MongoDB Configuration<br>
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/communityhub?retryWrites=true&w=majority<br><br>
+# NextAuth Configuration<br>
+NEXTAUTH_URL=http://localhost:3000<br>
+NEXTAUTH_SECRET=your-secret-key-minimum-32-characters-long<br><br>
+# Cloudinary (Optional - for image uploads)<br>
+CLOUDINARY_CLOUD_NAME=your-cloud-name<br>
+CLOUDINARY_API_KEY=your-api-key<br>
+CLOUDINARY_API_SECRET=your-api-secret<br><br>
+# Twilio (Optional - for SMS)<br>
+TWILIO_ACCOUNT_SID=your-account-sid<br>
+TWILIO_AUTH_TOKEN=your-auth-token<br>
+TWILIO_PHONE_NUMBER=+1234567890<br><br>
+# Pusher (Optional - for real-time features)<br>
+NEXT_PUBLIC_PUSHER_APP_ID=your-app-id<br>
+NEXT_PUBLIC_PUSHER_KEY=your-key<br>
+NEXT_PUBLIC_PUSHER_SECRET=your-secret<br>
+NEXT_PUBLIC_PUSHER_CLUSTER=your-cluster<br><br>
+# Email Configuration (Optional - for email notifications)<br>
+EMAIL_HOST=smtp.gmail.com<br>
+EMAIL_PORT=587<br>
+EMAIL_USER=your-email@gmail.com<br>
+EMAIL_PASS=your-app-password<br>
+EMAIL_FROM=noreply@communityhub.com<br>
+EMAIL_SECURE=false
+                            </code>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mt-4">
+                            <p class="text-yellow-800"><strong>Generate NextAuth Secret:</strong></p>
+                            <div class="code-block mt-2">
+                                <code class="text-sm">
+# On Linux/Mac<br>
+openssl rand -base64 32<br><br>
+# On Windows (PowerShell)<br>
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+                                </code>
+                            </div>
+                            <p class="text-yellow-800 mt-2">Or use an online generator: <a href="https://generate-secret.vercel.app/32" class="underline">generate-secret.vercel.app/32</a></p>
+                        </div>
+                    </div>
+
+                    <!-- MongoDB Setup -->
+                    <div id="mongodb" class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-database text-primary-600 mr-2"></i>
+                            MongoDB Setup
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                                <h4 class="font-semibold text-green-800 mb-2">Option A: MongoDB Atlas (Recommended)</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-green-700">
+                                    <li>Go to <a href="https://www.mongodb.com/cloud/atlas" class="underline">MongoDB Atlas</a></li>
+                                    <li>Create a free account</li>
+                                    <li>Create a new cluster (free tier available)</li>
+                                    <li>Create a database user</li>
+                                    <li>Whitelist your IP address (or use 0.0.0.0/0 for development)</li>
+                                    <li>Get your connection string</li>
+                                    <li>Replace &lt;password&gt; and &lt;dbname&gt; in the connection string</li>
+                                    <li>Add it to .env.local as MONGODB_URI</li>
+                                </ol>
+                            </div>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                <h4 class="font-semibold text-blue-800 mb-2">Option B: Local MongoDB</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-blue-700">
+                                    <li>Install MongoDB locally</li>
+                                    <li>Start MongoDB service</li>
+                                    <li>Use connection string: <code class="bg-blue-100 px-2 py-1 rounded">mongodb://localhost:27017/communityhub</code></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create Admin User -->
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-user-shield text-primary-600 mr-2"></i>
+                            Create Admin User
+                        </h3>
+                        <p class="text-gray-700 mb-4">Run the admin creation script:</p>
+                        <div class="code-block">
+                            <code class="text-sm">npm run create-users</code>
+                        </div>
+                        <p class="text-gray-600 mt-4">Or use the API endpoint:</p>
+                        <div class="code-block">
+                            <code class="text-sm">
+curl -X POST http://localhost:3000/api/auth/register \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"name": "Admin User",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"email": "admin@example.com",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"password": "admin123",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"role": "admin"<br>
+&nbsp;&nbsp;}'
+                            </code>
+                        </div>
+                    </div>
+
+                    <!-- Start Development Server -->
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-play-circle text-primary-600 mr-2"></i>
+                            Start Development Server
+                        </h3>
+                        <div class="code-block">
+                            <code class="text-sm">npm run dev</code>
+                        </div>
+                        <p class="text-gray-700 mt-4">The application will be available at: <strong class="text-primary-600">http://localhost:3000</strong></p>
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded mt-4">
+                            <p class="text-green-800"><strong>Access Points:</strong></p>
+                            <ul class="list-disc list-inside text-green-700 mt-2 space-y-1">
+                                <li>Landing Page: <code class="bg-green-100 px-2 py-1 rounded">http://localhost:3000</code></li>
+                                <li>Sign In: <code class="bg-green-100 px-2 py-1 rounded">http://localhost:3000/auth/signin</code></li>
+                                <li>Admin Dashboard: <code class="bg-green-100 px-2 py-1 rounded">http://localhost:3000/admin/dashboard</code> (after login)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- User Documentation Section -->
+                <section id="user-guide" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-book text-4xl text-primary-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">User Documentation</h2>
+                    </div>
+                    <p class="text-gray-600 text-lg mb-8">Complete guides for all user roles in CommunityHub Pro</p>
+                </section>
+
+                <!-- Admin Guide -->
+                <section id="admin" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-crown text-4xl text-yellow-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Admin Guide</h2>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">System Overview</h3>
+                            <p class="text-gray-700 mb-4">As an administrator, you have full control over the CommunityHub Pro system. Your dashboard provides comprehensive analytics, user management, and complaint oversight.</p>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chart-line text-yellow-600 mr-2 mt-1"></i>
+                                    <span><strong>Dashboard Analytics:</strong> Real-time system statistics and insights</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-users text-yellow-600 mr-2 mt-1"></i>
+                                    <span><strong>User Management:</strong> Create, edit, deactivate users</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-clipboard-list text-yellow-600 mr-2 mt-1"></i>
+                                    <span><strong>Complaint Oversight:</strong> Monitor all community issues</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-tasks text-yellow-600 mr-2 mt-1"></i>
+                                    <span><strong>Staff Performance:</strong> Track team productivity</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">User Management</h3>
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-blue-500 pl-4">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Add Users</h4>
+                                    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                        <li>Navigate to <strong>Admin → Users → Add User</strong></li>
+                                        <li>Fill in: Name, Email, Password, Role, Apartment details</li>
+                                        <li>Set role: Resident, Staff, or Admin</li>
+                                        <li>Click <strong>Create User</strong></li>
+                                    </ol>
+                                </div>
+                                <div class="border-l-4 border-green-500 pl-4">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Edit Users</h4>
+                                    <p class="text-gray-700">Update information, change passwords, modify roles, and manage user permissions.</p>
+                                </div>
+                                <div class="border-l-4 border-red-500 pl-4">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Deactivate Users</h4>
+                                    <p class="text-gray-700">Soft delete accounts (preserves data) for security and compliance.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Complaint Management</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-800 mb-2">View All Complaints</h4>
+                                    <p class="text-gray-700 text-sm">Complete system overview with filtering and search capabilities</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Assignment Control</h4>
+                                    <p class="text-gray-700 text-sm">Assign complaints to specific staff members with due dates</p>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Status Override</h4>
+                                    <p class="text-gray-700 text-sm">Change status or reassign complaints as needed</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Bulk Operations</h4>
+                                    <p class="text-gray-700 text-sm">Handle multiple complaints efficiently</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Create Announcements</h3>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                <li>Navigate to <strong>Admin → Announcements → New Announcement</strong></li>
+                                <li>Enter <strong>Title & Content</strong> with rich text formatting</li>
+                                <li>Select <strong>Target Audience</strong> (All users or specific roles)</li>
+                                <li>Upload <strong>Attachments</strong> (documents/images)</li>
+                                <li>Optionally <strong>Pin Important</strong> announcements to keep at top</li>
+                                <li>Set <strong>Expiration Date</strong> to auto-hide after date</li>
+                                <li>Click <strong>Create Announcement</strong></li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Analytics & Reporting</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg">
+                                    <i class="fas fa-chart-bar text-3xl text-blue-600 mb-2"></i>
+                                    <p class="font-semibold text-gray-800">Complaint Statistics</p>
+                                    <p class="text-sm text-gray-600">By category, priority, status</p>
+                                </div>
+                                <div class="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-lg">
+                                    <i class="fas fa-user-tie text-3xl text-green-600 mb-2"></i>
+                                    <p class="font-semibold text-gray-800">Staff Performance</p>
+                                    <p class="text-sm text-gray-600">Resolution times, ratings, workload</p>
+                                </div>
+                                <div class="text-center p-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg">
+                                    <i class="fas fa-chart-line text-3xl text-purple-600 mb-2"></i>
+                                    <p class="font-semibold text-gray-800">Trend Analysis</p>
+                                    <p class="text-sm text-gray-600">Monthly/yearly patterns</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Staff Guide -->
+                <section id="staff" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-hard-hat text-4xl text-blue-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Staff Guide</h2>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-l-4 border-blue-500">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Daily Workflow</h3>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Sign In</strong> → Automatically redirected to staff dashboard</li>
+                                <li><strong>Review Assigned Tasks</strong> → Check pending complaints</li>
+                                <li><strong>Update Progress</strong> → Mark tasks as in progress</li>
+                                <li><strong>Complete Work</strong> → Upload proof photos and resolve</li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Task Management</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-5 rounded-lg">
+                                    <i class="fas fa-clipboard-check text-2xl text-blue-600 mb-2"></i>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Assigned Complaints</h4>
+                                    <p class="text-gray-700 text-sm">View all tasks assigned to you with priority levels and due dates</p>
+                                </div>
+                                <div class="bg-red-50 p-5 rounded-lg">
+                                    <i class="fas fa-exclamation-triangle text-2xl text-red-600 mb-2"></i>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Priority Handling</h4>
+                                    <p class="text-gray-700 text-sm">Address critical issues first based on priority levels</p>
+                                </div>
+                                <div class="bg-green-50 p-5 rounded-lg">
+                                    <i class="fas fa-sync-alt text-2xl text-green-600 mb-2"></i>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Status Updates</h4>
+                                    <p class="text-gray-700 text-sm">Keep residents informed of progress through status changes</p>
+                                </div>
+                                <div class="bg-purple-50 p-5 rounded-lg">
+                                    <i class="fas fa-camera text-2xl text-purple-600 mb-2"></i>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Photo Evidence</h4>
+                                    <p class="text-gray-700 text-sm">Upload before/after photos as proof of completion</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Updating Complaint Status</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3 bg-yellow-50 p-4 rounded-lg">
+                                    <div class="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Pending → In Progress</h4>
+                                        <p class="text-gray-700 text-sm">When you start working on a complaint, update the status to "In Progress"</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-blue-50 p-4 rounded-lg">
+                                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Add Notes</h4>
+                                        <p class="text-gray-700 text-sm">Add internal notes for admin reference and resident updates</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-green-50 p-4 rounded-lg">
+                                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Upload Resolution Proof</h4>
+                                        <p class="text-gray-700 text-sm">Upload photos showing the completed work</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3 bg-purple-50 p-4 rounded-lg">
+                                    <div class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Mark as Resolved</h4>
+                                        <p class="text-gray-700 text-sm">Change status to "Resolved" to notify the resident</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Performance Tracking</h3>
+                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg">
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="text-center">
+                                        <i class="fas fa-clock text-3xl text-indigo-600 mb-2"></i>
+                                        <p class="font-semibold text-gray-800">Resolution Time</p>
+                                        <p class="text-sm text-gray-600">Monitor your average completion time</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-star text-3xl text-yellow-600 mb-2"></i>
+                                        <p class="font-semibold text-gray-800">Rating Score</p>
+                                        <p class="text-sm text-gray-600">View resident satisfaction ratings</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
+                                        <p class="font-semibold text-gray-800">Task Completion</p>
+                                        <p class="text-sm text-gray-600">Track monthly completion statistics</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resident Guide -->
+                <section id="resident" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-home text-4xl text-green-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Resident Guide</h2>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-l-4 border-green-500">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Getting Started</h3>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Sign Up:</strong> Use the registration form or contact your admin</li>
+                                <li><strong>Sign In:</strong> Use your email and password</li>
+                                <li><strong>Complete Profile:</strong> Add apartment, building, phone details</li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Submitting Complaints</h3>
+                            <div class="space-y-4">
+                                <div class="bg-blue-50 p-5 rounded-lg">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-plus-circle text-blue-600 mr-2"></i>
+                                        Step-by-Step Process
+                                    </h4>
+                                    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                        <li>Navigate to <strong>"New Complaint"</strong> from your dashboard</li>
+                                        <li>Fill in the form:
+                                            <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                                                <li><strong>Title:</strong> Brief description (e.g., "Leaky Faucet in Kitchen")</li>
+                                                <li><strong>Category:</strong> Select from dropdown (Maintenance, Safety, Noise, etc.)</li>
+                                                <li><strong>Priority:</strong> Choose urgency level (Low, Medium, High, Urgent)</li>
+                                                <li><strong>Description:</strong> Detailed explanation of the issue</li>
+                                                <li><strong>Location:</strong> Building, floor, room (optional)</li>
+                                                <li><strong>Photos:</strong> Upload up to 5 images as evidence</li>
+                                            </ul>
+                                        </li>
+                                        <li>Click <strong>Submit Complaint</strong></li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Tracking Complaints</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-yellow-50 p-5 rounded-lg text-center">
+                                    <div class="bg-yellow-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-hourglass-half text-2xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Pending</h4>
+                                    <p class="text-sm text-gray-600">Submitted, awaiting review</p>
+                                </div>
+                                <div class="bg-blue-50 p-5 rounded-lg text-center">
+                                    <div class="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-spinner text-2xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 mb-2">In Progress</h4>
+                                    <p class="text-sm text-gray-600">Assigned to staff, being worked on</p>
+                                </div>
+                                <div class="bg-green-50 p-5 rounded-lg text-center">
+                                    <div class="bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 mb-2">Resolved</h4>
+                                    <p class="text-sm text-gray-600">Completed with proof photos</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Feedback & Rating</h3>
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg">
+                                <p class="text-gray-700 mb-4">Once a complaint is resolved, you can provide feedback:</p>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                                        <span><strong>Rate the resolution</strong> (1-5 stars)</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-comment text-purple-500 mr-2 mt-1"></i>
+                                        <span><strong>Provide feedback comments</strong> to help improve service quality</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-thumbs-up text-green-500 mr-2 mt-1"></i>
+                                        <span><strong>Your feedback helps</strong> staff and admin improve the system</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Viewing Announcements</h3>
+                            <div class="bg-indigo-50 p-5 rounded-lg">
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-bullhorn text-indigo-600 mr-2 mt-1"></i>
+                                        <span>View community news and updates on your dashboard</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-thumbtack text-yellow-600 mr-2 mt-1"></i>
+                                        <span>Pinned announcements appear at the top</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-download text-blue-600 mr-2 mt-1"></i>
+                                        <span>Download attachments if provided</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting Section -->
+                <section id="troubleshooting" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-tools text-4xl text-red-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Troubleshooting</h2>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-red-500 bg-red-50 p-5 rounded-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">MongoDB Connection Failed</h3>
+                            <p class="text-gray-700 mb-2"><strong>Solution:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Verify MongoDB URI is correct</li>
+                                <li>Check IP whitelist in MongoDB Atlas</li>
+                                <li>Ensure network connectivity</li>
+                                <li>Check MongoDB Atlas status</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-4 border-yellow-500 bg-yellow-50 p-5 rounded-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">NextAuth Errors</h3>
+                            <p class="text-gray-700 mb-2"><strong>Solution:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Verify NEXTAUTH_SECRET is at least 32 characters</li>
+                                <li>Check NEXTAUTH_URL matches your domain</li>
+                                <li>Clear browser cookies</li>
+                                <li>Check console for specific errors</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-4 border-blue-500 bg-blue-50 p-5 rounded-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Images Not Uploading</h3>
+                            <p class="text-gray-700 mb-2"><strong>Solution:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Verify Cloudinary credentials</li>
+                                <li>Check account storage limits</li>
+                                <li>Ensure file size &lt; 10MB</li>
+                                <li>Check supported file formats (JPG, PNG, GIF, WebP)</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-4 border-green-500 bg-green-50 p-5 rounded-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Build Errors</h3>
+                            <p class="text-gray-700 mb-2"><strong>Solution:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Run <code class="bg-green-100 px-2 py-1 rounded">npm install</code> again</li>
+                                <li>Clear .next folder: <code class="bg-green-100 px-2 py-1 rounded">rm -rf .next</code></li>
+                                <li>Check Node.js version: <code class="bg-green-100 px-2 py-1 rounded">node --version</code> (should be 18+)</li>
+                                <li>Verify all dependencies are installed</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-4 border-purple-500 bg-purple-50 p-5 rounded-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Port Already in Use</h3>
+                            <p class="text-gray-700 mb-2"><strong>Solution:</strong></p>
+                            <div class="code-block mt-2">
+                                <code class="text-sm">
+# Windows<br>
+netstat -ano | findstr :3000<br>
+taskkill /PID &lt;PID&gt; /F<br><br>
+# Linux/Mac<br>
+lsof -ti:3000 | xargs kill -9
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Support Section -->
+                <section id="support" class="section-anchor bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i class="fas fa-life-ring text-4xl text-primary-600"></i>
+                        <h2 class="text-3xl font-bold text-gray-800">Support & Resources</h2>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg">
+                            <i class="fas fa-book text-3xl text-blue-600 mb-3"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Documentation</h3>
+                            <p class="text-gray-700 mb-4">Check the README.md file for detailed information</p>
+                            <a href="#" class="text-primary-600 hover:underline font-semibold">View Documentation →</a>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-lg">
+                            <i class="fas fa-bug text-3xl text-green-600 mb-3"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Report Issues</h3>
+                            <p class="text-gray-700 mb-4">Open a GitHub issue for bugs or feature requests</p>
+                            <a href="https://github.com/SadmanHussainChowdhury/Community-Complaint-Issue-Reporting-System" class="text-primary-600 hover:underline font-semibold">GitHub Repository →</a>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg">
+                            <i class="fas fa-envelope text-3xl text-purple-600 mb-3"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Email Support</h3>
+                            <p class="text-gray-700 mb-4">Contact us for technical assistance</p>
+                            <a href="mailto:support@communityhub.pro" class="text-primary-600 hover:underline font-semibold">support@communityhub.pro →</a>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-lg">
+                            <i class="fas fa-code text-3xl text-yellow-600 mb-3"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Version Info</h3>
+                            <p class="text-gray-700 mb-2">Next.js 15.1.9</p>
+                            <p class="text-gray-700 mb-2">React 19.2.1</p>
+                            <p class="text-gray-700">TypeScript 5.3.3</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg shadow-lg p-8 mt-8">
+                    <div class="text-center">
+                        <div class="flex items-center justify-center space-x-3 mb-4">
+                            <i class="fas fa-building text-3xl"></i>
+                            <h3 class="text-2xl font-bold">CommunityHub Pro</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">Enterprise-Grade Community Management Platform</p>
+                        <div class="flex justify-center space-x-6 text-sm">
+                            <span>© 2025 CommunityHub Pro</span>
+                            <span>•</span>
+                            <span>MIT License</span>
+                            <span>•</span>
+                            <span>Version 1.0.0</span>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-all opacity-0 invisible" style="transition: opacity 0.3s, visibility 0.3s;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
