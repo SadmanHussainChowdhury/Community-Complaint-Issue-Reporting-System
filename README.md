@@ -1,6 +1,6 @@
 # 🏢 CommunityHub Pro
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.0.0-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.1.9-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.1-blue)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.3.0-green)](https://www.mongodb.com/)
@@ -12,6 +12,7 @@
 ## 📋 Table of Contents
 
 - [🎯 Overview](#-overview)
+- [📖 Documentation](#-documentation)
 - [✨ Key Features](#-key-features)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
@@ -44,6 +45,43 @@ CommunityHub Pro is a **production-ready SaaS platform** that revolutionizes com
 - **🎛️ Role-Based Access** - Granular permissions for different user types
 - **📊 Real-Time Analytics** - Comprehensive insights and reporting
 - **🔄 Live Updates** - WebSocket-powered real-time notifications
+
+---
+
+## 📖 Documentation
+
+### 🌟 Premium HTML Documentation
+
+We've created an **ultra premium HTML documentation** with Tailwind CSS that provides a beautiful, interactive experience for installation and user guides.
+
+**Access the Documentation:**
+- **Local Development**: `http://localhost:3000/documentation.html`
+- **Production**: `https://yourdomain.com/documentation.html`
+- **GitHub**: View in the `public/documentation.html` file
+
+**What's Included:**
+- ✅ **Complete Installation Guide** - Step-by-step setup instructions
+- ✅ **Admin User Guide** - Comprehensive admin documentation
+- ✅ **Staff User Guide** - Complete staff workflow documentation
+- ✅ **Resident User Guide** - Full resident user documentation
+- ✅ **Troubleshooting Section** - Common issues and solutions
+- ✅ **Support & Resources** - Contact information and help
+
+**Features:**
+- 🎨 Beautiful Tailwind CSS design
+- 📱 Fully responsive layout
+- 🔍 Interactive navigation sidebar
+- 💻 Code examples with syntax highlighting
+- 🎯 Smooth scrolling navigation
+- ⬆️ Back-to-top button
+- 📋 Comprehensive content coverage
+
+**Quick Access:**
+```bash
+# After starting the dev server
+npm run dev
+# Then visit: http://localhost:3000/documentation.html
+```
 
 ---
 
@@ -2074,9 +2112,11 @@ This project is **CodeCanyon-ready** and includes all required documentation and
 - ✅ **DEMO_CREDENTIALS.md** - Test accounts and credentials
 - ✅ **CODECANYON_SUBMISSION.md** - Complete submission guide
 - ✅ **README.md** - Comprehensive documentation (2000+ lines)
+- ✅ **public/documentation.html** - Premium HTML documentation with Tailwind CSS
 - ✅ **.env.local.example** - Environment variables template
 
 ### 🎯 Quick Links
+- **[📖 Premium HTML Documentation](public/documentation.html)** - Interactive documentation with Tailwind CSS
 - [Installation Guide](INSTALLATION.md) - Get started in 10-15 minutes
 - [Demo Credentials](DEMO_CREDENTIALS.md) - Test accounts
 - [Changelog](CHANGELOG.md) - Version history
