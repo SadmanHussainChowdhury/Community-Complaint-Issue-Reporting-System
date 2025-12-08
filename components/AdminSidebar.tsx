@@ -140,7 +140,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
     }))
   }, [])
 
-  const validateProfileForm = (): string | null => {
+  const validateProfileForm = useCallback((): string | null => {
     if (!formData.name.trim()) {
       return 'Name is required'
     }
@@ -173,7 +173,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
     }
 
     return null
-  }
+  }, [formData])
 
   const handleProfileSave = useCallback(async () => {
     const validationError = validateProfileForm()
@@ -225,7 +225,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [formData, user.id])
+  }, [formData, user.id, validateProfileForm])
 
   const handleProfileCancel = useCallback(() => {
     setFormData({

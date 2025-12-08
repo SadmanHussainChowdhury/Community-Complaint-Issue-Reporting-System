@@ -125,7 +125,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
     }))
   }, [])
 
-  const validateProfileForm = (): string | null => {
+  const validateProfileForm = useCallback((): string | null => {
     if (!formData.name.trim()) {
       return 'Name is required'
     }
@@ -158,7 +158,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
     }
 
     return null
-  }
+  }, [formData])
 
   const handleProfileSave = useCallback(async () => {
     const validationError = validateProfileForm()
@@ -210,7 +210,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [formData, user.id])
+  }, [formData, user.id, validateProfileForm])
 
   const handleProfileCancel = useCallback(() => {
     setFormData({
