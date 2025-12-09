@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.3.0-green)](https://www.mongodb.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-Commercial-green)](LICENSE)
 
 > **Enterprise-Grade Community Management Platform** - A comprehensive SaaS solution for modern residential communities, apartment complexes, and housing societies. Built with cutting-edge technologies and designed for scalability, security, and exceptional user experience.
 

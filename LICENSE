@@ -1,46 +1,25 @@
-MIT License
+COPYRIGHT NOTICE AND LICENSE
 
-Copyright (c) 2024 CommunityHub Pro
+Copyright (c) 2024 CommunityHub Pro. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This source code is the property of CommunityHub Pro and is protected by copyright laws. 
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. USAGE
+   This software is sold exclusively through Envato Market (CodeCanyon). 
+   By purchasing this software, you are granted a license to use it in accordance with the 
+   license you purchased (Regular or Extended) as defined by Envato Market.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. RESTRICTIONS
+   - You may NOT redistribute, resell, lease, license, sub-license or offer this resource 
+     to any third party.
+   - You may NOT include this resource in a portfolio or use it for any other commercial 
+     purpose without a valid license.
+   - You may NOT share this source code publicly (e.g. GitHub, GitLab, Bitbucket) unless 
+     it is a private repository.
 
----
+3. DISCLAIMER
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+   PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
-## Third-Party Licenses
-
-This software uses the following third-party libraries:
-
-- Next.js - MIT License
-- React - MIT License
-- MongoDB/Mongoose - Apache License 2.0
-- Tailwind CSS - MIT License
-- NextAuth.js - ISC License
-- Cloudinary - MIT License
-- Twilio - MIT License
-- Pusher - MIT License
-- Lucide React - ISC License
-- All other dependencies - See package.json for individual licenses
-
----
-
-## Commercial License
-
-For commercial use, redistribution, or SaaS applications, please contact:
-licensing@communityhub.pro
-
+For full license details, please refer to your purchase license from CodeCanyon.
