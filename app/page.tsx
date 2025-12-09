@@ -31,6 +31,7 @@ import {
   Sparkles
 } from 'lucide-react'
 import { HeroSection } from '@/components/ui'
+import MobileNav from '@/components/MobileNav'
 
 // Prevent static generation since this page has authentication logic
 export const dynamic = 'force-dynamic'
@@ -77,11 +78,7 @@ export default async function Home() {
             </div>
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
-              <button className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+              <MobileNav />
             </div>
           </div>
         </div>

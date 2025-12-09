@@ -47,7 +47,7 @@ export default function AssignmentList({
   const filteredAssignments = assignments.filter((assignment) => {
     const complaint = typeof assignment.complaint === 'object' ? assignment.complaint : null
     const assignedTo = typeof assignment.assignedTo === 'object' ? assignment.assignedTo : null
-    
+
     const matchesSearch = !externalSearchQuery ||
       complaint?.title?.toLowerCase().includes(externalSearchQuery.toLowerCase()) ||
       assignedTo?.name?.toLowerCase().includes(externalSearchQuery.toLowerCase())
@@ -85,103 +85,104 @@ export default function AssignmentList({
       </div>
 
       {/* Assignments Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {onAssignmentSelect && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    checked={selectedAssignments.length === filteredAssignments.length && filteredAssignments.length > 0}
-                    onChange={(e) => onSelectAllAssignments?.(e.target.checked)}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                {onAssignmentSelect && (
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <input
+                      type="checkbox"
+                      checked={selectedAssignments.length === filteredAssignments.length && filteredAssignments.length > 0}
+                      onChange={(e) => onSelectAllAssignments?.(e.target.checked)}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                  </th>
+                )}
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Complaint
                 </th>
-              )}
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Complaint
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Assigned To
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Assigned By
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Due Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {loading ? (
-              <tr>
-                <td colSpan={onAssignmentSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-                    <span className="ml-3">Loading assignments...</span>
-                  </div>
-                </td>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  Assigned To
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                  Assigned By
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Due Date
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                  Date
+                </th>
               </tr>
-            ) : filteredAssignments.length === 0 ? (
-              <tr>
-                <td colSpan={onAssignmentSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
-                  No assignments found
-                </td>
-              </tr>
-            ) : (
-              filteredAssignments.map((assignment) => {
-                const complaint = typeof assignment.complaint === 'object' ? assignment.complaint : null
-                const assignedTo = typeof assignment.assignedTo === 'object' ? assignment.assignedTo : null
-                const assignedBy = typeof assignment.assignedBy === 'object' ? assignment.assignedBy : null
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {loading ? (
+                <tr>
+                  <td colSpan={onAssignmentSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                      <span className="ml-3">Loading assignments...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredAssignments.length === 0 ? (
+                <tr>
+                  <td colSpan={onAssignmentSelect ? 7 : 6} className="px-6 py-12 text-center text-gray-500">
+                    No assignments found
+                  </td>
+                </tr>
+              ) : (
+                filteredAssignments.map((assignment) => {
+                  const complaint = typeof assignment.complaint === 'object' ? assignment.complaint : null
+                  const assignedTo = typeof assignment.assignedTo === 'object' ? assignment.assignedTo : null
+                  const assignedBy = typeof assignment.assignedBy === 'object' ? assignment.assignedBy : null
 
-                return (
-                  <tr key={assignment._id} className="hover:bg-gray-50">
-                    {onAssignmentSelect && (
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedAssignments.includes(assignment._id)}
-                          onChange={(e) => onAssignmentSelect(assignment._id, e.target.checked)}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
+                  return (
+                    <tr key={assignment._id} className="hover:bg-gray-50">
+                      {onAssignmentSelect && (
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedAssignments.includes(assignment._id)}
+                            onChange={(e) => onAssignmentSelect(assignment._id, e.target.checked)}
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                        </td>
+                      )}
+                      <td className="px-3 sm:px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">{complaint?.title || 'Unknown'}</div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs">{complaint?.description || ''}</div>
                       </td>
-                    )}
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{complaint?.title || 'Unknown'}</div>
-                      <div className="text-sm text-gray-500 truncate max-w-xs">{complaint?.description || ''}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {assignedTo?.name || 'Unassigned'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {assignedBy?.name || 'Unknown'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDateForDisplay(assignment.dueDate)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        statusColors[assignment.status] || 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1).replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDateForDisplay(assignment.assignedAt)}
-                    </td>
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                        {assignedTo?.name || 'Unassigned'}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                        {assignedBy?.name || 'Unknown'}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDateForDisplay(assignment.dueDate)}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusColors[assignment.status] || 'bg-gray-100 text-gray-800'
+                          }`}>
+                          {assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1).replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                        {formatDateForDisplay(assignment.assignedAt)}
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

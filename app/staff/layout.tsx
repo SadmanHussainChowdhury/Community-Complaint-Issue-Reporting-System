@@ -40,7 +40,7 @@ export default async function StaffLayout({
     <div className="min-h-screen bg-gray-50">
       <StaffSidebar user={user} />
       <div className="lg:pl-64">
-        <main className="py-8">
+        <main className="py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

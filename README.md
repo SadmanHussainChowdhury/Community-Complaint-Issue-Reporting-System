@@ -408,48 +408,48 @@ community-issue/
 ### ⚡ Installation (5 minutes)
 
 #### 1. Clone & Install
-```bash
+   ```bash
 # Clone the repository
-git clone https://github.com/SadmanHussainChowdhury/Community-Complaint-Issue-Reporting-System.git
-cd Community-Complaint-Issue-Reporting-System
+   git clone https://github.com/SadmanHussainChowdhury/Community-Complaint-Issue-Reporting-System.git
+   cd Community-Complaint-Issue-Reporting-System
 
 # Install dependencies
-npm install
-```
+   npm install
+   ```
 
 #### 2. Environment Setup
-```bash
+   ```bash
 # Copy environment template
-cp .env.local.example .env.local
-```
+   cp .env.local.example .env.local
+   ```
 
 **Required Environment Variables:**
-```env
+   ```env
 # ==========================================
 # REQUIRED: Database Configuration
 # ==========================================
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/community-issues?retryWrites=true&w=majority
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/community-issues?retryWrites=true&w=majority
 
 # ==========================================
 # REQUIRED: Authentication
 # ==========================================
-NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-super-secret-key-minimum-32-characters-for-production
 
 # ==========================================
 # REQUIRED: Image Upload (Cloudinary)
 # ==========================================
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
+   CLOUDINARY_CLOUD_NAME=your-cloud-name
+   CLOUDINARY_API_KEY=your-api-key
+   CLOUDINARY_API_SECRET=your-api-secret
 
 # ==========================================
 # OPTIONAL: Real-time Updates (Pusher)
 # ==========================================
-PUSHER_APP_ID=your-app-id
-PUSHER_KEY=your-key
-PUSHER_SECRET=your-secret
-PUSHER_CLUSTER=us2
+   PUSHER_APP_ID=your-app-id
+   PUSHER_KEY=your-key
+   PUSHER_SECRET=your-secret
+   PUSHER_CLUSTER=us2
 
 # ==========================================
 # OPTIONAL: Email Service
@@ -462,9 +462,9 @@ EMAIL_SMTP_PASS=your-app-password
 ```
 
 #### 3. Generate Secure Secrets
-```bash
+   ```bash
 # Generate NextAuth secret (32+ characters)
-openssl rand -base64 32
+   openssl rand -base64 32
 
 # Alternative: Use online generator
 # https://generate-secret.vercel.app/32
@@ -514,8 +514,8 @@ npm run create-admin
 ```
 
 #### 7. Launch Development Server
-```bash
-npm run dev
+   ```bash
+   npm run dev
 ```
 
 **🎉 Access your application at:** `http://localhost:3000`

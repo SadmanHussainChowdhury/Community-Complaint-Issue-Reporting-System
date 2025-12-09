@@ -17,6 +17,7 @@ import {
   Eye,
   EyeOff,
   Home,
+  Menu,
 } from 'lucide-react'
 import { SessionUser } from '@/types'
 import toast from 'react-hot-toast'
@@ -42,12 +43,13 @@ interface ProfileFormData {
 }
 
 // Memoized menu item component for better performance
-const ResidentMenuItem = memo(({ item, isActive }: { item: typeof menuItems[0], isActive: boolean }) => {
+const ResidentMenuItem = memo(({ item, isActive, onNavigate }: { item: typeof menuItems[0], isActive: boolean, onNavigate?: () => void }) => {
   const Icon = item.icon
   return (
     <Link
       href={item.href}
       prefetch={true}
+      onClick={onNavigate}
       className={`
         flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-150
         ${
@@ -72,6 +74,7 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const [formData, setFormData] = useState<ProfileFormData>({
@@ -227,27 +230,90 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
     setIsDropdownOpen(prev => !prev)
   }, [])
 
-  return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white flex flex-col">
-      {/* Logo */}
-      <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-            <Home className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold">Resident Portal</h1>
-            <p className="text-xs text-gray-400">Community Hub</p>
-          </div>
-        </div>
-      </div>
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev)
+  }, [])
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {activeMenuItems.map((item) => (
-          <ResidentMenuItem key={item.href} item={item} isActive={item.isActive} />
-        ))}
-      </nav>
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        const sidebar = document.querySelector('[data-sidebar]')
+        if (sidebar && !sidebar.contains(event.target as Node)) {
+          setIsMobileMenuOpen(false)
+        }
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isMobileMenuOpen])
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [pathname])
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={toggleMobileMenu}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900 text-white shadow-lg"
+        aria-label="Toggle menu"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        data-sidebar
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white flex flex-col
+          transform transition-transform duration-300 ease-in-out
+          lg:translate-x-0
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        {/* Logo */}
+        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
+              <Home className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold">Resident Portal</h1>
+              <p className="text-xs text-gray-400">Community Hub</p>
+            </div>
+          </div>
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="lg:hidden p-1 rounded-lg hover:bg-gray-800 transition-colors"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          {activeMenuItems.map((item) => (
+            <ResidentMenuItem 
+              key={item.href} 
+              item={item} 
+              isActive={item.isActive}
+              onNavigate={() => setIsMobileMenuOpen(false)}
+            />
+          ))}
+        </nav>
 
       {/* Resident User Section - Bottom of Sidebar */}
       <div className="relative mt-auto" ref={dropdownRef}>
@@ -438,7 +504,8 @@ export default function ResidentSidebar({ user }: ResidentSidebarProps) {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 
